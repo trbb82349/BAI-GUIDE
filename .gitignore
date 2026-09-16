@@ -94,7 +94,10 @@ data/private/
 10-projects/incheon-univ-notices/
 10-projects/kr-emcare/
 10-projects/dotfiles/
+10-projects/bai-shared/
 40-archive/kr-emcare/
+40-archive/china-trend-tracker/
+20-areas/GitHub Codespaces용 개인 셋업 저장소/
 
 # ============================================================
 # 다운로드되는 개발 도구 (소스가 아니라 설치물이라 커밋 대상 아님)
