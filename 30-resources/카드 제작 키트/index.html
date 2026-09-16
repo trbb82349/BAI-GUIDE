@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>CareerLens | 한국에너지재단 정규직 공채 공고 카드</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="toolbar" aria-label="카드 편집 도구">
+      <div class="toolbar__brand">
+        <strong>CareerLens 공고 카드</strong>
+        <span id="save-status" aria-live="polite">직접 편집 또는 JSON 편집을 사용할 수 있습니다</span>
+      </div>
+      <div class="toolbar__actions">
+        <button id="edit-toggle" class="button button--primary" type="button" aria-pressed="false">직접 편집</button>
+        <button id="json-toggle" class="button" type="button" aria-expanded="false" aria-controls="json-panel">JSON 편집</button>
+        <button id="download-json" class="button" type="button">JSON 저장</button>
+        <button id="reset-card" class="button" type="button">초기화</button>
+        <button id="print-card" class="button" type="button">인쇄 / PDF</button>
+      </div>
+    </header>
+
+    <aside id="json-panel" class="json-panel" hidden>
+      <label for="json-editor">카드 데이터 JSON</label>
+      <textarea id="json-editor" spellcheck="false"></textarea>
+      <div class="json-panel__footer">
+        <span id="json-error" role="alert"></span>
+        <button id="apply-json" class="button button--primary" type="button">JSON 적용</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <div id="card-stage" class="card-stage">
+        <article id="job-card" class="job-card" aria-label="한국에너지재단 정규직 공채 채용공고 카드">
+          <header class="job-card__header">
+            <p class="brand-english editable" data-bind="brandEnglish"></p>
+
+            <div class="circle-title" aria-label="정규직 공채">
+              <span class="circle-title__item"><span class="circle-title__text editable" data-bind="circleTitle.0"></span></span>
+              <span class="circle-title__item"><span class="circle-title__text editable" data-bind="circleTitle.1"></span></span>
+              <span class="circle-title__item circle-title__item--space" aria-hidden="true"><span class="circle-title__text editable" data-bind="circleTitle.2"></span></span>
+              <span class="circle-title__item"><span class="circle-title__text editable" data-bind="circleTitle.3"></span></span>
+              <span class="circle-title__item"><span class="circle-title__text editable" data-bind="circleTitle.4"></span></span>
+            </div>
+
+            <h1 class="headline">
+              <span class="headline__top editable" data-bind="headlineTop"></span>
+              <span class="headline__bottom editable" data-bind="headlineBottom"></span>
+            </h1>
+
+            <div class="meta-bracket" aria-hidden="true"></div>
+            <div class="job-meta">
+              <strong class="job-meta__primary editable" data-bind="jobMetaPrimary"></strong>
+              <span class="job-meta__divider" aria-hidden="true"></span>
+              <span class="job-meta__secondary editable" data-bind="jobMetaSecondary"></span>
+            </div>
+
+            <p class="announcement"><span class="announcement__text editable" data-bind="announcement"></span></p>
+          </header>
+
+          <section class="information-grid" aria-label="직무 정보">
+            <article class="info-section">
+              <h2 class="info-section__title"><span class="info-section__text editable" data-bind="sections.tasks.title"></span></h2>
+              <ul class="info-list">
+                <li class="editable" data-bind="sections.tasks.items.0"></li>
+                <li class="editable" data-bind="sections.tasks.items.1"></li>
+                <li class="editable" data-bind="sections.tasks.items.2"></li>
+              </ul>
+            </article>
+
+            <article class="info-section">
+              <h2 class="info-section__title"><span class="info-section__text editable" data-bind="sections.competencies.title"></span></h2>
+              <ul class="info-list info-list--competencies">
+                <li class="editable" data-bind="sections.competencies.items.0"></li>
+                <li class="editable" data-bind="sections.competencies.items.1"></li>
+                <li class="editable" data-bind="sections.competencies.items.2"></li>
+                <li class="editable" data-bind="sections.competencies.items.3"></li>
+              </ul>
+            </article>
+
+            <article class="info-section">
+              <h2 class="info-section__title"><span class="info-section__text editable" data-bind="sections.companyContext.title"></span></h2>
+              <ul class="info-list info-list--context">
+                <li class="editable" data-bind="sections.companyContext.items.0"></li>
+                <li class="editable" data-bind="sections.companyContext.items.1"></li>
+                <li class="editable" data-bind="sections.companyContext.items.2"></li>
+              </ul>
+            </article>
+
+            <article class="info-section">
+              <h2 class="info-section__title"><span class="info-section__text editable" data-bind="sections.terms.title"></span></h2>
+              <ul class="info-list info-list--terms">
+                <li class="editable" data-bind="sections.terms.items.0"></li>
+                <li class="editable" data-bind="sections.terms.items.1"></li>
+                <li class="editable" data-bind="sections.terms.items.2"></li>
+              </ul>
+            </article>
+          </section>
+
+          <section class="contact-grid" aria-label="지원 및 문의 정보">
+            <article class="contact-card">
+              <h2 class="contact-card__title editable" data-bind="contacts.0.title"></h2>
+              <p class="contact-card__value editable" data-bind="contacts.0.value"></p>
+              <p class="contact-card__note editable" data-bind="contacts.0.note"></p>
+            </article>
+            <article class="contact-card">
+              <h2 class="contact-card__title editable" data-bind="contacts.1.title"></h2>
+              <p class="contact-card__value editable" data-bind="contacts.1.value"></p>
+              <p class="contact-card__note editable" data-bind="contacts.1.note"></p>
+            </article>
+            <article class="contact-card">
+              <h2 class="contact-card__title editable" data-bind="contacts.2.title"></h2>
+              <p class="contact-card__value editable" data-bind="contacts.2.value"></p>
+              <p class="contact-card__note editable" data-bind="contacts.2.note"></p>
+            </article>
+          </section>
+
+          <footer class="job-card__footer">
+            <div class="job-card__footer-rule"></div>
+            <div class="organization-logo">
+              <img src="./assets/logos/koref-logo.png" alt="한국에너지재단" />
+              <span class="organization-logo__name editable" data-bind="organizationName"></span>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </main>
+
+    <script src="./card-data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

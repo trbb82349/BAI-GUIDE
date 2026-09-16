@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>유치원 샘플 데이터 대시보드</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f7f8fa; color: #1f2933; }
+    header { background: #ffffff; border-bottom: 1px solid #d9dee7; padding: 24px; }
+    main { max-width: 1120px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .lead { margin: 0; color: #607083; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; padding: 18px; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; }
+    .badge { border: 1px solid #a8b4c5; border-radius: 999px; padding: 4px 8px; font-size: 12px; color: #394b63; }
+    .card h2 { margin: 14px 0 4px; font-size: 20px; }
+    .sub { min-height: 42px; margin: 0 0 16px; color: #607083; line-height: 1.45; }
+    .metrics div { margin-top: 10px; }
+    .metrics span { display: inline-block; width: 108px; color: #607083; font-size: 13px; }
+    .metrics b { font-size: 13px; }
+    .metrics i { display: block; height: 8px; margin-top: 5px; background: #3b82f6; border-radius: 999px; }
+    section { margin-top: 26px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #d9dee7; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #e8ecf2; text-align: left; font-size: 14px; }
+    th { background: #eef2f7; }
+    @media (max-width: 640px) { main { padding: 14px; } table { font-size: 12px; } th, td { padding: 8px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>유치원 샘플 데이터 대시보드</h1>
+    <p class="lead">작은 CSV에서 전처리, 파생지표, 화면 구현까지 이어지는 예시입니다.</p>
+  </header>
+  <main>
+    <section class="grid">
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">공립</span>
+                <strong>74.7</strong>
+              </div>
+              <h2>바다숲병설유치원</h2>
+              <p class="sub">중구 · 교사 1인당 원아 수 낮음; 통학차량 있음</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>70.0%</b><i style="width:70%"></i></div>
+                <div><span>교사 1인당</span><b>7.0명</b><i style="width:53%"></i></div>
+                <div><span>월 부담</span><b>42,000원</b><i style="width:83%"></i></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">공립</span>
+                <strong>65.4</strong>
+              </div>
+              <h2>미래샘병설유치원</h2>
+              <p class="sub">서구 · 교사 1인당 원아 수 낮음; 통학차량 있음</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>69.1%</b><i style="width:69%"></i></div>
+                <div><span>교사 1인당</span><b>7.6명</b><i style="width:49%"></i></div>
+                <div><span>월 부담</span><b>35,000원</b><i style="width:86%"></i></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">사립</span>
+                <strong>64.5</strong>
+              </div>
+              <h2>초록별유치원</h2>
+              <p class="sub">남동구 · 돌봄 시간 김</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>73.3%</b><i style="width:73%"></i></div>
+                <div><span>교사 1인당</span><b>8.2명</b><i style="width:45%"></i></div>
+                <div><span>월 부담</span><b>180,000원</b><i style="width:30%"></i></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">사립</span>
+                <strong>60.1</strong>
+              </div>
+              <h2>햇살유치원</h2>
+              <p class="sub">연수구 · 돌봄 시간 김; 통학차량 있음</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>84.0%</b><i style="width:84%"></i></div>
+                <div><span>교사 1인당</span><b>9.3명</b><i style="width:38%"></i></div>
+                <div><span>월 부담</span><b>210,000원</b><i style="width:19%"></i></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">사립</span>
+                <strong>56.4</strong>
+              </div>
+              <h2>송도누리유치원</h2>
+              <p class="sub">연수구 · 교사 1인당 원아 수 낮음; 돌봄 시간 김</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>84.7%</b><i style="width:84%"></i></div>
+                <div><span>교사 1인당</span><b>8.0명</b><i style="width:46%"></i></div>
+                <div><span>월 부담</span><b>195,000원</b><i style="width:25%"></i></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <span class="badge">사립</span>
+                <strong>52.0</strong>
+              </div>
+              <h2>하늘마루유치원</h2>
+              <p class="sub">부평구 · 정원 여유 적음; 통학차량 있음</p>
+              <div class="metrics">
+                <div><span>정원 대비 현원</span><b>91.7%</b><i style="width:91%"></i></div>
+                <div><span>교사 1인당</span><b>11.0명</b><i style="width:26%"></i></div>
+                <div><span>월 부담</span><b>240,000원</b><i style="width:7%"></i></div>
+              </div>
+            </article>
+
+    </section>
+    <section>
+      <h2>비교 표</h2>
+      <table>
+        <thead>
+          <tr><th>이름</th><th>지역</th><th>교사 1인당</th><th>충원율</th><th>돌봄 종료</th><th>월 부담</th><th>점수</th></tr>
+        </thead>
+        <tbody><tr><td>바다숲병설유치원</td><td>중구</td><td>7.0</td><td>70.0%</td><td>17:30</td><td>42,000원</td><td>74.7</td></tr><tr><td>미래샘병설유치원</td><td>서구</td><td>7.6</td><td>69.1%</td><td>17:00</td><td>35,000원</td><td>65.4</td></tr><tr><td>초록별유치원</td><td>남동구</td><td>8.2</td><td>73.3%</td><td>19:00</td><td>180,000원</td><td>64.5</td></tr><tr><td>햇살유치원</td><td>연수구</td><td>9.3</td><td>84.0%</td><td>18:30</td><td>210,000원</td><td>60.1</td></tr><tr><td>송도누리유치원</td><td>연수구</td><td>8.0</td><td>84.7%</td><td>18:30</td><td>195,000원</td><td>56.4</td></tr><tr><td>하늘마루유치원</td><td>부평구</td><td>11.0</td><td>91.7%</td><td>18:00</td><td>240,000원</td><td>52.0</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

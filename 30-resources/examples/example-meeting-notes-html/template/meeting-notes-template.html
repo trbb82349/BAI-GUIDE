@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{문서 제목}}</title>
+<style>
+  /*
+    색상은 --accent 하나만 바꿔도 전체 톤이 따라 바뀝니다.
+    (예: 보라 #7c5cff → 파랑 #2f6fed 등)
+  */
+  :root{
+    --bg:#fbfaf8; --card:#fff; --ink:#1f2430; --muted:#6b7280; --line:#e8e5e0;
+    --accent:#7c5cff; --accent-soft:#f1edff;
+    --pink:#ff5fa2; --pink-soft:#ffeef5;
+    --sky:#2f9bd6; --sky-soft:#eaf6fd;
+    --green:#3aa675; --green-soft:#eaf7f1;
+    --gold:#c08a1e; --gold-soft:#fdf5e3;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+    line-height:1.75; font-size:16px; letter-spacing:-.01em;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:48px 20px 96px}
+
+  /* header */
+  header.top{margin-bottom:40px}
+  .eyebrow{font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  h1.title{font-size:34px;line-height:1.3;margin:10px 0 14px;font-weight:800;letter-spacing:-.03em}
+  .meta{color:var(--muted);font-size:14px}
+  .meta span+span::before{content:"·";margin:0 8px;color:var(--line)}
+
+  /* nav (목차) */
+  nav.toc{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin:28px 0 44px;
+  }
+  nav.toc b{display:block;font-size:13px;color:var(--muted);margin-bottom:10px;font-weight:700}
+  nav.toc ol{margin:0;padding-left:20px}
+  nav.toc li{margin:3px 0;font-size:14.5px}
+  nav.toc a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
+  nav.toc a:hover{border-bottom-color:var(--accent);color:var(--accent)}
+  nav.toc .part{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  nav.toc .part:first-child{margin-top:0;padding-top:0;border-top:0}
+
+  /* part 구분 배너 (긴 문서를 여러 파트로 나눌 때) */
+  .part-head{
+    margin:64px 0 32px;padding:26px 26px 24px;border-radius:16px;
+    background:linear-gradient(135deg,var(--accent-soft),var(--sky-soft));
+    border:1px solid var(--line);
+  }
+  .part-head .tag{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .part-head h2{margin:8px 0 6px;font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .part-head p{margin:0;color:var(--muted);font-size:14.5px}
+
+  h3{font-size:20px;font-weight:750;margin:44px 0 12px;letter-spacing:-.02em;
+     padding-left:12px;border-left:4px solid var(--accent)}
+  h4{font-size:16.5px;font-weight:700;margin:26px 0 8px;color:#2c3444}
+  p{margin:12px 0}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:5px 0}
+  strong{font-weight:700}
+  code{font-family:var(--mono);font-size:.9em;background:#f2f0ec;padding:2px 6px;border-radius:5px}
+
+  /* 강조 박스들 */
+  .q{ /* 핵심 질문 하나를 크게 던질 때 */
+    background:var(--card);border:1px solid var(--line);border-left:5px solid var(--pink);
+    border-radius:0 12px 12px 0;padding:20px 22px;margin:20px 0;
+    font-size:18px;font-weight:700;line-height:1.6;
+  }
+  .quote{ /* 회의 중 나온 말/결론 인용 */
+    border-left:4px solid var(--sky);background:var(--sky-soft);
+    padding:14px 18px;margin:18px 0;border-radius:0 10px 10px 0;
+  }
+  .quote p:first-child{margin-top:0} .quote p:last-child{margin-bottom:0}
+  .note{ /* 주의/경고 */
+    background:var(--gold-soft);border:1px solid #f0e2bd;border-radius:12px;
+    padding:16px 18px;margin:20px 0;font-size:15px;
+  }
+  .note b{color:var(--gold)}
+  .tip{ /* 팁/조언 */
+    background:var(--green-soft);border:1px solid #cfe9dd;border-radius:12px;
+    padding:16px 18px;margin:20px 0;font-size:15px;
+  }
+  .flow{ /* 화살표로 이어지는 절차/흐름도 (텍스트로) */
+    background:#f5f3ef;border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin:18px 0;font-family:var(--mono);font-size:14px;
+    line-height:2;white-space:pre;overflow-x:auto;
+  }
+  .prompt{ /* AI에게 그대로 던질 질문/프롬프트 예시 */
+    background:#1f2430;color:#e8e6e1;border-radius:12px;padding:16px 18px;margin:16px 0;
+    font-family:var(--mono);font-size:14px;line-height:1.7;overflow-x:auto;
+  }
+  .prompt::before{content:"AI에게 이렇게";display:block;font-size:11px;letter-spacing:.1em;
+    color:#8b93a5;margin-bottom:8px;font-family:inherit}
+
+  /* table */
+  .tblwrap{overflow-x:auto;margin:18px 0}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;background:var(--card)}
+  th,td{border:1px solid var(--line);padding:11px 13px;text-align:left;vertical-align:top}
+  th{background:#f5f3ef;font-weight:700;white-space:nowrap}
+
+  /* task 카드 (과제/할 일 단위) */
+  .task{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 24px;margin:24px 0;
+  }
+  .task .num{
+    display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:800;
+    padding:4px 11px;border-radius:999px;letter-spacing:.04em;margin-bottom:10px;
+  }
+  .task h3{margin:0 0 10px;border:0;padding:0;font-size:19px}
+
+  /* 체크리스트 (문서 맨 끝 요약용) */
+  .check{
+    background:linear-gradient(135deg,var(--pink-soft),var(--accent-soft));
+    border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin:44px 0 0;
+  }
+  .check h3{margin:0 0 14px;border:0;padding:0;font-size:20px}
+  .check ul{list-style:none;padding:0;margin:0}
+  .check li{
+    background:rgba(255,255,255,.75);border-radius:10px;padding:11px 14px;margin:8px 0;
+    font-size:15px;display:flex;gap:10px;align-items:flex-start;
+  }
+  .check li::before{content:"✓";font-size:17px;line-height:1.4;color:var(--accent);flex:none}
+
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:13.5px}
+
+  @media print{
+    body{background:#fff;font-size:11pt}
+    .wrap{padding:0;max-width:none}
+    nav.toc{display:none}
+    .part-head{break-before:page}
+    h3{break-after:avoid} .task,.check,.note,.tip{break-inside:avoid}
+  }
+  @media (max-width:600px){
+    .wrap{padding:32px 16px 64px}
+    h1.title{font-size:26px} .part-head h2{font-size:22px} h3{font-size:18px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">{{작은 라벨, 예: 팀/프로젝트 이름}}</div>
+  <h1 class="title">{{문서 제목}}</h1>
+  <div class="meta"><span>{{날짜1}}</span><span>{{날짜2 또는 태그}}</span><span>{{날짜3 또는 태그}}</span></div>
+</header>
+
+<!--
+  목차(nav.toc): 아래 <li><a href="#id">...</a></li> 를 실제 h3의 id와 맞춰서
+  늘리거나 줄이세요. part가 여러 개면 .part div로 묶어서 구분합니다.
+-->
+<nav class="toc">
+  <b>목차</b>
+  <div class="part">
+    <ol>
+      <li><a href="#s1">{{첫 번째 섹션 제목}}</a></li>
+      <li><a href="#s2">{{두 번째 섹션 제목}}</a></li>
+    </ol>
+  </div>
+</nav>
+
+<!-- 문서를 여러 파트로 나눌 때만 part-head 사용. 짧은 문서면 생략 가능 -->
+<section class="part-head">
+  <div class="tag">{{PART 라벨, 예: PART 1}}</div>
+  <h2>{{파트 제목}}</h2>
+  <p>{{파트 한 줄 설명}}</p>
+</section>
+
+<h3 id="s1">{{섹션 제목}}</h3>
+<p>{{본문 문단}}</p>
+
+<!-- 핵심 질문을 크게 던질 때 -->
+<div class="q">{{"이 문서의 핵심 질문을 여기에"}}</div>
+
+<!-- 인용/결론 -->
+<div class="quote"><p>{{회의 중 나온 결론이나 인용 문장}}</p></div>
+
+<!-- 절차/흐름 -->
+<div class="flow">{{단계 1}}
+   ↓
+{{단계 2}}
+   ↓
+{{단계 3}}</div>
+
+<!-- 주의사항 -->
+<div class="note"><b>{{주의 제목}}</b><p style="margin-bottom:0">{{주의 내용}}</p></div>
+
+<!-- 팁 -->
+<div class="tip"><strong>{{팁 내용}}</strong></div>
+
+<!-- AI에게 그대로 던질 질문 예시 -->
+<div class="prompt">{{프롬프트 예시 텍스트}}</div>
+
+<h3 id="s2">{{섹션 제목}}</h3>
+
+<!-- 과제/할 일을 카드 단위로 나열할 때 -->
+<div class="task">
+  <span class="num">{{과제 번호, 예: 과제 ①}}</span>
+  <h3>{{과제 제목}}</h3>
+  <p>{{과제 설명}}</p>
+  <ul>
+    <li>{{체크할 항목}}</li>
+    <li>{{체크할 항목}}</li>
+  </ul>
+</div>
+
+<!-- 표가 필요할 때 -->
+<div class="tblwrap">
+<table>
+  <tr><th>{{열1}}</th><th>{{열2}}</th><th>{{열3}}</th></tr>
+  <tr><td>{{값}}</td><td>{{값}}</td><td>{{값}}</td></tr>
+</table>
+</div>
+
+<!-- 문서 맨 끝 체크리스트 -->
+<div class="check" id="check">
+  <h3>✅ 체크리스트</h3>
+  <ul>
+    <li>{{확인 항목 1}}</li>
+    <li>{{확인 항목 2}}</li>
+  </ul>
+</div>
+
+<footer>
+  {{문의/출처 안내}}<br>
+  원본 문서 · <code>{{원본 파일 경로}}</code>
+</footer>
+
+</div>
+</body>
+</html>

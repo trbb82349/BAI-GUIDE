@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <script src="https://www.googletagmanager.com/gtag/js?id=G-GHX2SCRQS8" async></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+  dataLayer.push(arguments);
+}
+gtag('js', new Date());
+gtag('config', 'G-GHX2SCRQS8', {send_page_view: false});
+</script><script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','833100809845275');
+fbq('track','PageView');
+</script><script>
+window.Campuspick = {
+  goBack: function (refresh) {
+    if (typeof window.CampuspickWebview !== 'undefined') {
+      window.CampuspickWebview.close(refresh);
+    } else {
+      history.go(-1);
+    }
+  },
+  goLink: function (url, isExportable) {
+    var isInternalLink = (url[0] === '/');
+    if (isInternalLink) {
+      url = location.origin + url;
+    }
+    if (isExportable === undefined) {
+      isExportable = !isInternalLink;
+    }
+    if (typeof window.CampuspickWebview !== 'undefined') {
+      window.CampuspickWebview.open(url, isExportable);
+    } else {
+      if (isExportable) {
+        window.open(url, '_blank');
+      } else {
+        location.href = url;
+      }
+    }
+  },
+  isApp: function () {
+    return typeof window.CampuspickWebview !== 'undefined';
+  },
+  openChat(params) {
+    var paramsJson = JSON.stringify(params);
+    if (typeof window.CampuspickWebview !== 'undefined' && window.CampuspickWebview.openChat) {
+      window.CampuspickWebview.openChat(paramsJson);
+    } else {
+      window.location.href = 'CampuspickWebview://openChat?params=' + encodeURIComponent(paramsJson);
+    }
+  },
+  openToApp(data) {
+    if (
+      window.webkit !== undefined &&
+      window.webkit.messageHandlers !== undefined &&
+      window.webkit.messageHandlers.campuspickHomeWebInterface !== undefined
+    ) { // iOS
+      window.webkit.messageHandlers.campuspickHomeWebInterface.postMessage({
+        action: 'openToApp',
+        ...data
+      });
+    } else if (window.CampuspickHomeWebInterface) { // Android
+      window.CampuspickHomeWebInterface.openToApp(JSON.stringify(data));
+    }
+  }
+};
+</script>
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="l_bpc8htkSqBgQBQBV-2Wn01hauHyFyxO9-sUML1bac">
+    <meta name="google-site-verification" content="J7SDet0ynsnbUd8dAMg2sA-xEPw1YmWCgvR5cn_Ibq8" />
+    <meta name="naver-site-verification" content="c24ea6d1a8799a59c80f6a53f837954d5b253d7a">
+    <meta name="theme-color" content="#1dcdff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="에브리커리어(캠퍼스픽)">
+    <meta property="og:url" content="https://www.campuspick.com/contest">
+    <link rel="canonical" href="https://www.campuspick.com/contest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <title>대학생 공모전 | 에브리커리어</title><meta data-vue-meta="ssr" property="og:title" content="대학생 공모전 | 에브리커리어"><meta data-vue-meta="ssr" name="description" content="최신 대학생 공모전·콘테스트 모집 공고 모음. 디자인·마케팅·아이디어·창업·IT 공모전부터 상금·수상혜택까지 실시간으로 비교하고 함께할 팀원도 모집해보세요."><meta data-vue-meta="ssr" property="og:description" content="최신 대학생 공모전·콘테스트 모집 공고 모음. 디자인·마케팅·아이디어·창업·IT 공모전부터 상금·수상혜택까지 실시간으로 비교하고 함께할 팀원도 모집해보세요."><meta data-vue-meta="ssr" name="keywords" content="공모전, 대학생 공모전, 공모전 사이트, 대외활동 공모전, 디자인 공모전, 마케팅 공모전"><meta data-vue-meta="ssr" property="og:image" content="https://www.campuspick.com/images/og_image.png"><meta data-vue-meta="ssr" property="og:image:width" content="1200"><meta data-vue-meta="ssr" property="og:image:height" content="630"><link data-vue-meta="ssr" rel="preload" href="/css/c07a662d99948b1bb3ea.css" as="style"><link data-vue-meta="ssr" rel="preload" href="/js/740556a7ac48888a06ac.js" as="script"><link data-vue-meta="ssr" rel="preload" href="/css/9e258e611dca4dc5bab3.css" as="style"><link data-vue-meta="ssr" rel="preload" href="/js/5389af0cfeb09a3b3d09.js" as="script"><link data-vue-meta="ssr" rel="stylesheet" href="/css/3a97c58a8ac168d0aee2.css"><script data-vue-meta="ssr" src="/js/7e0ce9925f5f8843a1ea.js" defer></script><script data-vue-meta="ssr" src="/js/8280abe524801ab74efd.js" defer></script><script data-vue-meta="ssr" src="/js/d9ac154888a841a0d2c1.js" defer></script><script data-vue-meta="ssr" src="/js/f515744380e34e20c1c9.js" defer></script><script data-vue-meta="ssr" src="/js/bc0af21088ec281c599d.js" defer></script><script data-vue-meta="ssr" src="/js/d1509906bb701fdda760.js" defer></script><script data-vue-meta="ssr" src="/js/434b21d4d7928e20409f.js" defer></script><script data-vue-meta="ssr" src="/js/0d383d28679f61d6bbc6.js" defer></script><script data-vue-meta="ssr" src="/js/4f1617e1beec54db1d41.js" defer></script>
+  </head>
+  <body>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"공모전","item":"https://www.campuspick.com/contest"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"공모전 모집 공고","itemListElement":[{"@type":"ListItem","position":1,"url":"https://www.campuspick.com/contest/view?id=35226","name":"2026 IBC TOKYO 참가자 추가 모집","image":"https://cf-tabs-image.campuspick.com/activity/1785059830304641_thumb.jpg"},{"@type":"ListItem","position":2,"url":"https://www.campuspick.com/contest/view?id=35223","name":"2026 경상북도 도민 체감형 AX 경진대회","image":"https://cf-tabs-image.campuspick.com/activity/1784959968780209_thumb.jpg"},{"@type":"ListItem","position":3,"url":"https://www.campuspick.com/contest/view?id=35222","name":"제1회 EPI 대학생 ETF 투자전략 아이디어 경진대회","image":"https://cf-tabs-image.campuspick.com/activity/1784958483562994_thumb.jpg"},{"@type":"ListItem","position":4,"url":"https://www.campuspick.com/contest/view?id=35221","name":"코레일X인천국제공항공사 해커톤 l 내일路(로) 해커톤 2026","image":"https://cf-tabs-image.campuspick.com/activity/1784957094133156_thumb.jpg"},{"@type":"ListItem","position":5,"url":"https://www.campuspick.com/contest/view?id=35213","name":"「모두의 말문화」 대국민 정책제안","image":"https://cf-tabs-image.campuspick.com/activity/1784873158719112_thumb.jpg"},{"@type":"ListItem","position":6,"url":"https://www.campuspick.com/contest/view?id=35211","name":"[연장접수]제33회 한라환경대상","image":"https://cf-tabs-image.campuspick.com/activity/1784869085893270_thumb.jpg"},{"@type":"ListItem","position":7,"url":"https://www.campuspick.com/contest/view?id=35208","name":"2026년 전주 로컬브랜딩 아이디어 해커톤 참가팀 모집","image":"https://cf-tabs-image.campuspick.com/activity/1784866069708331_thumb.jpg"},{"@type":"ListItem","position":8,"url":"https://www.campuspick.com/contest/view?id=35206","name":"2026 ‘0924 영상제’ 영상 공모전 | 최고 상금 100만 원!","image":"https://cf-tabs-image.campuspick.com/activity/1784859832468193_thumb.jpg"},{"@type":"ListItem","position":9,"url":"https://www.campuspick.com/contest/view?id=35205","name":"『제1회 (사)한국부동산금융투자포럼 대학생 아이디어 공모대회』 개최","image":"https://cf-tabs-image.campuspick.com/activity/1784859352726224_thumb.jpg"},{"@type":"ListItem","position":10,"url":"https://www.campuspick.com/contest/view?id=35193","name":"2026 김유정신인문학상 공모","image":"https://cf-tabs-image.campuspick.com/activity/1784795160592733_thumb.jpg"},{"@type":"ListItem","position":11,"url":"https://www.campuspick.com/contest/view?id=35192","name":"MABC 2026 Making AI Beneficial Challenge","image":"https://cf-tabs-image.campuspick.com/activity/1784791651844830_thumb.jpg"},{"@type":"ListItem","position":12,"url":"https://www.campuspick.com/contest/view?id=35191","name":"Kia Shop(기아 샵) 아이디어 크루 공모전","image":"https://cf-tabs-image.campuspick.com/activity/1784859042027399_thumb.jpg"},{"@type":"ListItem","position":13,"url":"https://www.campuspick.com/contest/view?id=35187","name":"2026 대국민 88 서울올림픽•패럴림픽 사진공모전","image":"https://cf-tabs-image.campuspick.com/activity/1784853280186455_thumb.jpg"},{"@type":"ListItem","position":14,"url":"https://www.campuspick.com/contest/view?id=35184","name":"2026 서울한옥미래상 디자인 아이디어 공모","image":"https://cf-tabs-image.campuspick.com/activity/178477475435248_thumb.jpg"},{"@type":"ListItem","position":15,"url":"https://www.campuspick.com/contest/view?id=35179","name":"2026 청년 글로벌 성장스토리 공모전","image":"https://cf-tabs-image.campuspick.com/activity/178477060861368_thumb.jpg"},{"@type":"ListItem","position":16,"url":"https://www.campuspick.com/contest/view?id=35178","name":"제7회 수려한합천영화제 필름챌린지 모집 공모","image":"https://cf-tabs-image.campuspick.com/activity/1784796877039724_thumb.jpg"},{"@type":"ListItem","position":17,"url":"https://www.campuspick.com/contest/view?id=35173","name":"2026 서울로미디어캔버스 신진예술가 지원전시 공모","image":"https://cf-tabs-image.campuspick.com/activity/1784716285076208_thumb.jpg"},{"@type":"ListItem","position":18,"url":"https://www.campuspick.com/contest/view?id=35170","name":"2026 MBC \u003c대학가요제> 참가자 모집","image":"https://cf-tabs-image.campuspick.com/activity/1784708959992177_thumb.jpg"},{"@type":"ListItem","position":19,"url":"https://www.campuspick.com/contest/view?id=35162","name":"[한국콘텐츠진흥원] 스토리움 추천스토리 X 디앤씨미디어 IP 프로젝트","image":"https://cf-tabs-image.campuspick.com/activity/1784700995447104_thumb.jpg"},{"@type":"ListItem","position":20,"url":"https://www.campuspick.com/contest/view?id=35161","name":"[제8회] Dream Big Art Awards 미디어아트 공모전 개최","image":"https://cf-tabs-image.campuspick.com/activity/1784699723577429_thumb.jpg"},{"@type":"ListItem","position":21,"url":"https://www.campuspick.com/contest/view?id=35160","name":"2026 대학연대 창업 네트워크 캠프","image":"https://cf-tabs-image.campuspick.com/activity/1784699306603454_thumb.jpg"},{"@type":"ListItem","position":22,"url":"https://www.campuspick.com/contest/view?id=35151","name":"제4회 메가주 2027 달력 일러스트 공모전","image":"https://cf-tabs-image.campuspick.com/activity/1784680966104794_thumb.jpg"},{"@type":"ListItem","position":23,"url":"https://www.campuspick.com/contest/view?id=35138","name":"제8회 한국노총 난생처음노동공모전","image":"https://cf-tabs-image.campuspick.com/activity/1784615298450673_thumb.jpg"},{"@type":"ListItem","position":24,"url":"https://www.campuspick.com/contest/view?id=35131","name":"지구 튼튼 챌린지 - 기후급식 크리에이터 공모전","image":"https://cf-tabs-image.campuspick.com/activity/1784601017347998_thumb.jpg"}]}</script>
+    <div id="seo-fallback" hidden><section><h2>공모전 모집 공고</h2><ul><li><a href="/contest/view?id=35226"><img src="https://cf-tabs-image.campuspick.com/activity/1785059830304641_thumb.jpg" alt="2026 IBC TOKYO 참가자 추가 모집" loading="lazy" width="280" height="200"><h3>2026 IBC TOKYO 참가자 추가 모집</h3><p>국제지도자연합</p></a></li><li><a href="/contest/view?id=35223"><img src="https://cf-tabs-image.campuspick.com/activity/1784959968780209_thumb.jpg" alt="2026 경상북도 도민 체감형 AX 경진대회" loading="lazy" width="280" height="200"><h3>2026 경상북도 도민 체감형 AX 경진대회</h3><p>경상북도</p></a></li><li><a href="/contest/view?id=35222"><img src="https://cf-tabs-image.campuspick.com/activity/1784958483562994_thumb.jpg" alt="제1회 EPI 대학생 ETF 투자전략 아이디어 경진대회" loading="lazy" width="280" height="200"><h3>제1회 EPI 대학생 ETF 투자전략 아이디어 경진대회</h3><p>이피아이어드바이저</p></a></li><li><a href="/contest/view?id=35221"><img src="https://cf-tabs-image.campuspick.com/activity/1784957094133156_thumb.jpg" alt="코레일X인천국제공항공사 해커톤 l 내일路(로) 해커톤 2026" loading="lazy" width="280" height="200"><h3>코레일X인천국제공항공사 해커톤 l 내일路(로) 해커톤 2026</h3><p>한국철도공사, 인천국제공항공사</p></a></li><li><a href="/contest/view?id=35213"><img src="https://cf-tabs-image.campuspick.com/activity/1784873158719112_thumb.jpg" alt="「모두의 말문화」 대국민 정책제안" loading="lazy" width="280" height="200"><h3>「모두의 말문화」 대국민 정책제안</h3><p>한국마사회</p></a></li><li><a href="/contest/view?id=35211"><img src="https://cf-tabs-image.campuspick.com/activity/1784869085893270_thumb.jpg" alt="[연장접수]제33회 한라환경대상" loading="lazy" width="280" height="200"><h3>[연장접수]제33회 한라환경대상</h3><p>제주특별자치도/한라일보사</p></a></li><li><a href="/contest/view?id=35208"><img src="https://cf-tabs-image.campuspick.com/activity/1784866069708331_thumb.jpg" alt="2026년 전주 로컬브랜딩 아이디어 해커톤 참가팀 모집" loading="lazy" width="280" height="200"><h3>2026년 전주 로컬브랜딩 아이디어 해커톤 참가팀 모집</h3><p>전주소통협력센터</p></a></li><li><a href="/contest/view?id=35206"><img src="https://cf-tabs-image.campuspick.com/activity/1784859832468193_thumb.jpg" alt="2026 ‘0924 영상제’ 영상 공모전 | 최고 상금 100만 원!" loading="lazy" width="280" height="200"><h3>2026 ‘0924 영상제’ 영상 공모전 | 최고 상금 100만 원!</h3><p>하남시청소년수련</p></a></li><li><a href="/contest/view?id=35205"><img src="https://cf-tabs-image.campuspick.com/activity/1784859352726224_thumb.jpg" alt="『제1회 (사)한국부동산금융투자포럼 대학생 아이디어 공모대회』 개최" loading="lazy" width="280" height="200"><h3>『제1회 (사)한국부동산금융투자포럼 대학생 아이디어 공모대회』 개최</h3><p>(사)한국부동산금융투자포럼</p></a></li><li><a href="/contest/view?id=35193"><img src="https://cf-tabs-image.campuspick.com/activity/1784795160592733_thumb.jpg" alt="2026 김유정신인문학상 공모" loading="lazy" width="280" height="200"><h3>2026 김유정신인문학상 공모</h3><p>춘천문화재단</p></a></li><li><a href="/contest/view?id=35192"><img src="https://cf-tabs-image.campuspick.com/activity/1784791651844830_thumb.jpg" alt="MABC 2026 Making AI Beneficial Challenge" loading="lazy" width="280" height="200"><h3>MABC 2026 Making AI Beneficial Challenge</h3><p>업스테이지</p></a></li><li><a href="/contest/view?id=35191"><img src="https://cf-tabs-image.campuspick.com/activity/1784859042027399_thumb.jpg" alt="Kia Shop(기아 샵) 아이디어 크루 공모전" loading="lazy" width="280" height="200"><h3>Kia Shop(기아 샵) 아이디어 크루 공모전</h3><p>기아</p></a></li><li><a href="/contest/view?id=35187"><img src="https://cf-tabs-image.campuspick.com/activity/1784853280186455_thumb.jpg" alt="2026 대국민 88 서울올림픽•패럴림픽 사진공모전" loading="lazy" width="280" height="200"><h3>2026 대국민 88 서울올림픽•패럴림픽 사진공모전</h3><p>국민체육진흥공단</p></a></li><li><a href="/contest/view?id=35184"><img src="https://cf-tabs-image.campuspick.com/activity/178477475435248_thumb.jpg" alt="2026 서울한옥미래상 디자인 아이디어 공모" loading="lazy" width="280" height="200"><h3>2026 서울한옥미래상 디자인 아이디어 공모</h3><p>서울특별시</p></a></li><li><a href="/contest/view?id=35179"><img src="https://cf-tabs-image.campuspick.com/activity/178477060861368_thumb.jpg" alt="2026 청년 글로벌 성장스토리 공모전" loading="lazy" width="280" height="200"><h3>2026 청년 글로벌 성장스토리 공모전</h3><p>한국산업인력공단</p></a></li><li><a href="/contest/view?id=35178"><img src="https://cf-tabs-image.campuspick.com/activity/1784796877039724_thumb.jpg" alt="제7회 수려한합천영화제 필름챌린지 모집 공모" loading="lazy" width="280" height="200"><h3>제7회 수려한합천영화제 필름챌린지 모집 공모</h3><p>수려한합천영화제협회</p></a></li><li><a href="/contest/view?id=35173"><img src="https://cf-tabs-image.campuspick.com/activity/1784716285076208_thumb.jpg" alt="2026 서울로미디어캔버스 신진예술가 지원전시 공모" loading="lazy" width="280" height="200"><h3>2026 서울로미디어캔버스 신진예술가 지원전시 공모</h3><p>서울특별시 도시경관담당관</p></a></li><li><a href="/contest/view?id=35170"><img src="https://cf-tabs-image.campuspick.com/activity/1784708959992177_thumb.jpg" alt="2026 MBC &lt;대학가요제&gt; 참가자 모집" loading="lazy" width="280" height="200"><h3>2026 MBC &lt;대학가요제&gt; 참가자 모집</h3><p>MBCPLUS</p></a></li><li><a href="/contest/view?id=35162"><img src="https://cf-tabs-image.campuspick.com/activity/1784700995447104_thumb.jpg" alt="[한국콘텐츠진흥원] 스토리움 추천스토리 X 디앤씨미디어 IP 프로젝트" loading="lazy" width="280" height="200"><h3>[한국콘텐츠진흥원] 스토리움 추천스토리 X 디앤씨미디어 IP 프로젝트</h3><p>문화체육관광부</p></a></li><li><a href="/contest/view?id=35161"><img src="https://cf-tabs-image.campuspick.com/activity/1784699723577429_thumb.jpg" alt="[제8회] Dream Big Art Awards 미디어아트 공모전 개최" loading="lazy" width="280" height="200"><h3>[제8회] Dream Big Art Awards 미디어아트 공모전 개최</h3><p>주식회사 디비월드</p></a></li><li><a href="/contest/view?id=35160"><img src="https://cf-tabs-image.campuspick.com/activity/1784699306603454_thumb.jpg" alt="2026 대학연대 창업 네트워크 캠프" loading="lazy" width="280" height="200"><h3>2026 대학연대 창업 네트워크 캠프</h3><p>서울대학교 대학연대 지역인재양성 사업단</p></a></li><li><a href="/contest/view?id=35151"><img src="https://cf-tabs-image.campuspick.com/activity/1784680966104794_thumb.jpg" alt="제4회 메가주 2027 달력 일러스트 공모전" loading="lazy" width="280" height="200"><h3>제4회 메가주 2027 달력 일러스트 공모전</h3><p>주식회사 메쎄이상</p></a></li><li><a href="/contest/view?id=35138"><img src="https://cf-tabs-image.campuspick.com/activity/1784615298450673_thumb.jpg" alt="제8회 한국노총 난생처음노동공모전" loading="lazy" width="280" height="200"><h3>제8회 한국노총 난생처음노동공모전</h3><p>한국노총</p></a></li><li><a href="/contest/view?id=35131"><img src="https://cf-tabs-image.campuspick.com/activity/1784601017347998_thumb.jpg" alt="지구 튼튼 챌린지 - 기후급식 크리에이터 공모전" loading="lazy" width="280" height="200"><h3>지구 튼튼 챌린지 - 기후급식 크리에이터 공모전</h3><p>CJ프레시웨이, 기후에너지환경부</p></a></li></ul></section></div>
+    <div id="app"></div>
+    <div id="bottom-popup"></div>
+    <script id="__INITIAL_STATE__" type="application/json">{"adServerUrl":"https://ad.campuspick.com","apiServerUrl":"https://api2.campuspick.com","webServerUrl":"https://www.campuspick.com","appInfo":{"appName":"","appVersion":"","osName":"","osVersion":""},"isLogged":false,"pageName":"pages/activity/index","screenName":"공모전 - 목록","sentryDSN":"https://225a8e77f4be4c4594ea218c39f4ef21@o4504002973597696.ingest.sentry.io/4504036836114432","sentryENV":"production","target":1,"targetName":"공모전","targetPath":"contest","scrapCount":0}</script>
+  </body>
+</html>

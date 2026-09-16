@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:chinaskinny.com)",
+      "WebFetch(domain:www.itopmarketing.com)",
+      "Read(//c/Users/trbb8/OneDrive/Desktop/AI, 코딩/BAI 소모임/BAI-workspace-main/30-resources/reports/유행상품 분석, 중국 소싱/**)",
+      "PowerShell(Start-Process \"c:\\\\Users\\\\trbb8\\\\OneDrive\\\\Desktop\\\\AI, �ڵ�, BAI �Ҹ���\\\\BAI-workspace-main\\\\10-projects\\\\china-trend-tracker\\\\docs\\\\index.html\")"
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  }
+}

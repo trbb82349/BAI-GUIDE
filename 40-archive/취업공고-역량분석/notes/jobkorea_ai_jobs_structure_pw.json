@@ -1,0 +1,167 @@
+{
+  "url": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+  "timestamp": "2026-08-01T18:34:28.544297",
+  "status": "success",
+  "analysis_method": "playwright",
+  "page_info": {
+    "title": "AI잡스 - 인공 지능 산업 직무 커리어 동향, 취업 및 채용 정보",
+    "url": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+    "has_changed_url": false
+  },
+  "selectors": {
+    "tabs": [],
+    "cards": [
+      {
+        "selector": ".item",
+        "count": 660,
+        "sample_text": "코스닥상장",
+        "has_link": false,
+        "has_image": false,
+        "data_attributes": []
+      },
+      {
+        "selector": "[class*='card']",
+        "count": 15,
+        "sample_text": "인사이트\n\n리더를 꿈꾼다면 기억할 것\n컬리 리더 인터뷰\n\n자세히보기",
+        "has_link": true,
+        "has_image": false,
+        "data_attributes": []
+      },
+      {
+        "selector": "[class*='item']",
+        "count": 969,
+        "sample_text": "로그인/회원가입",
+        "has_link": false,
+        "has_image": false,
+        "data_attributes": []
+      }
+    ],
+    "links": [
+      {
+        "pattern": "/",
+        "sample_href": "/",
+        "sample_text": ""
+      },
+      {
+        "pattern": "/recruit/ai-jobs",
+        "sample_href": "/recruit/ai-jobs",
+        "sample_text": "AI잡스"
+      },
+      {
+        "pattern": "/recruit/careers/articles/*",
+        "sample_href": "/recruit/careers/articles/miheejeon-sub",
+        "sample_text": "인사이트\n\n리더를 꿈꾼다면 기억할 것\n컬리 리더 인터뷰"
+      },
+      {
+        "pattern": "/recruit/careers/articles/behind",
+        "sample_href": "/recruit/careers/articles/behind",
+        "sample_text": "인사이트\n\n인터뷰 제작 비하인드 공개\n현직자 인터뷰를 "
+      },
+      {
+        "pattern": "/Recruit/Co_Read/C/cmesinc",
+        "sample_href": "/Recruit/Co_Read/C/cmesinc",
+        "sample_text": "씨메스로보틱스㈜"
+      },
+      {
+        "pattern": "/Recruit/GI_Read/49691425?sc=322",
+        "sample_href": "/Recruit/GI_Read/49691425?sc=322",
+        "sample_text": "3D Vision Algorithm 엔지니어\n합격축하금"
+      },
+      {
+        "pattern": "/Recruit/GI_Read/49690807?sc=322",
+        "sample_href": "/Recruit/GI_Read/49690807?sc=322",
+        "sample_text": "Physical AI 엔지니어\n합격축하금\nPython\n"
+      },
+      {
+        "pattern": "/Recruit/GI_Read/49690538?sc=322",
+        "sample_href": "/Recruit/GI_Read/49690538?sc=322",
+        "sample_text": "Robotics Engineer\n합격축하금\nC++\nPy"
+      },
+      {
+        "pattern": "/Recruit/GI_Read/49690519?sc=322",
+        "sample_href": "/Recruit/GI_Read/49690519?sc=322",
+        "sample_text": "3D 알고리즘 엔지니어\n합격축하금\nAOI\n경력2년↑\n서"
+      },
+      {
+        "pattern": "/Recruit/Co_Read/C/aetherinc",
+        "sample_href": "/Recruit/Co_Read/C/aetherinc",
+        "sample_text": "이서"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "로그인/회원가입",
+        "tag": "BUTTON",
+        "classes": "auth-item login-signup dev-login"
+      },
+      {
+        "text": "스킬",
+        "tag": "BUTTON",
+        "classes": "filter-button dev-skill-filter-toggle dev-item-toggle"
+      },
+      {
+        "text": "SQL",
+        "tag": "BUTTON",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Kubeflow",
+        "tag": "BUTTON",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "GCP",
+        "tag": "BUTTON",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "CNN",
+        "tag": "BUTTON",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "AWS",
+        "tag": "BUTTON",
+        "classes": "dev-button-item dev-skill-item"
+      }
+    ],
+    "forms": [],
+    "tables": [],
+    "lists": [],
+    "images": [],
+    "pagination": [
+      {
+        "selector": ".pagination",
+        "exists": true
+      },
+      {
+        "selector": "[class*='paging']",
+        "exists": true
+      }
+    ]
+  },
+  "dynamic_features": {
+    "has_infinite_scroll": true,
+    "has_lazy_loading": false,
+    "has_modals": true,
+    "has_tabs": false,
+    "is_spa": false
+  },
+  "recommended_selectors": [
+    {
+      "type": "card",
+      "selector": "[class*='item']",
+      "reason": "969개 발견, 반복 패턴"
+    }
+  ],
+  "errors": [],
+  "robots": {
+    "robots_url": "https://www.jobkorea.co.kr/robots.txt",
+    "can_fetch": true,
+    "checked": true,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "error": ""
+  },
+  "discovered_feeds": [],
+  "screenshot": "10-projects/취업공고-역량분석/notes/jobkorea_ai_jobs_structure_pw_screenshot.png"
+}

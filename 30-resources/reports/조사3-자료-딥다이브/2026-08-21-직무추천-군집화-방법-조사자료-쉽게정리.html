@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>비슷한 직무끼리 묶어서 추천하기 — 조사 자료 쉽게 정리</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --ink: #191C22;
+    --muted: #5C626E;
+    --faint: #8A909C;
+    --rule: #E3E6EB;
+    --rule-strong: #C9CEd6;
+    --accent: #2E5D62;
+    --accent-soft: #E4EDEC;
+    --flag: #8C5312;
+    --flag-soft: #F6ECDF;
+
+    --teal: #1F6A6E;      --teal-soft: #DCEDEC;
+    --indigo: #3D4E9E;    --indigo-soft: #E3E7F7;
+    --plum: #7A3F73;      --plum-soft: #F1E4EF;
+    --moss: #4A6B2A;      --moss-soft: #E6EEDC;
+    --clay: #9A4B2C;      --clay-soft: #F7E6DE;
+    --shadow: 0 1px 2px rgba(25, 28, 34, .05), 0 8px 24px -16px rgba(25, 28, 34, .25);
+
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+      --rule: #282C34; --rule-strong: #3A404A;
+      --accent: #83B7B2; --accent-soft: #1E2A2B;
+      --flag: #D6A354; --flag-soft: #2A2318;
+      --teal: #7FBDB9; --teal-soft: #16292A;
+      --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+      --plum: #D19BC9; --plum-soft: #2B1E29;
+      --moss: #A8C482; --moss-soft: #1E2618;
+      --clay: #E0997A; --clay-soft: #2E1D16;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+    --rule: #282C34; --rule-strong: #3A404A;
+    --accent: #83B7B2; --accent-soft: #1E2A2B;
+    --flag: #D6A354; --flag-soft: #2A2318;
+    --teal: #7FBDB9; --teal-soft: #16292A;
+    --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+    --plum: #D19BC9; --plum-soft: #2B1E29;
+    --moss: #A8C482; --moss-soft: #1E2618;
+    --clay: #E0997A; --clay-soft: #2E1D16;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.72; letter-spacing: -.011em;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 50rem; margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex; flex-direction: column; gap: 3.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: 1.1rem; }
+  .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+  .masthead::after {
+    content: ""; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal) 0 20%, var(--indigo) 20% 40%, var(--plum) 40% 60%, var(--moss) 60% 80%, var(--clay) 80% 100%);
+  }
+  h1 { font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.15; font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.035em; }
+  .standfirst { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 38rem; }
+  .roster { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding-top: .3rem; }
+  .roster .roster-label { border: none; background: none; padding: 0 .25rem 0 0; font-weight: 600; font-size: .78rem; color: var(--ink); }
+  .roster span {
+    font-weight: 500; font-size: .8rem; font-family: var(--mono); padding: .2rem .55rem;
+    border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; --hue: var(--teal); --hue-soft: var(--teal-soft); }
+  section.s-indigo { --hue: var(--indigo); --hue-soft: var(--indigo-soft); }
+  section.s-plum   { --hue: var(--plum);   --hue-soft: var(--plum-soft); }
+  section.s-moss   { --hue: var(--moss);   --hue-soft: var(--moss-soft); }
+  section.s-clay   { --hue: var(--clay);   --hue-soft: var(--clay-soft); }
+  section + section { margin-top: 2rem; }
+
+  h2 {
+    font-size: 1.32rem; letter-spacing: -.025em; font-weight: 700; margin: 0;
+    padding-bottom: .75rem; border-bottom: 2px solid var(--hue);
+    display: flex; align-items: center; gap: .65rem;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .22rem .45rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .5rem; }
+  ul ul { margin-top: .5rem; padding-left: 1.1rem; }
+  li::marker { color: var(--faint); }
+  strong { font-weight: 600; }
+  p { margin: 0; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.4rem 1.6rem; box-shadow: var(--shadow);
+  }
+
+  h4 { margin: 1.1rem 0 0; font-size: .95rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h4:first-child { margin-top: 0; }
+
+  /* 비유 박스 */
+  .analogy {
+    background: var(--hue-soft); border-radius: 3px; padding: 1rem 1.2rem;
+    font-size: .95rem; color: var(--ink);
+  }
+  .analogy b { color: var(--hue); }
+
+  /* 용어 설명 박스 */
+  .terms { display: flex; flex-direction: column; gap: .7rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.1rem 1.3rem; box-shadow: var(--shadow); }
+  .term dt { font-weight: 700; color: var(--hue); font-size: .92rem; }
+  .term dd { margin: .2rem 0 0; color: var(--muted); font-size: .92rem; }
+
+  /* 자료 카드 (그룹 안 개별 출처) */
+  .source-card { border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); padding: 1.1rem 1.3rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: .55rem; }
+  .source-card h3 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: -.015em; }
+  .source-card p { color: var(--ink); font-size: .95rem; }
+  .src {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: .3rem;
+    font-family: var(--mono); font-size: .72rem; color: var(--hue); background: var(--hue-soft);
+    border-radius: 3px; padding: .2rem .55rem; text-decoration: none; white-space: nowrap;
+  }
+  .src::before { content: "↗"; }
+  .src:hover { text-decoration: underline; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead { background: var(--hue-soft); }
+  thead th { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule-strong); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.who { white-space: nowrap; font-weight: 700; color: var(--hue); }
+  td.what { color: var(--muted); line-height: 1.6; }
+
+  .notice { background: var(--hue-soft); border-left: 4px solid var(--hue); border-radius: 3px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--ink); }
+
+  .open { list-style: none; padding: 0; gap: 0; }
+  .open li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .open li:first-child { border-top: 1px solid var(--rule); }
+  .open .idx { font-family: var(--mono); font-size: .75rem; font-weight: 600; color: var(--hue); font-variant-numeric: tabular-nums; }
+  .open .note { display: block; color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+
+  footer { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .04em; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">CareerLens B팀 · 조사 3 자료 정리 · 2026.08.21</div>
+    <h1>비슷한 직무끼리<br>묶어서 추천하는 방법, 쉽게 이해하기</h1>
+    <p class="standfirst">사용자가 관심 있는 업무를 여러 개 고르면 비슷한 직무를 묶어서 보여주는 기능을 만들려고 합니다. 이걸 실제로 논문·공식 분류체계·기술 기업이 어떻게 해왔는지 찾아본 자료 8개를, 처음 보는 사람도 이해할 수 있도록 정리했습니다.</p>
+    <div class="roster">
+      <span class="roster-label">이 문서에서 다루는 자료</span>
+      <span>공식 분류표 2개</span><span>학술 논문 3개</span><span>실무 사례 1개</span><span>설명가능성 논문 2개</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저</h2>
+    <div class="lede">
+      <ul>
+        <li>직무를 "묶어서" 추천하는 방법은 크게 두 갈래입니다. <strong>① 사람이 미리 정해둔 분류표를 쓰는 방법</strong>과 <strong>② 컴퓨터가 직무 설명 문장을 읽고 자동으로 비슷한 것끼리 묶는 방법</strong>입니다.</li>
+        <li>실제로 잘 되는 서비스(LinkedIn)는 이 두 가지를 섞어서 씁니다 — 사람이 먼저 큰 틀을 잡고, 컴퓨터가 세부적으로 계산합니다.</li>
+        <li>최근 연구들은 "컴퓨터가 왜 이 직무를 추천했는지"를 사람이 이해할 수 있는 문장으로 같이 보여주는 것도 중요하게 다룹니다.</li>
+        <li>CareerLens에는 ①번을 주된 방법으로 쓰고, ②번은 검증용으로 더하고, "왜 추천했는지" 설명 문장을 함께 보여주는 방향을 제안합니다. (자세한 내용은 06번 표)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 그룹 A · 사람이 미리 정해둔 분류표</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 도서관에서 책을 정리하는 방법을 떠올려보세요. 사서(전문가)가 미리 "문학", "과학", "역사" 같은 큰 서가를 만들어두고, 새 책이 들어오면 사람이 판단해서 어울리는 서가에 꽂습니다. 이 방법은 사람이 정한 기준이라 "왜 이 책이 여기 있는지" 설명하기 쉽지만, 새로운 종류의 책이 자주 나오면 사서가 계속 손봐야 합니다.
+    </div>
+
+    <h4>실제 자료</h4>
+
+    <div class="source-card">
+      <h3>O*NET — 미국 정부가 운영하는 직업 정보 사이트</h3>
+      <p>미국 노동부가 후원하는 O*NET은 모든 직업을 <strong>14개의 큰 묶음(커리어 클러스터)</strong>과, "실제로 하는 업무·필요한 기술·교육 수준"을 기준으로 나눈 <strong>더 세부적인 묶음(Job Family, 23개)</strong>으로 정리해둔 공식 자료입니다. "관심 업무 태그로 직무를 묶는 방식"이 바로 이 아이디어와 같습니다 — 사람이 미리 기준을 정해두고, 그 기준으로 직무를 분류하는 것입니다.</p>
+      <a class="src" href="https://www.onetonline.org/find/career" target="_blank" rel="noopener">O*NET · Career Clusters 바로가기</a>
+    </div>
+
+    <div class="source-card">
+      <h3>ESCO — 유럽연합이 만든 직업·기술 분류표</h3>
+      <p>유럽연합이 "직업"과 "그 직업에 필요한 기술"을 각각 목록으로 만들고, 서로 연결해둔 자료입니다. 예를 들어 "SQL"이라는 기술이 여러 직업에서 같이 등장한다면, 그 직업들은 자동으로 "비슷한 직업"으로 가까워집니다. 사람이 만든 표 위에서, 기술이 겹치는 정도로 유사도를 계산하는 방식입니다.</p>
+      <a class="src" href="https://www.escoe.ac.uk/linking-skills-occupations-using-big-data-build-new-occupational-taxonomy-uk/" target="_blank" rel="noopener">ESCoE · Linking skills to occupations</a>
+    </div>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 그룹 B · 컴퓨터가 문장을 읽고 자동으로 묶는 방법</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 여러 학생이 쓴 자기소개서 100장을 사람이 하나하나 읽지 않고, 컴퓨터에게 맡긴다고 생각해보세요. 컴퓨터는 "데이터", "고객", "분석" 같은 단어가 자기소개서마다 몇 번 나오는지 세어서 숫자로 바꾸고, 비슷한 단어를 비슷한 횟수로 쓴 자기소개서끼리 자동으로 그룹을 만듭니다. 사람이 기준을 정하지 않아도 되지만, "왜 이렇게 묶였는지"는 계산 결과를 봐야만 알 수 있습니다.</p>
+    </div>
+
+    <h4>먼저 알아두면 좋은 단어 3개</h4>
+    <dl class="terms">
+      <div class="term"><dt>벡터(vector)</dt><dd>문장을 컴퓨터가 계산할 수 있는 "숫자 목록"으로 바꾼 것. 예: "이 직무 설명에 데이터라는 단어가 3번, SQL이 2번 나온다" → [3, 2, 0, 1, ...] 같은 숫자 나열.</dd></div>
+      <div class="term"><dt>유사도(similarity)</dt><dd>두 숫자 목록이 얼마나 비슷한지 재는 잣대. 흔히 "코사인 유사도"나 "거리(distance)"라는 계산법을 씁니다 — 숫자가 비슷할수록 두 직무가 비슷하다고 봅니다.</dd></div>
+      <div class="term"><dt>군집화(클러스터링, clustering)</dt><dd>유사도가 높은 것들을 자동으로 같은 그룹으로 묶는 작업. "K-Means"는 그중 가장 널리 쓰이는 계산 방법 이름입니다.</dd></div>
+    </dl>
+
+    <h4>실제 자료</h4>
+
+    <div class="source-card">
+      <h3>직무특성 기반 직업추천 프로그램 개발에 관한 연구 (국내 논문)</h3>
+      <p>재직자(이미 그 일을 하는 사람)와 구직자의 데이터를 각각 숫자 목록으로 만든 뒤, 두 목록이 얼마나 가까운지(유클리디안 거리)를 계산해서 직업을 추천하는 국내 연구입니다. "거리가 가까우면 비슷한 직무"라는 발상을 실제 논문으로 확인할 수 있습니다.</p>
+      <a class="src" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002883321" target="_blank" rel="noopener">KCI · 논문 원문 바로가기</a>
+    </div>
+
+    <div class="source-card">
+      <h3>Job Recommendation based on Job Profile Clustering</h3>
+      <p>수많은 채용공고의 텍스트를 컴퓨터가 읽고, 공통된 특징을 기준으로 자동으로 그룹(클러스터)을 나눈 다음, 구직자를 그 그룹에 매칭하는 연구입니다. CareerLens로 치면 "여러 직무를 사람이 하나씩 분류하지 않고, 설명 텍스트만으로 자동으로 비슷한 것끼리 묶는" 것과 같은 방식입니다.</p>
+      <a class="src" href="https://www.sciencedirect.com/science/article/pii/S1877050920318020/pdf" target="_blank" rel="noopener">ScienceDirect · 논문 PDF</a>
+    </div>
+
+    <div class="source-card">
+      <h3>Improving Clustering on Occupational Text Data through Dimensionality Reduction</h3>
+      <p>직무 설명 텍스트를 벡터로 바꾼 다음, 계산을 더 쉽게 하려고 숫자 목록의 길이를 줄이는 작업(차원 축소)을 거쳐 그룹으로 묶는 최신 실험 논문입니다. "텍스트 → 숫자 → 그룹" 과정을 가장 최근 방식으로 보여주는 자료입니다.</p>
+      <a class="src" href="https://arxiv.org/html/2507.07582" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+    </div>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 그룹 C · 실제 회사는 이렇게 씁니다</h2>
+
+    <div class="source-card">
+      <h3>LinkedIn Skills Graph</h3>
+      <p>LinkedIn은 전 세계 사용자가 프로필에 적어둔 <strong>3,900만 개의 기술(스킬) 이름</strong>을 갖고 있습니다. 이 기술들이 어떤 직무들에서 같이 자주 등장하는지를 계산해서, "이 직무에는 이런 기술 묶음이 핵심적이다"라는 그룹을 자동으로 만듭니다.</p>
+      <p style="margin-top:.6rem">이 사례가 중요한 이유는, <strong>그룹 A(사람이 정한 기준)와 그룹 B(컴퓨터 자동 계산)를 섞은 하이브리드</strong>이기 때문입니다 — 사람이 먼저 기술 이름을 정리해두고(A방식), 그다음 어떤 기술들이 같이 나타나는지는 컴퓨터가 계산합니다(B방식). 우리가 06번 표에서 제안하는 방향과 같은 구조입니다.</p>
+      <a class="src" href="https://www.linkedin.com/blog/engineering/skills-graph/building-linkedin-s-skills-graph-to-power-a-skills-first-world" target="_blank" rel="noopener">LinkedIn Engineering Blog</a>
+    </div>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 그룹 D · "왜 이 직무를 추천했나요?"를 설명해주는 방법</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 쇼핑몰 앱이 "이 상품 어때요?"라고만 추천하면 신뢰가 잘 안 가지만, "당신이 최근에 산 물건과 같이 자주 팔린 상품이에요"라고 이유를 알려주면 훨씬 납득이 됩니다. 직무 추천도 마찬가지입니다. 점수만 보여주는 대신 "왜 이 직무를 추천했는지" 근거 문장을 같이 보여주는 연구들이 있습니다.
+    </div>
+
+    <div class="source-card">
+      <h3>Toward a traceable, explainable, and fair JD/Resume recommendation system</h3>
+      <p>추천 결과에 숫자 점수만 보여주지 않고, "이력서의 어떤 단어와 채용공고의 어떤 조건이 매칭됐는지"를 근거로 함께 보여주는 설명 구조를 제안한 논문입니다.</p>
+      <a class="src" href="https://arxiv.org/pdf/2202.08960" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+    </div>
+
+    <div class="source-card">
+      <h3>Developing an Intelligent Job Recommendation System Using Semantic Retrieval and Explainable AI</h3>
+      <p>매칭된 단어, 적용된 조건, 근거 자료를 함께 정리해서 보여주는 "설명 계층"을 시스템에 넣은 사례입니다.</p>
+      <a class="src" href="https://arxiv.org/html/2605.27656v1" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span> CareerLens 프로젝트에는 뭘 쓰면 좋을까</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>방법</th><th>핵심 아이디어</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="who">그룹 A<br>규칙 기반</td><td class="what">사람이 미리 정한 기준(관심 업무 태그·분류표)으로 직무를 묶음</td><td class="what">관심 업무 태그가 얼마나 겹치는지 계산해서 직무 묶음을 만드는 주된 방법으로 사용</td></tr>
+          <tr><td class="who">그룹 B<br>콘텐츠 기반</td><td class="what">직무 설명 텍스트를 컴퓨터가 읽고 자동으로 유사도를 계산</td><td class="what">태그 기반 결과와 얼마나 일치하는지 대조하는 검증용으로만 사용</td></tr>
+          <tr><td class="who">그룹 D<br>설명 가능성</td><td class="what">추천 이유를 근거 문장으로 함께 보여줌</td><td class="what">직무 묶음마다 "어떤 태그가 겹쳐서 같이 묶였는지" 설명 문장을 함께 제공</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">07</span> 아직 확인 안 된 것</h2>
+    <ul class="open">
+      <li><span class="idx">01</span><span>그룹 A(태그 겹침)와 그룹 B(텍스트 유사도) 결과가 서로 다르게 나오는 직무 쌍이 있는지 <span class="note">실제 직무 데이터로 직접 계산해봐야 확인 가능</span></span></li>
+      <li><span class="idx">02</span><span>텍스트 유사도 계산을 어떤 도구로 할지 <span class="note">엑셀 수식 수준으로 충분한지, 파이썬 코드가 필요한지 팀 역량에 맞춰 결정</span></span></li>
+      <li><span class="idx">03</span><span>직무 묶음 이름(클러스터 이름)을 사람이 붙일지, 자동으로 정할지 <span class="note">사용자에게 보여줄 때 이해하기 쉬운 이름이 필요</span></span></li>
+    </ul>
+  </section>
+
+  <footer>CareerLens B팀 · 조사 3 자료 정리 · 2026.08.21 · 원문은 각 카드의 링크에서 확인 가능</footer>
+
+</div>
+</body>
+</html>

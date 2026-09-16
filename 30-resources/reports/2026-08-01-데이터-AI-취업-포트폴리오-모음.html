@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>데이터/AI 취업 포트폴리오 모음</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --card-bg: #ffffff;
+    --text: #262420;
+    --muted: #6b6560;
+    --border: #e6e2da;
+    --accent: #8a5a3a;
+    --accent-bg: #f1e6da;
+    --verified: #3f7d4f;
+    --verified-bg: #e7f3e9;
+    --unverified: #a17b1f;
+    --unverified-bg: #faf1dc;
+    --guide: #4a5a78;
+    --guide-bg: #e9edf5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1a17;
+      --card-bg: #262320;
+      --text: #eae6df;
+      --muted: #a39c92;
+      --border: #3a352f;
+      --accent: #d8a878;
+      --accent-bg: #362b21;
+      --verified: #7bc493;
+      --verified-bg: #1f3324;
+      --unverified: #e0b95a;
+      --unverified-bg: #3a2f16;
+      --guide: #9db2e0;
+      --guide-bg: #22293a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0 16px 64px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header {
+    padding: 48px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  h2 {
+    font-size: 1.15rem;
+    margin: 40px 0 6px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-desc { color: var(--muted); font-size: 0.88rem; margin: 0 0 18px; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .card-title { font-size: 1.05rem; font-weight: 600; }
+  .card-title a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent); }
+  .card-title a:hover { color: var(--accent); }
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.verified { color: var(--verified); background: var(--verified-bg); }
+  .badge.unverified { color: var(--unverified); background: var(--unverified-bg); }
+  .field { margin: 6px 0; font-size: 0.92rem; }
+  .field .label { color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 2px; }
+  .links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .links a {
+    font-size: 0.82rem;
+    color: var(--accent);
+    background: var(--accent-bg);
+    padding: 4px 10px;
+    border-radius: 7px;
+    text-decoration: none;
+  }
+  .links a:hover { text-decoration: underline; }
+  .guide-list { list-style: none; padding: 0; margin: 0; }
+  .guide-list li {
+    background: var(--guide-bg);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+  }
+  .guide-list a { color: var(--guide); font-weight: 600; text-decoration: none; }
+  .guide-list a:hover { text-decoration: underline; }
+  .pattern-list { padding-left: 20px; }
+  .pattern-list li { margin-bottom: 10px; font-size: 0.94rem; }
+  .pattern-list b { color: var(--accent); }
+  footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>데이터 / AI 취업 포트폴리오 모음</h1>
+  <div class="meta">수집일 2026-08-01 · 벤치마킹용 · 웹 검색으로 수집한 개인 포트폴리오 정리</div>
+</header>
+
+<h2>✅ 실제 확인함 (내용 검증 완료)</h2>
+<p class="section-desc">직접 접속해서 구성·프로젝트 내용을 확인한 포트폴리오입니다. 카드 안 링크로 실제 프로그램/프로젝트까지 바로 들어갈 수 있어요.</p>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://lbm.oopy.io/" target="_blank" rel="noopener">이보민 — 데이터 분석가</a></div>
+    <span class="badge verified">검증완료</span>
+  </div>
+  <div class="field"><span class="label">구성</span>자기소개·연락처 → 커리어 히스토리 → 보유 스킬 → 발행 글 → 세미나/강의 → 팟캐스트 → 개인 관심사</div>
+  <div class="field"><span class="label">내용</span>GA4 활용, 사용자 행동 데이터 분석(넷플릭스·아마존 사례), RFM/퍼널 분석, 마케팅 분석(UTM·이메일 지표), 커리어 조언</div>
+  <div class="field"><span class="label">특징</span>노션 기반. "직접 경험한 것 위주" 서술 철학. 프로젝트 결과물뿐 아니라 세미나·팟캐스트 등 개인 브랜딩 콘텐츠를 함께 배치한 <b>"커리어 허브"</b> 스타일이라 참고 가치가 높음.</div>
+  <div class="links">
+    <a href="https://lbm.oopy.io/" target="_blank" rel="noopener">🔗 포트폴리오 사이트 열기</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://parkeunsang.github.io/" target="_blank" rel="noopener">박은상 포트폴리오</a></div>
+    <span class="badge verified">검증완료</span>
+  </div>
+  <div class="field"><span class="label">구성</span>Home → About → History → Portfolio (자기소개 → 경력 → 프로젝트 전시 순서)</div>
+  <div class="field"><span class="label">내용</span>머신러닝 모델링·이미지 분류·금융/스포츠 예측, Django/Vue.js 기반 영화 추천·문장 성별 분류 웹앱, 기사 저술</div>
+  <div class="field"><span class="label">특징</span>프로젝트마다 <b>"개요 → 세부 내용 → 기술스택 → 회고"</b> 포맷을 일관되게 사용. GitHub·데모 링크로 결과물 접근성을 높이고 수상 경력·팀 규모 등 맥락 정보도 함께 제시. 정적 GitHub Pages 개인 사이트라 구조를 그대로 참고하기 좋음.</div>
+  <div class="links">
+    <a href="https://parkeunsang.github.io/" target="_blank" rel="noopener">🔗 포트폴리오 사이트 열기</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://github.com/DreamingDataScientist/PORTFOLIO" target="_blank" rel="noopener">박민지 — Data Analyst 포트폴리오 (GitHub)</a></div>
+    <span class="badge verified">검증완료</span>
+  </div>
+  <div class="field"><span class="label">내용</span>웹 크롤링 기반 프로젝트 2건 — 시카고 피자 맛집 분석(구글맵 API 시각화), 서울시 주유소 가격 분석(구별·브랜드별 비교)</div>
+  <div class="field"><span class="label">특징</span>Jupyter Notebook을 그대로 공개하는 형태. 화려한 사이트보다는 <b>"크롤링 → 분석 → 시각화" 파이프라인을 코드로 투명하게 보여주는</b> 스타일.</div>
+  <div class="links">
+    <a href="https://github.com/DreamingDataScientist/PORTFOLIO" target="_blank" rel="noopener">🔗 GitHub 저장소 (코드/노트북 직접 확인)</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://github.com/yejipark0514/Yeji-Park" target="_blank" rel="noopener">박예지 — ML/DL 프로젝트 포트폴리오 (GitHub)</a></div>
+    <span class="badge verified">검증완료</span>
+  </div>
+  <div class="field"><span class="label">내용</span>시계열(CO2 배출량 예측), 이미지 분류(LeNet 교통표지판, CNN 패션, CIFAR-10), 표절 탐지, 수질 변화 분석, Kaggle 대회 3건, 기상-화재 상관분석</div>
+  <div class="field"><span class="label">특징</span>프로젝트 개수가 많고(9개+) 기술 스택이 다양함(PySpark, XGBoost, HPC 환경 빅데이터 처리 등). <b>"양과 기술 스택 다양성으로 승부"</b>하는 케이스 — 신입이 여러 도메인을 얕고 넓게 다뤄봤음을 보여주는 예시.</div>
+  <div class="links">
+    <a href="https://github.com/yejipark0514/Yeji-Park" target="_blank" rel="noopener">🔗 GitHub 저장소 (코드/노트북 직접 확인)</a>
+  </div>
+</div>
+
+<h2>⚠️ 검색으로 찾았으나 접속 미확인</h2>
+<p class="section-desc">검색 결과에는 나왔지만 이번에 직접 열어보지 못한 사이트입니다 (DNS 오류 또는 로그인 필요). 링크를 눌러 직접 확인해보세요.</p>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://dataliteracy.oopy.io/" target="_blank" rel="noopener">김도민 — 데이터 분석가</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">검색 결과 기준 내용</span>GA4 로그 데이터 정제, 통합 회원 정보 테이블 구축 프로젝트</div>
+  <div class="links"><a href="https://dataliteracy.oopy.io/" target="_blank" rel="noopener">🔗 직접 열어보기</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://jyl.oopy.io/" target="_blank" rel="noopener">이지윤 포트폴리오</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="links"><a href="https://jyl.oopy.io/" target="_blank" rel="noopener">🔗 직접 열어보기</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://moyongho.oopy.io" target="_blank" rel="noopener">모용호 — 데이터 분석 & 에너지 효율화 전문가</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">검색 결과 기준 내용</span>SQL·Python·Excel 기반 데이터 가공/분석</div>
+  <div class="links"><a href="https://moyongho.oopy.io" target="_blank" rel="noopener">🔗 직접 열어보기</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="http://noelbird.com/ko/" target="_blank" rel="noopener">임동욱 — AI 개발자 & 분석가</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">비고</span>접속 타임아웃 발생, 재시도 필요</div>
+  <div class="links"><a href="http://noelbird.com/ko/" target="_blank" rel="noopener">🔗 직접 열어보기</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://www.rallit.com/hub/resumes/4674" target="_blank" rel="noopener">한건우 — 머신러닝 엔지니어 (Rallit)</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">검색 결과 기준 내용</span>GAN·Diffusion 등 생성형 컴퓨터비전 모델 개발</div>
+  <div class="field"><span class="label">비고</span>Rallit은 로그인 후에만 본문이 보이는 구조라 크롤링으로 본문 확인 불가</div>
+  <div class="links"><a href="https://www.rallit.com/hub/resumes/4674" target="_blank" rel="noopener">🔗 직접 열어보기 (로그인 필요)</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://www.rallit.com/hub/resumes/1190998/%EC%9D%B4%EC%8A%B9%ED%9B%88" target="_blank" rel="noopener">이승훈 — 머신러닝/인공지능 개발자 (Rallit)</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">검색 결과 기준 내용</span>선형/로지스틱 회귀, MLP를 Python으로 직접 구현 후 TensorFlow로 재구현</div>
+  <div class="links"><a href="https://www.rallit.com/hub/resumes/1190998/%EC%9D%B4%EC%8A%B9%ED%9B%88" target="_blank" rel="noopener">🔗 직접 열어보기 (로그인 필요)</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://www.rallit.com/hub/resumes/608949/%EC%A0%84%EA%B1%B4%EC%9A%B0" target="_blank" rel="noopener">전건우 — 데이터 사이언티스트/머신러닝 엔지니어 (Rallit)</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="links"><a href="https://www.rallit.com/hub/resumes/608949/%EC%A0%84%EA%B1%B4%EC%9A%B0" target="_blank" rel="noopener">🔗 직접 열어보기 (로그인 필요)</a></div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <div class="card-title"><a href="https://github.com/limsg1234/portfolio" target="_blank" rel="noopener">limsg1234 — 포트폴리오 (GitHub)</a></div>
+    <span class="badge unverified">미확인</span>
+  </div>
+  <div class="field"><span class="label">검색 결과 기준 내용</span>웹 크롤링 데이터 수집, 자연어 감정분석 기반 제품 추천</div>
+  <div class="links"><a href="https://github.com/limsg1234/portfolio" target="_blank" rel="noopener">🔗 GitHub 저장소 열기</a></div>
+</div>
+
+<h2>📖 포트폴리오 만드는 법 가이드</h2>
+<p class="section-desc">개인 사례는 아니지만 구조를 짤 때 참고할 만한 글입니다.</p>
+<ul class="guide-list">
+  <li><a href="https://brunch.co.kr/@datarian/134" target="_blank" rel="noopener">데이터 분석 포트폴리오 이것만 알면 끝 (brunch)</a></li>
+  <li><a href="https://brunch.co.kr/@carmenlee/44" target="_blank" rel="noopener">데이터 사이언스 포트폴리오 만들기 (brunch)</a></li>
+  <li><a href="https://danthetech.netlify.app/datascience/how-to-build-a-data-science-portfolio/" target="_blank" rel="noopener">데이터 사이언티스트 취업을 위한 포트폴리오 만드는 법 — DanTheTech</a></li>
+  <li><a href="https://insightcampus.co.kr/2021/07/23/%EB%8B%B9%EC%8B%A0%EC%9D%98-%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4%EB%A5%BC-%EB%8F%8B%EB%B3%B4%EC%9D%B4%EA%B2%8C-%ED%95%B4%EC%A4%84-8%EA%B0%80%EC%A7%80-ml-ai-%ED%94%84%EB%A1%9C%EC%A0%9D/" target="_blank" rel="noopener">당신의 포트폴리오를 돋보이게 해줄 8가지 ML/AI 프로젝트 — 인사이트캠퍼스</a></li>
+</ul>
+
+<h2>🧭 공통 패턴 (벤치마킹 포인트)</h2>
+<ol class="pattern-list">
+  <li><b>플랫폼은 크게 3갈래</b> — 노션(oopy.io 커스텀 도메인), GitHub Pages/저장소, Rallit 같은 이력서 허브 플랫폼. 진입장벽 낮은 순: GitHub 저장소 &lt; 노션 &lt; 자체 사이트(박은상 케이스).</li>
+  <li><b>프로젝트 서술 포맷이 거의 동일</b> — 문제 정의 → 데이터/방법 → 결과(수치) → 회고. 박은상 사이트가 이 포맷을 가장 명확하게 보여줌.</li>
+  <li><b>프로젝트 개수 전략 두 가지</b> — 2~3개를 깊이 있게(이보민, 박민지) vs 다다익선으로 기술 스택 나열(박예지). 신입일수록 후자, 실무 경험이 있으면 전자로 가는 경향.</li>
+  <li><b>크롤링·API 연동·시각화</b>가 데이터 분석 포트폴리오의 단골 소재 (구글맵 API, GA4, Opinet 등 실제 외부 데이터 활용).</li>
+</ol>
+
+<footer>
+  수집일 2026-08-01 · 관련 원본 자료: <code>30-resources/reports/2026-08-01-데이터-AI-취업-포트폴리오-모음.md</code>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+id,place,title,status,status_reason,confirmed,needs_review,evidence_sources,next_action,url
+museum-family,서울생활사박물관,아이와 함께 가는 실내 전시,possible,실내 전시와 가족 프로그램 정보가 확인되어 초보 사용자에게 추천하기 좋습니다.,실내 전시;가족 프로그램;대중교통 접근,운영시간 변동;예약 필요 여부,공식 홈페이지;문화행사 목록,공식 안내 확인,https://example.org/culture/museum-family
+wheelchair-gallery,열린미술관,휠체어 동반 관람 후보,check,접근성 핵심 항목 일부가 아직 비어 있어 방문 전 확인이 필요합니다.,엘리베이터 있음;실내 관람,장애인 화장실;휠체어 좌석;출입구 단차,공식 시설 안내,전화 확인,https://example.org/culture/wheelchair-gallery
+pet-market,강변문화마켓,반려동물 동반 야외 행사,conditional,야외 행사는 적합하지만 혼잡도와 현장 규칙을 확인해야 합니다.,야외 공간;반려동물 동반 안내,우천 시 운영;목줄 규정;혼잡 시간,행사 공지;현장 안내,방문 전 공지 확인,https://example.org/culture/pet-market
+late-concert,심야재즈클럽,늦은 시간 공연 후보,exclude,이동과 귀가 부담이 커서 기본 추천에서는 제외합니다.,공연 정보 있음,귀가 교통;좌석 간격;소음 민감도,공연 예매 페이지,대체 후보 찾기,https://example.org/culture/late-concert

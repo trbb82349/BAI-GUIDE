@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>관심 채용공고 조사 정리</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --ink: #191C22;
+    --muted: #5C626E;
+    --faint: #8A909C;
+    --rule: #E3E6EB;
+    --rule-strong: #C9CEd6;
+
+    --teal: #1F6A6E;      --teal-soft: #DCEDEC;
+    --indigo: #3D4E9E;    --indigo-soft: #E3E7F7;
+    --plum: #7A3F73;      --plum-soft: #F1E4EF;
+    --moss: #4A6B2A;      --moss-soft: #E6EEDC;
+    --clay: #9A4B2C;      --clay-soft: #F7E6DE;
+    --shadow: 0 1px 2px rgba(25, 28, 34, .05), 0 8px 24px -16px rgba(25, 28, 34, .25);
+
+    --sans: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard Variable", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+      --rule: #282C34; --rule-strong: #3A404A;
+      --teal: #7FBDB9; --teal-soft: #16292A;
+      --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+      --plum: #D19BC9; --plum-soft: #2B1E29;
+      --moss: #A8C482; --moss-soft: #1E2618;
+      --clay: #E0997A; --clay-soft: #2E1D16;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+    --rule: #282C34; --rule-strong: #3A404A;
+    --teal: #7FBDB9; --teal-soft: #16292A;
+    --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+    --plum: #D19BC9; --plum-soft: #2B1E29;
+    --moss: #A8C482; --moss-soft: #1E2618;
+    --clay: #E0997A; --clay-soft: #2E1D16;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.72; letter-spacing: -.011em;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 52rem; margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex; flex-direction: column; gap: 3.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: 1.1rem; }
+  .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+  .masthead::after {
+    content: ""; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal) 0 33%, var(--indigo) 33% 66%, var(--plum) 66% 100%);
+  }
+  h1 { font-size: clamp(2rem, 5.6vw, 2.9rem); line-height: 1.18; font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.03em; }
+  .standfirst { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 40rem; }
+  .roster { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding-top: .3rem; }
+  .roster .roster-label { padding: 0 .25rem 0 0; font-weight: 600; font-size: .78rem; color: var(--ink); }
+  .roster span {
+    font-weight: 500; font-size: .8rem; font-family: var(--mono); padding: .2rem .55rem;
+    border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; --hue: var(--teal); --hue-soft: var(--teal-soft); }
+  section.s-indigo { --hue: var(--indigo); --hue-soft: var(--indigo-soft); }
+  section.s-plum   { --hue: var(--plum);   --hue-soft: var(--plum-soft); }
+  /* 섹션(01/02/03) 사이만 더 넓게 띄워서 다른 여백보다 구분이 뚜렷하게 보이도록 함 */
+  section + section { margin-top: 2rem; }
+
+  h2 {
+    font-size: 1.3rem; letter-spacing: -.025em; font-weight: 700; margin: 0;
+    padding-bottom: .75rem; border-bottom: 2px solid var(--hue);
+    display: flex; align-items: center; gap: .65rem;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .22rem .45rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .5rem; }
+  li::marker { color: var(--faint); }
+  strong { font-weight: 600; }
+  a { color: var(--hue); }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.3rem 1.5rem; box-shadow: var(--shadow); color: var(--muted);
+  }
+  .lede strong { color: var(--ink); }
+
+  .thesis {
+    background: var(--hue-soft); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.5rem 1.7rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .thesis .statement { margin: 0; font-size: 1.08rem; font-weight: 700; color: var(--ink); line-height: 1.65; }
+  .thesis .statement em { font-style: normal; color: var(--hue); }
+  .thesis .statement .aside { display: block; margin-top: .5rem; font-size: .88rem; font-weight: 500; color: var(--muted); }
+  .thesis .why { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .7rem; align-items: baseline; font-size: .93rem; color: var(--muted); line-height: 1.65; }
+  .thesis .why .tag {
+    font-family: var(--mono); font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .18rem .45rem; white-space: nowrap;
+  }
+
+  h3 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h4 { margin: 1.1rem 0 0; font-size: .93rem; font-weight: 700; letter-spacing: -.01em; color: var(--hue); }
+  h4:first-child { margin-top: 0; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .89rem; }
+  th, td { text-align: left; padding: .68rem .85rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead { background: var(--hue-soft); }
+  thead th { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule-strong); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.n { font-family: var(--mono); color: var(--faint); font-variant-numeric: tabular-nums; width: 2rem; }
+  td.who { white-space: nowrap; font-weight: 700; color: var(--hue); }
+  td.what { color: var(--muted); line-height: 1.6; }
+
+  .notice { background: var(--hue-soft); border-left: 4px solid var(--hue); border-radius: 3px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--ink); }
+
+  /* Q&A / 미해결 항목 형태의 번호 리스트 */
+  .qa { list-style: none; padding: 0; gap: 0; }
+  .qa li { display: grid; grid-template-columns: 1.6rem 1fr; gap: .8rem; padding: .95rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .qa li:first-child { border-top: 1px solid var(--rule); }
+  .qa .idx { font-family: var(--mono); font-size: .74rem; font-weight: 600; color: var(--hue); font-variant-numeric: tabular-nums; }
+  .qa .q { display: block; font-weight: 600; }
+  .qa .a { display: block; color: var(--muted); font-size: .93rem; margin-top: .3rem; }
+
+  .arrows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .8rem; }
+  .arrows li { display: grid; grid-template-columns: 1.3rem 1fr; gap: .6rem; color: var(--muted); font-size: .95rem; }
+  .arrows li::before { content: "➔"; color: var(--hue); }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .compare > div { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.1rem 1.3rem; box-shadow: var(--shadow); }
+  .compare .label { display: block; font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--hue); margin-bottom: .5rem; }
+  .compare p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.65; }
+  @media (max-width: 38rem) { .compare { grid-template-columns: 1fr; } }
+
+  .flow { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .9rem; counter-reset: step; }
+  .flow li { display: grid; grid-template-columns: 2.1rem 1fr; gap: .9rem; align-items: center; counter-increment: step; }
+  .flow li::before {
+    content: counter(step); font-family: var(--mono); font-weight: 700; font-size: .82rem; color: var(--surface);
+    background: var(--hue); border-radius: 50%; width: 2.1rem; height: 2.1rem; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .flow span { color: var(--ink); font-size: .95rem; }
+
+  td.scope-manual { color: var(--clay); font-weight: 700; white-space: nowrap; }
+  td.scope-code { color: var(--moss); font-weight: 700; white-space: nowrap; }
+  td.scope-exclude { color: var(--faint); font-weight: 700; white-space: nowrap; }
+
+  footer { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .04em; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">CareerLens 사전조사 · 2026.08.16</div>
+    <h1>관심 채용공고 조사 정리</h1>
+    <p class="standfirst">관심 있는 직무·산업의 실제 채용공고 6건을 조사하고, 직무 탐색 서비스에 대한 사전 인터뷰를 거쳐 최소 서비스 재현안을 정리했습니다.</p>
+    <div class="roster">
+      <span class="roster-label">범위</span>
+      <span>공고 6건</span><span>추가조사 1건</span><span>인터뷰 1건 · 행정학과 3학년</span><span>재현안 카테고리 5개</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> 관심 채용공고 조사 정리</h2>
+
+    <div class="notice">1번 공기업 공고를 주로 다루는 잡알리오 플랫폼 — 응시자격·결격사유·전형별 배점 등 지원 관련 형식적인 내용이 많으며, 직무 관련해서는 유난히 더 추상적으로 다가오는 경우가 많았음</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th class="n">No</th><th>회사 · 직무명</th><th>원문 링크</th><th>관심을 가진 이유</th><th>실제로 할 것 같은 일</th><th>이해하기 어려운 부분</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="n">1</td>
+            <td class="who">(재)한국에너지재단<br>정부정책사업(민관협력)</td>
+            <td class="what">job.alio.go.kr (idx=303274)</td>
+            <td class="what">회사명보다 민관협력 업무 방식 자체에 관심</td>
+            <td class="what">에너지 사업 기획, 민간기업과 협약·운영 관리</td>
+            <td class="what">"기획 및 운영" 수준 요약뿐, 구체적 업무 단계·에너지복지 대상 불명확</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>1번 한국에너지재단 — 잡알리오 서비스 추가 조사</h4>
+    <div class="table-wrap">
+      <table>
+        <tbody>
+          <tr><td class="who">조사 대상과 링크</td><td class="what">잡알리오 – (재)한국에너지재단 2026년 정규직 공개경쟁 채용공고 (job.alio.go.kr, idx=303274)</td></tr>
+          <tr><td class="who">사용자가 거치는 과정</td><td class="what">① 기관명/키워드 검색 → ② 검색 결과에서 공고 클릭 → ③ 상세 페이지에서 텍스트 확인 (원본 PDF와 사실상 동일)</td></tr>
+          <tr><td class="who">잘 해결하는 점</td><td class="what">응시자격·결격사유·전형별 배점·가점 등 '지원 가능 여부' 판단에 필요한 공식 정보는 정확하고 표준화되어 있음</td></tr>
+          <tr><td class="who">해결하지 못하는 점</td><td class="what">담당업무가 한 줄 요약뿐이고, 기관 소개도 "선진적인 에너지복지 증진…전문기관" 수준의 피상적 문구뿐이라 실제 업무 이해는 어려움</td></tr>
+          <tr><td class="who">CareerLens가 참고할 점</td><td class="what">형식적 필수정보는 유지하되, 실제 업무·기관의 구체적 사업 예시를 쉬운 언어로 요약해 보여주는 카드가 필요</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">2, 3번 데이터 직무 공고 — 회사정보를 보고, 두 곳 모두 외부 기업의 요구에 맞춰 IT 서비스를 개발해주는 기업임을 알게 됨</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th class="n">No</th><th>회사 · 직무명</th><th>원문 링크</th><th>관심을 가진 이유</th><th>실제로 할 것 같은 일</th><th>이해하기 어려운 부분</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="n">2</td>
+            <td class="who">펜타시스템테크놀러지㈜<br>인프라 구축/운영·데이터 분석</td>
+            <td class="what">jobkorea.co.kr/49630651</td>
+            <td class="what">인프라 업무와 데이터 분석이 한 직무로 묶인 점</td>
+            <td class="what">서버 구축·운영, 데이터 분석·AI 활용</td>
+            <td class="what">인프라와 분석 업무 병행 방식 불명확, 핵심역량 나열이 추상적</td>
+          </tr>
+          <tr>
+            <td class="n">3</td>
+            <td class="who">㈜에이브랩스<br>데이터 분석 (Data Scientist)</td>
+            <td class="what">jobkorea.co.kr/49562663</td>
+            <td class="what">AI/ML·딥러닝이 붙는 스타트업의 데이터 분석 방식</td>
+            <td class="what">데이터 기반 AI(딥러닝) 모델 개발 및 성능 개선</td>
+            <td class="what">분석·모델링·서비스 적용 역할 경계 불명확, 요구 포트폴리오 범위 모호</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">4번 데이터 외의 직무 — 공학계열을 찾아봄 / 한 회사 내 여러 분야의 직무를 묶어서 채용공고를 정리한 경우도 많음</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th class="n">No</th><th>회사 · 직무명</th><th>원문 링크</th><th>관심을 가진 이유</th><th>실제로 할 것 같은 일</th><th>이해하기 어려운 부분</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="n">4</td>
+            <td class="who">테크노빌리지㈜<br>정보통신기술자 &amp; 전기기술자</td>
+            <td class="what">jobkorea.co.kr/49770708</td>
+            <td class="what">한 공고에 여러 부문이 묶인 채용이 많다는 것을 확인</td>
+            <td class="what">통신설비·회로·네트워크 설계 및 시공·공사관리 지원</td>
+            <td class="what">정보통신·전기 업무 구분 불명확, 4개 부문 스킬이 뭉뚱그려짐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">5, 6번 간호학과·유아교육과처럼 직무가 명확히 특정되어 있는 분야는 비교적 어떤 일을 하는지 쉽게 알 수 있음 → 이 경우는 직무 이해에 대한 필요가 적을 것</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th class="n">No</th><th>회사 · 직무명</th><th>원문 링크</th><th>관심을 가진 이유</th><th>실제로 할 것 같은 일</th><th>이해하기 어려운 부분</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="n">5</td>
+            <td class="who">이소키즈클럽어학원<br>담임교사(경력우대)</td>
+            <td class="what">jobkorea.co.kr/49712491</td>
+            <td class="what">유아교육과 친구의 진로 관련 공고가 궁금해서</td>
+            <td class="what">원어민과 유치부 공동담임, 오후 유치·초등부 문법 위주 영어수업</td>
+            <td class="what">거의 없음 — 전공(유아교육 등)과 직무 연결이 뚜렷해 이해가 쉬움</td>
+          </tr>
+          <tr>
+            <td class="n">6</td>
+            <td class="who">센트럴서울안과의원<br>간호팀</td>
+            <td class="what">jobkorea.co.kr/49731920</td>
+            <td class="what">간호학과 친구의 진로 관련 공고가 궁금해서</td>
+            <td class="what">외래 진료·검사 보조, 환자 상담·접수, 수납·정산 업무</td>
+            <td class="what">거의 없음 — 간호(조무)사 자격과 업무가 바로 연결돼 이해가 쉬움</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 직무 탐색 서비스 사전 조사를 위한 인터뷰</h2>
+
+    <div class="notice">인터뷰 대상 — <strong>3학년 · 행정학과</strong></div>
+
+    <h4>직무 탐색 상태</h4>
+    <ul class="qa">
+      <li><span class="idx">01</span><span><span class="q">최근에 관심 직무를 알아보려고 했던 경험을 이야기해 주세요.</span><span class="a">최근 관심 직무를 알아보려고 채용공고와 현직자 인터뷰를 찾아봤습니다.</span></span></li>
+      <li><span class="idx">02</span><span><span class="q">그때 어떤 자료나 서비스를 이용했나요?</span><span class="a">잡코리아, 사람인, 유튜브 등의 자료를 이용했습니다.</span></span></li>
+      <li><span class="idx">03</span><span><span class="q">채용공고를 봤다면 실제로 무슨 일을 하는 자리인지 이해됐나요?</span><span class="a">주요 업무와 필요한 역량, 우대사항 등을 확인했습니다. 자세하게 무슨 일을 하는지는 파악하지 못한 것 같습니다.</span></span></li>
+      <li><span class="idx">04</span><span><span class="q">이해하기 어려웠던 부분은 무엇이었나요?</span><span class="a">실제 업무 내용과 필요한 역량을 구체적으로 파악하는 것이 어려웠습니다.</span></span></li>
+      <li><span class="idx">05</span><span><span class="q">그 자료를 본 뒤 관심 직무가 좁혀졌나요?</span><span class="a">자료를 찾아보면서 관심 직무와 필요한 역량이 조금 더 명확해졌습니다.</span></span></li>
+      <li><span class="idx">06</span><span><span class="q">이해가 안 된 부분은 어떻게 해결했나요?</span><span class="a">GPT를 활용했습니다.</span></span></li>
+    </ul>
+
+    <h4>공고 원문 예시 질문</h4>
+    <ul class="qa">
+      <li><span class="idx">01</span><span><span class="q">이 기업에서는 실제로 무슨 일을 할 것 같나요?</span><span class="a">공공기관 에너지 전문기관</span></span></li>
+    </ul>
+
+    <h4>공고 카드 예시 질문</h4>
+    <ul class="qa">
+      <li><span class="idx">01</span><span><span class="q">이 기업에서는 실제로 무슨 일을 할 것 같나요?</span><span class="a">정부의 에너지복지 정책 대응, 에너지 취약 계층을 위한 복지 사업 기획 및 운영, 민관협력사업</span></span></li>
+      <li><span class="idx">02</span><span><span class="q">관심이 생기거나 줄었다면 어떤 업무 때문인가요?</span><span class="a">정책·사업 운영 업무에 관심이 생겨서 관심도가 높아졌습니다.</span></span></li>
+      <li><span class="idx">03</span><span><span class="q">카드에도 여전히 이해되지 않는 부분이 있나요? 혹은 카드에 추가로 있었으면 하는 정보가 있나요?</span><span class="a">사업 대상, 실제 업무 과정, 필요한 역량과 우대사항을 더 자세히 알면 좋겠습니다.</span></span></li>
+    </ul>
+
+    <h4>인터뷰 후 생각 (예상과 달랐던 반응 또는 반례)</h4>
+    <ul class="arrows">
+      <li>인터뷰를 하고 나니, 직무탐색을 위해 공고를 확인하는 경우는 생각보다 현실적이라는 생각이 들었다. 전공과 직무를 연결지어 필요한 나의 역량이 무엇인지 생각하기보다는, 실제 회사에서 무슨 일을 하는지, 내가 회사에 들어가서 어떤 일을 맡게 될지에 더 집중하게 되는 듯했다.</li>
+      <li>또한 회사마다 향하는 목표 자체도 워낙 다양하고, 같은 직무 명칭이더라도 회사마다 업무는 조금씩 달라지기에, 공고 속 간단하고 형식적인 직무 설명에 더하여 회사 홈페이지 등의 비전 설명을 보고 예측하는 것이 직무를 이해하는 데에 가장 현실적인 방법인 것 같다는 생각을 했다.</li>
+    </ul>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 내가 생각하는 최소 서비스 재현안 (직무지도 데모 기준)</h2>
+
+    <div class="thesis">
+      <p class="statement">
+        채용공고를 각각 따로 보는 게 아니라, 여러 공고를 분석해서 <em>"어떤 직무들이 실제 업무와 역량 측면에서 서로 연결되어 있는지"</em>를 지도처럼 보여주는 서비스
+        <span class="aside">기존 채용사이트가 직무를 <strong>'분류'</strong>해서 보여준다면, 이 프로그램은 실제 채용공고를 분석해 직무 간의 <strong>'관계'</strong>를 보여주려는 목표</span>
+      </p>
+      <p class="why"><span class="tag">WHY</span><span>평소에는 서로 다른 직무라고 생각했던 분야가 실제 회사에서는 어떤 업무와 역량을 공유하는지 알 수 있기 때문에, 직무를 더 입체적으로 이해할 수 있습니다.</span></p>
+    </div>
+
+    <div class="compare">
+      <div>
+        <span class="label">사용 전 — 못하는 것</span>
+        <p>채용사이트에서 "데이터분석", "마케팅" 같은 카테고리를 하나씩 따로 검색해야 하고, 공고 하나가 실제로는 여러 직무 역량에 걸쳐 있다는 걸 스스로 알아낼 방법이 없음.</p>
+      </div>
+      <div>
+        <span class="label">사용 후 — 할 수 있어야 하는 판단</span>
+        <p>"내가 가진 역량(예: 데이터분석)으로 이동 가능한 인접 직무가 무엇인지", "이 직무를 준비하려면 실제 공고 기준으로 어떤 업무·역량이 필요한지"를 근거를 보고 스스로 판단할 수 있어야 함.</p>
+      </div>
+    </div>
+
+    <h4>최소 사용자 흐름 (3~5단계)</h4>
+    <ol class="flow">
+      <li><span>지도에서 5개 직무 노드와 연결 강도 확인</span></li>
+      <li><span>관심 직무 클릭</span></li>
+      <li><span>인접 직무와의 유사도·공유 키워드 확인</span></li>
+      <li><span>그 직무의 실제 채용공고 카드 확인</span></li>
+      <li><span>원문 링크로 이동</span></li>
+    </ol>
+
+    <h4>핵심 결과물</h4>
+    <div class="lede">지도(노드-엣지 그래프) + 클릭 시 뜨는 실제 공고 카드. 지도는 <strong>"왜 가까운가"</strong>를 보여주고 카드는 <strong>"실제로 무슨 일을 하는가"</strong>를 증명하는 역할 — 이 둘이 연결되어야 지도가 신뢰를 얻음.</div>
+
+    <h4>범위 구분</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="scope-manual">수작업 범위</td>
+            <td class="what">직무기술서 PDF 양식이 표준(NCS)과 다른 경우의 텍스트 정리(15개 중 8개), 회사소개·접수정보 같은 카드 메타데이터 작성 — 기관마다 문서 양식이 제각각이라 완전 자동화가 아직 비효율적임.</td>
+          </tr>
+          <tr>
+            <td class="scope-code">구현 범위</td>
+            <td class="what">알리오 공고 수집·제목 필터링, NCS 표준형식 PDF 자동 추출, TF-IDF 기반 카테고리 유사도 계산, SVG 지도·카드 렌더링.</td>
+          </tr>
+          <tr>
+            <td class="scope-exclude">제외 범위</td>
+            <td class="what">사용자 개인 프로필 입력("내 위치" 표시), 직무 이동 경로 추천, 민간 채용사이트 등 다른 데이터 소스 통합, 역할(15개) 단위 유사도 계산(지금은 카테고리 5개 단위만).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>실패 신호 — 이 방식이 틀렸다고 판단할 조건</h4>
+    <div class="notice">데이터를 더 모아도 특정 카테고리(CRM 등)가 계속 비어있거나, TF-IDF 유사도가 실제 체감과 어긋나게 나오거나(예: 무관한 직무가 가깝게 뜸), PDF 형식 다양성 때문에 수작업 비중이 줄지 않고 계속 늘어나는 경우.</div>
+  </section>
+
+  <footer>출처: 관심_채용공고_조사_정리.pdf · 정리일 2026-08-16</footer>
+
+</div>
+</body>
+</html>

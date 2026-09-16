@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>지뢰찾기 💣</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #fde8f5 0%, #e8e4f8 50%, #ddf0fb 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', 'Apple SD Gothic Neo', sans-serif;
+      padding: 24px 16px;
+    }
+
+    /* ── 게임 컨테이너 ── */
+    .game-wrap {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 8px 40px rgba(130,80,200,0.13), 0 2px 8px rgba(0,0,0,0.07);
+      max-width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 900;
+      background: linear-gradient(120deg, #a855f7, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+    }
+
+    /* ── 난이도 버튼 ── */
+    .diff-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .diff-btn {
+      padding: 7px 18px;
+      border: 2.5px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      transition: transform 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    .diff-btn.easy   { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .diff-btn.medium { background: #fef9c3; color: #92400e; border-color: #fde68a; }
+    .diff-btn.hard   { background: #fce7f3; color: #9d174d; border-color: #f9a8d4; }
+    .diff-btn.active { transform: scale(1.08); box-shadow: 0 4px 12px rgba(0,0,0,0.14); }
+    .diff-btn:hover:not(.active) { transform: scale(1.04); }
+
+    /* ── 상태바 ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+      border-radius: 16px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      gap: 8px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #6d28d9;
+      min-width: 64px;
+    }
+    .stat.right { justify-content: flex-end; }
+
+    .face-btn {
+      width: 46px;
+      height: 46px;
+      border: none;
+      border-radius: 50%;
+      font-size: 26px;
+      cursor: pointer;
+      background: white;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.13);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s;
+      line-height: 1;
+    }
+    .face-btn:hover  { transform: scale(1.12) rotate(-5deg); }
+    .face-btn:active { transform: scale(0.92); }
+
+    /* ── 그리드 ── */
+    .grid-scroll { overflow-x: auto; }
+
+    .grid {
+      display: inline-grid;
+      gap: 3px;
+      padding: 6px;
+      background: #ede9fe;
+      border-radius: 14px;
+      user-select: none;
+    }
+
+    /* ── 셀 ── */
+    .cell {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, filter 0.1s;
+      position: relative;
+    }
+
+    /* 숨겨진 셀 — 라벤더 그라디언트 */
+    .cell.hidden {
+      background: linear-gradient(145deg, #c4b5fd, #a78bfa);
+      box-shadow: 0 2px 5px rgba(109,40,217,0.25), inset 0 1px 0 rgba(255,255,255,0.35);
+      color: transparent;
+    }
+    .cell.hidden:hover {
+      filter: brightness(1.1);
+      transform: scale(1.1);
+      z-index: 1;
+    }
+    .cell.hidden:active { transform: scale(0.93); }
+
+    /* 열린 셀 */
+    .cell.open {
+      background: #f5f3ff;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+      cursor: default;
+    }
+
+    /* 깃발 */
+    .cell.flag {
+      background: linear-gradient(145deg, #fda4af, #f43f5e);
+      box-shadow: 0 2px 5px rgba(244,63,94,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      font-size: 16px;
+    }
+
+    /* 지뢰 노출 */
+    .cell.mine-show { background: #fde68a; font-size: 16px; }
+    .cell.mine-hit  { background: #ff6b6b; font-size: 16px; animation: shake 0.3s ease; }
+    .cell.wrong-flag { background: #fecaca; font-size: 14px; }
+
+    /* 숫자 색상 */
+    .n1 { color: #2563eb; }
+    .n2 { color: #16a34a; }
+    .n3 { color: #dc2626; }
+    .n4 { color: #7c3aed; }
+    .n5 { color: #c2410c; }
+    .n6 { color: #0891b2; }
+    .n7 { color: #374151; }
+    .n8 { color: #6b7280; }
+
+    @keyframes shake {
+      0%,100% { transform: translate(0); }
+      25%      { transform: translate(-3px, 0); }
+      75%      { transform: translate(3px, 0); }
+    }
+
+    /* ── 결과 오버레이 ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30,20,60,0.4);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .overlay.show { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 28px;
+      padding: 40px 44px 32px;
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+      animation: pop 0.32s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes pop {
+      from { transform: scale(0.75); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .modal-icon  { font-size: 68px; margin-bottom: 10px; }
+    .modal-title { font-size: 28px; font-weight: 900; color: #1e1040; margin-bottom: 6px; }
+    .modal-sub   { font-size: 15px; color: #888; margin-bottom: 28px; line-height: 1.6; }
+
+    .modal-btn {
+      padding: 13px 36px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: white;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+    }
+    .modal-btn:hover  { transform: scale(1.05); box-shadow: 0 6px 20px rgba(99,102,241,0.45); }
+    .modal-btn:active { transform: scale(0.97); }
+
+    /* ── 안내 텍스트 ── */
+    .guide {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #a78bfa;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-wrap">
+  <h1>지뢰찾기 💣</h1>
+
+  <div class="diff-row">
+    <button class="diff-btn easy active"   onclick="setDiff('easy')">🌱 초급</button>
+    <button class="diff-btn medium"        onclick="setDiff('medium')">🔥 중급</button>
+    <button class="diff-btn hard"          onclick="setDiff('hard')">💀 고급</button>
+  </div>
+
+  <div class="status-bar">
+    <div class="stat">💣 <span id="mine-disp">10</span></div>
+    <button class="face-btn" id="face-btn" onclick="newGame()">😊</button>
+    <div class="stat right">⏱ <span id="timer-disp">0</span></div>
+  </div>
+
+  <div class="grid-scroll">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="guide">왼쪽 클릭 열기 &nbsp;|&nbsp; 오른쪽 클릭 🚩 깃발</div>
+</div>
+
+<!-- 결과 오버레이 -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-icon"  id="m-icon">🎉</div>
+    <div class="modal-title" id="m-title">클리어!</div>
+    <div class="modal-sub"   id="m-sub">훌륭해요!</div>
+    <button class="modal-btn" onclick="newGame(); closeOverlay();">다시 하기 🎮</button>
+  </div>
+</div>
+
+<script>
+  /* ── 설정 ── */
+  const DIFF = {
+    easy:   { rows: 9,  cols: 9,  mines: 10 },
+    medium: { rows: 16, cols: 16, mines: 40 },
+    hard:   { rows: 16, cols: 30, mines: 99 },
+  };
+
+  const FACES = { idle: '😊', dead: '😵', win: '🥳' };
+
+  /* ── 상태 ── */
+  let diff       = 'easy';
+  let cfg        = DIFF[diff];
+  let board      = [];   // -1=지뢰, 0-8=숫자
+  let revd       = [];   // revealed
+  let flgd       = [];   // flagged
+  let gameState  = 'idle'; // idle | playing | dead | won
+  let firstClick = true;
+  let flagCount  = 0;
+  let timerID    = null;
+  let elapsed    = 0;
+
+  /* ── 난이도 변경 ── */
+  function setDiff(d) {
+    diff = d;
+    cfg  = DIFF[d];
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.diff-btn.${d}`).classList.add('active');
+    newGame();
+  }
+
+  /* ── 새 게임 ── */
+  function newGame() {
+    clearInterval(timerID);
+    elapsed    = 0;
+    flagCount  = 0;
+    gameState  = 'idle';
+    firstClick = true;
+
+    board = mat(cfg.rows, cfg.cols, 0);
+    revd  = mat(cfg.rows, cfg.cols, false);
+    flgd  = mat(cfg.rows, cfg.cols, false);
+
+    document.getElementById('timer-disp').textContent = '0';
+    document.getElementById('mine-disp').textContent  = cfg.mines;
+    document.getElementById('face-btn').textContent   = FACES.idle;
+
+    buildGrid();
+  }
+
+  /* ── 지뢰 배치 (첫 클릭 주변 3×3 안전) ── */
+  function placeMines(sr, sc) {
+    const safe = new Set();
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++) {
+        const r = sr+dr, c = sc+dc;
+        if (inBounds(r,c)) safe.add(r*cfg.cols+c);
+      }
+
+    let placed = 0;
+    while (placed < cfg.mines) {
+      const r = rnd(cfg.rows), c = rnd(cfg.cols);
+      if (board[r][c] !== -1 && !safe.has(r*cfg.cols+c)) {
+        board[r][c] = -1; placed++;
+      }
+    }
+    // 숫자 계산
+    for (let r = 0; r < cfg.rows; r++)
+      for (let c = 0; c < cfg.cols; c++) {
+        if (board[r][c] === -1) continue;
+        board[r][c] = neighbors(r, c).filter(([nr,nc]) => board[nr][nc] === -1).length;
+      }
+  }
+
+  /* ── 그리드 DOM 생성 ── */
+  function buildGrid() {
+    const g = document.getElementById('grid');
+    g.style.gridTemplateColumns = `repeat(${cfg.cols}, 30px)`;
+    g.innerHTML = '';
+
+    for (let r = 0; r < cfg.rows; r++)
+      for (let c = 0; c < cfg.cols; c++) {
+        const el = document.createElement('div');
+        el.className = 'cell hidden';
+        el.dataset.r = r; el.dataset.c = c;
+        el.addEventListener('click', onLeft);
+        el.addEventListener('contextmenu', onRight);
+        g.appendChild(el);
+      }
+  }
+
+  /* ── 이벤트 핸들러 ── */
+  function onLeft(e) {
+    if (gameState === 'dead' || gameState === 'won') return;
+    const r = +this.dataset.r, c = +this.dataset.c;
+    if (revd[r][c] || flgd[r][c]) return;
+
+    if (firstClick) {
+      firstClick = false;
+      gameState  = 'playing';
+      placeMines(r, c);
+      startTimer();
+    }
+
+    flood(r, c);
+    checkWin();
+  }
+
+  function onRight(e) {
+    e.preventDefault();
+    if (gameState === 'dead' || gameState === 'won') return;
+    const r = +this.dataset.r, c = +this.dataset.c;
+    if (revd[r][c]) return;
+
+    flgd[r][c] = !flgd[r][c];
+    flagCount  += flgd[r][c] ? 1 : -1;
+    document.getElementById('mine-disp').textContent = cfg.mines - flagCount;
+    refreshCell(r, c);
+  }
+
+  /* ── BFS 홍수 열기 ── */
+  function flood(startR, startC) {
+    const queue = [[startR, startC]];
+    while (queue.length) {
+      const [r, c] = queue.shift();
+      if (!inBounds(r,c) || revd[r][c] || flgd[r][c]) continue;
+
+      revd[r][c] = true;
+      refreshCell(r, c);
+
+      if (board[r][c] === -1) { triggerDead(r, c); return; }
+      if (board[r][c] === 0)
+        neighbors(r, c).forEach(([nr,nc]) => {
+          if (!revd[nr][nc] && !flgd[nr][nc]) queue.push([nr, nc]);
+        });
+    }
+  }
+
+  /* ── 지뢰 터짐 ── */
+  function triggerDead(hitR, hitC) {
+    gameState = 'dead';
+    clearInterval(timerID);
+    document.getElementById('face-btn').textContent = FACES.dead;
+
+    for (let r = 0; r < cfg.rows; r++)
+      for (let c = 0; c < cfg.cols; c++) {
+        if (board[r][c] === -1 && !flgd[r][c] && !(r===hitR && c===hitC)) {
+          revd[r][c] = true; refreshCell(r, c);
+        }
+        if (flgd[r][c] && board[r][c] !== -1) {
+          cellEl(r,c).className = 'cell wrong-flag'; cellEl(r,c).textContent = '❌';
+        }
+      }
+
+    const hit = cellEl(hitR, hitC);
+    hit.className = 'cell mine-hit'; hit.textContent = '💣';
+
+    setTimeout(() => showModal(false), 450);
+  }
+
+  /* ── 승리 판정 ── */
+  function checkWin() {
+    if (gameState === 'dead') return;
+    for (let r = 0; r < cfg.rows; r++)
+      for (let c = 0; c < cfg.cols; c++)
+        if (!revd[r][c] && board[r][c] !== -1) return;
+
+    gameState = 'won';
+    clearInterval(timerID);
+    document.getElementById('face-btn').textContent = FACES.win;
+    document.getElementById('mine-disp').textContent = '0';
+
+    for (let r = 0; r < cfg.rows; r++)
+      for (let c = 0; c < cfg.cols; c++)
+        if (board[r][c] === -1 && !flgd[r][c]) {
+          flgd[r][c] = true; refreshCell(r, c);
+        }
+
+    setTimeout(() => showModal(true), 350);
+  }
+
+  /* ── 셀 DOM 갱신 ── */
+  function refreshCell(r, c) {
+    const el = cellEl(r, c);
+    if (!el) return;
+
+    if (revd[r][c]) {
+      const v = board[r][c];
+      if (v === -1) {
+        el.className = 'cell mine-show'; el.textContent = '💣';
+      } else {
+        el.className = v > 0 ? `cell open n${v}` : 'cell open';
+        el.textContent = v > 0 ? v : '';
+      }
+    } else if (flgd[r][c]) {
+      el.className = 'cell flag'; el.textContent = '🚩';
+    } else {
+      el.className = 'cell hidden'; el.textContent = '';
+    }
+  }
+
+  /* ── 타이머 ── */
+  function startTimer() {
+    timerID = setInterval(() => {
+      elapsed++;
+      document.getElementById('timer-disp').textContent = elapsed;
+    }, 1000);
+  }
+
+  /* ── 결과 모달 ── */
+  function showModal(won) {
+    document.getElementById('m-icon').textContent  = won ? '🎉' : '💥';
+    document.getElementById('m-title').textContent = won ? '클리어!' : '펑!';
+    document.getElementById('m-sub').textContent   = won
+      ? `${elapsed}초 만에 성공!\n정말 대단해요 🌟`
+      : `아쉬워요! 다시 도전해봐요 💪`;
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeOverlay();
+  }
+
+  /* ── 유틸 ── */
+  function mat(r, c, v)  { return Array.from({length:r}, () => Array(c).fill(v)); }
+  function rnd(n)         { return Math.floor(Math.random() * n); }
+  function inBounds(r, c) { return r >= 0 && r < cfg.rows && c >= 0 && c < cfg.cols; }
+  function cellEl(r, c)   { return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`); }
+  function neighbors(r, c) {
+    const res = [];
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++)
+        if (dr||dc) { const nr=r+dr, nc=c+dc; if(inBounds(nr,nc)) res.push([nr,nc]); }
+    return res;
+  }
+
+  /* 시작 */
+  newGame();
+</script>
+</body>
+</html>

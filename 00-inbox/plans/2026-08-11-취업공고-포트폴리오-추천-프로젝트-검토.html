@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>취업공고 기반 포트폴리오 방향 추천 프로젝트 — 논의 정리</title>
+<style>
+  :root{
+    --bg:#16181c;
+    --panel:#1f2227;
+    --panel-2:#262a31;
+    --border:#34383f;
+    --text:#e8e8ea;
+    --text-dim:#9aa0aa;
+    --accent:#6fa8ff;
+    --accent-dim:#3a557f;
+    --ok:#7cc78a;
+    --warn:#e0a95f;
+    --danger:#e0665f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+  }
+  .wrap{ max-width:860px; margin:0 auto; padding:32px 20px 80px; }
+  header{ border-bottom:1px solid var(--border); padding-bottom:20px; margin-bottom:28px; }
+  header .eyebrow{ font-size:12.5px; color:var(--accent); letter-spacing:.04em; margin-bottom:8px; }
+  header h1{ font-size:23px; margin:0 0 10px; }
+  header .meta{ font-size:12.5px; color:var(--text-dim); }
+
+  h2{
+    font-size:16px; margin:40px 0 14px; padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:8px;
+  }
+  h2 .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:6px;
+    background:var(--accent-dim); color:#dbe8ff; font-size:12px; font-weight:600;
+  }
+  h3{ font-size:14px; margin:20px 0 8px; color:var(--text); }
+  p{ margin:8px 0; font-size:13.5px; }
+  ul{ margin:8px 0; padding-left:20px; }
+  li{ margin:5px 0; font-size:13.5px; }
+  li::marker{ color:var(--text-dim); }
+
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; margin:12px 0;
+  }
+  .card h3{ margin-top:0; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+
+  .tag{
+    display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px;
+    border:1px solid var(--border); color:var(--text-dim); margin-right:6px;
+  }
+  .tag.ok{ color:#c9f0cf; border-color:#3a5a3f; background:#1d2a20; }
+  .tag.warn{ color:#ffe3bd; border-color:#5a4a2f; background:#2a231a; }
+
+  .note{
+    background:var(--panel-2); border-left:3px solid var(--warn);
+    border-radius:0 8px 8px 0; padding:10px 14px; margin:8px 0;
+    font-size:12.5px; color:var(--text-dim);
+  }
+  .note b{ color:var(--warn); font-weight:600; }
+
+  .shelved{
+    background:var(--panel-2); border:1px dashed var(--border); border-radius:10px;
+    padding:14px 18px; margin:10px 0;
+  }
+  .shelved h3{ color:var(--text-dim); font-weight:500; }
+  .shelved ul{ margin:6px 0 0; }
+  .shelved li{ color:var(--text-dim); font-size:12.5px; }
+  .shelved li b{ color:var(--text); font-weight:600; }
+
+  code{
+    background:var(--panel-2); border:1px solid var(--border); border-radius:4px;
+    padding:1px 5px; font-size:12px; font-family:Consolas,monospace;
+  }
+  a{ color:var(--accent); }
+
+  footer{ margin-top:48px; padding-top:16px; border-top:1px solid var(--border); font-size:12px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">AI Agent 동아리 · 팀 프로젝트 기획 검토</div>
+    <h1>취업공고 기반 포트폴리오 방향 추천 프로그램</h1>
+    <div class="meta">논의 정리 · 2026-08-11 · 구현 전 아이디어 검토 단계</div>
+  </header>
+
+  <section>
+    <h2><span class="num">1</span>프로젝트 개요</h2>
+    <p>대학교 1~3학년을 대상으로, 취업공고를 "지금 바로 지원하는 용도"가 아니라 <b>포트폴리오 방향을 잡는 참고 자료</b>로 활용하게 하는 프로그램. 기존 취업 사이트(사람인·잡코리아 등)와는 목적이 다름 — 실사용 지원자가 아니라 저학년 학생의 진로 탐색이 타깃.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>기능 1 — 직무 추천 &amp; 종합 보고서</h3>
+        <p>학과 커리큘럼·역량과 연결되는 채용공고를 추천하고, 이를 취합해 "이 전공·역량으로 미래에 할 수 있는 일"을 분야별로 정리한 종합 보고서 제공.</p>
+      </div>
+      <div class="card">
+        <h3>기능 2 — 부족 스펙 추천</h3>
+        <p>기능 1에서 분석한 직무들에서 수요가 많은데 아직 갖추지 못한 자격증·역량(스펙)을 보완 항목으로 추천. 보완 과정을 <b>로드맵 &amp; 예상 포트폴리오 시각화</b>로 확장(5장 참고).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>실현 가능성 검토</h2>
+    <p><span class="tag ok">결론: 가능</span> 두 기능 모두 구현 가능하나, 관건은 코딩력이 아니라 <b>데이터 확보</b>와 <b>매칭 정확도</b>.</p>
+
+    <h3>데이터 소스</h3>
+    <ul>
+      <li><b>워크넷(고용24) Open API</b> — 공공데이터포털 무료 신청. 채용공고 + 직종분류 + 자격면허 코드까지 표준 체계로 제공. 이 프로젝트의 주축으로 적합.</li>
+      <li><b>사람인 오픈API</b> — 승인 필요, 일 500회 호출 제한. 소규모 파일럿 보조용.</li>
+      <li><b>NCS(국가직무능력표준) Open API</b> — 능력단위별 공식 정의문·수준(1~8단계)을 이미 제공. 자체 용어사전을 새로 만들 필요 없이 이 표준을 그대로 활용 가능.</li>
+    </ul>
+    <div class="note"><b>주의</b> — 사람인/잡코리아/원티드 등을 직접 스크래핑하는 방식은 이용약관 위반 소지, 동적 렌더링으로 인한 기술적 난도, IP 차단 위험이 있어 배제. 공식 Open API 경로로 대체.</div>
+
+    <h3>남은 과제</h3>
+    <ul>
+      <li>커리큘럼 데이터가 학교·학과마다 비표준 → 전국 대상이 아니라 자기 학교 1~2개 학과로 파일럿 범위 축소 권장.</li>
+      <li>직무 분류 체계를 직접 설계하지 말고 NCS·한국고용직업분류(KECO) 같은 기존 표준 재사용.</li>
+      <li>"수요 많은 스펙" 판단에는 통계적으로 유의미한 공고 표본 수 필요, 트렌드 반영에는 주기적 수집 필요.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>방향 전환 — 커리큘럼 매칭에서 "용어 이해"로</h2>
+    <p>저학년은 전공수업을 아직 많이 듣지 못해 "SQL, RDBMS 경험" 같은 채용공고 용어 자체를 이해하기 어렵다는 문제의식에서, 접근 방식을 <b>텍스트 의미 매칭</b>이 아니라 <b>번역/해설</b> 문제로 재정의.</p>
+    <ul>
+      <li><b>NCS를 쉬운말 사전의 뼈대로 사용</b> — 능력단위별 공식 정의를 그대로 노출해 신뢰도 확보.</li>
+      <li><b>실시간 용어 해설 레이어</b> — 공고 속 전문용어를 LLM이 즉석에서 쉬운 설명 + 비유 + 학습 경로로 풀어줌. 두 문서를 비교하는 매칭보다 훨씬 안정적인 작업.</li>
+      <li><b>자유 텍스트 대신 태그 체크리스트 입력</b> — 학생 입력을 정제된 태그(퀴즈 형태)로 받고, 공고도 NCS 태그로 분류해 매칭을 "태그 교집합"으로 단순화. 정교함은 다소 포기하되 초기 MVP엔 안전한 선택. <i>다만 아직 안 들은 과목의 역량은 학생이 스스로 판단하기 어려워 보완 필요 → 4장 참고.</i></li>
+      <li><b>선배·현직자 코멘트 크라우드소싱</b> — 기계적 설명 옆에 실제 합격자의 실사용 설명을 덧붙여 공감대와 신뢰도 확보.</li>
+      <li><b>액션 아이템 결합</b> — 용어 설명에서 끝내지 않고 난이도 태그 + 무료 학습 경로 + "지금 해볼 수 있는 것"까지 제공.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>커리큘럼 → 역량 매핑을 만드는 방법</h2>
+    <p>저학년은 아직 안 들은 과목이 어떤 역량을 주는지 스스로 판단하기 어렵고, 대학·학과마다 과목명·커리큘럼이 달라 하나의 매핑표를 만들기도 어렵다는 문제. <b>핵심 전환</b>: 학생에게 역량 판단을 맡기지 않고, 학생은 자기가 이미 아는 정보(학과·학년·과목명)만 입력하게 하고, "과목→역량" 변환은 시스템이 미리 구축해둔 매핑 DB가 대신 답하도록 역할을 분리.</p>
+    <ul>
+      <li><b>강의계획서의 학습목표/교과목 개요 활용</b> — 과목명은 학교마다 제각각이고 정보량도 적지만, 강의계획서의 학습목표 필드는 형식은 달라도 대부분 존재하고 훨씬 풍부한 텍스트라 매칭 정확도의 근본 소스로 적합.</li>
+      <li><b>학과가 이미 만든 "이수체계도" 재사용</b> — 특히 공학 계열은 ABEEK 등 인증평가 때문에 과목별 분야 분류가 이미 정리돼 있는 경우가 많음. 새로 분류를 만들 필요 없이 기존 자료를 가져다 쓰는 방식.</li>
+      <li><b>원문 과목명 대신 "표준 분야 라벨"로 정규화</b> — "데이터베이스개론" "DB시스템" 등 학교마다 다른 과목명을 하나의 표준 분야 라벨(예: 데이터베이스)로 흡수. 학교가 늘어나도 라벨 체계 자체는 안 바뀜.</li>
+      <li><b>매핑 작업 주체를 학생에서 "이미 들은 사람"으로 이전</b> — 신입생이 아니라 그 과목을 이미 수강한 선배·조교가 학기당 1회 태그를 다는 크라우드소싱. 정확도는 높이고 유지 비용은 낮춤.</li>
+      <li><b>LLM 초안 + 사람 검수 하이브리드</b> — 강의계획서 텍스트를 LLM으로 NCS 능력단위/표준 역량 태그에 자동 분류한 뒤, 동아리원·조교가 검수·수정. 완전 자동 매칭의 정확도 리스크를 낮추는 절충안.</li>
+      <li><b>시작 범위</b> — 전국 대상이 아니라 자기 학교 1~2개 학과의 전공 필수·핵심 과목(30~50개 내외)을 수동으로 1회 구축 후, 위 방식들로 점차 확장.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>용어가 너무 많을 때 — 그룹화 전략</h2>
+    <p>Python, C++, PyTorch, TensorFlow, Git, AWS, Linux, SQL, CAD, Java, MSSQL, Oracle 등 용어량이 많아 낱개 나열은 정보 과부하, "숫자를 좋아한다" 식 성향 분류는 근거 부족으로 신뢰도가 떨어진다는 점에서 다음 방향으로 정리.</p>
+    <ul>
+      <li><b>기술 스택 계층 축</b> — 언어(Python·C++·C·Java) / AI프레임워크(PyTorch·TensorFlow) / 데이터베이스(SQL·MSSQL·Oracle) / 인프라·협업(Git·AWS·Linux) / 설계(CAD). 업계 실제 구분이라 근거 있음.</li>
+      <li><b>용도 축</b> — "무엇을 만들 때 쓰는가"로 재배열 (예: AI 모델 학습에 쓰는 도구 / 데이터 저장·검색에 쓰는 도구 / 서버 운영에 쓰는 도구). 계층 축과 보완적으로 사용.</li>
+      <li><b>점진적 정보 공개</b> — 카테고리만 먼저 보여주고 클릭 시 세부 용어 펼침, 직무군별 상위 5~8개 용어만 우선 노출.</li>
+      <li><b>공고 내 동시출현 콤보(데이터 기반)</b> — "Python+PyTorch+SQL"처럼 실제 공고에서 같이 등장하는 조합을 하나의 직무 스택 단위로 제시. 임의 분류가 아니라 실제 데이터 근거가 있어 신뢰도 가장 높음.</li>
+      <li><b>난이도/진입 시점 태깅</b> — 학년에 맞게 필터링 가능하도록 "지금 시작 가능" ~ "전공 심화 후" 단계 표시.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>로드맵 &amp; 예상 포트폴리오 시각화 <span class="tag ok">기능 2 확장</span></h2>
+    <p>기능 2(부족 스펙 추천)에 "시간에 따라 어떻게 보완해나갈지"와 "그 끝에 무엇을 갖추게 되는지"를 시각화하는 두 요소를 추가. 성격이 다른 두 가지라 설계를 분리해서 접근.</p>
+
+    <h3>6-1. 스펙 보완 로드맵</h3>
+    <ul>
+      <li><b>선후관계 기준</b> — NCS 능력단위의 수준(1~8단계)을 활용해 낮은 수준을 먼저, 높은 수준을 나중에 배치. 별도 설계 없이 기존 표준으로 순서를 도출.</li>
+      <li><b>소요기간 표현</b> — 개인차가 커서 정밀한 기간 추정은 어려움 → "한 학기 / 방학 / 단기(1~2주)" 같은 러프한 범주로 단순화해 신뢰도 문제를 피함.</li>
+      <li><b>시각화 형태</b> — 학기별 체크리스트, 게임 스킬트리(선수→후속 스펙 연결), 간트차트형 타임라인 중 검토. 저학년 대상이라는 점에서 <b>스킬트리 스타일</b>이 가장 직관적일 가능성이 높음.</li>
+    </ul>
+
+    <h3>6-2. 예상 포트폴리오 시각화</h3>
+    <p>아직 하지 않은 미래 프로젝트의 결과물을 그대로 "예측"해서 보여주는 건 근거 없는 약속처럼 보일 위험이 있어, 아래 세 요소의 조합으로 재정의.</p>
+    <ul>
+      <li><b>역량 프로필 카드</b> — 로드맵 완료 시점에 갖추게 될 스펙을 뱃지·레이더차트로 시각화. "포트폴리오"가 아니라 "그 시점의 역량 프로필"임을 명확히 함.</li>
+      <li><b>목표 직무 매칭률 진행바</b> — "현재 목표 직무 요건 40% 충족 → 로드맵 완료 시 85% 충족" 형태로 기능 1의 직무 추천과 다시 연결.</li>
+      <li><b>포트폴리오 프로젝트 예시 추천</b> — 창작 예측 대신, 해당 스펙 조합을 갖춘 사람들이 일반적으로 만드는 프로젝트 유형을 예시/템플릿으로 제시.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">7</span>보류·기각된 아이디어 <span class="tag warn">구현 난도로 축소/대체</span></h2>
+    <div class="shelved">
+      <ul>
+        <li><b>전국 모든 대학·학과 대상 매칭</b> — 커리큘럼 데이터 비표준으로 범위 과다 → 자기 학교 1~2개 학과 파일럿으로 축소.</li>
+        <li><b>커리큘럼 텍스트 ↔ 채용공고 텍스트 직접 의미 매칭</b> — 오매칭(그럴듯한 오답) 위험, 정확도 검증 어려움 → NCS 표준 + 태그 매칭 방식으로 대체.</li>
+        <li><b>"숫자를 다루는 게 좋다" 식 성향 기반 용어 분류</b> — 근거가 개인 취향이라 신뢰도 낮음 → 기술 스택/용도/동시출현 콤보 축으로 대체.</li>
+        <li><b>사람인·잡코리아·원티드 직접 스크래핑</b> — 이용약관 위반 소지, 동적 렌더링 기술 난도, 차단 위험 → 워크넷·사람인 공식 Open API로 대체.</li>
+        <li><b>실시간 트렌드(시계열) 반영</b> — 동아리 프로젝트 규모상 주기적 수집 인프라 부담 → 1회성 스냅샷으로 범위 축소, 트렌드 반영은 향후 과제로 보류.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    이 문서는 구현 이전 아이디어 검토 단계의 논의를 정리한 기록입니다. 다음 단계로는 파일럿 대상 학과 선정, 워크넷/NCS Open API 신청, 태그 체계 초안 설계가 필요합니다.
+  </footer>
+
+</div>
+</body>
+</html>

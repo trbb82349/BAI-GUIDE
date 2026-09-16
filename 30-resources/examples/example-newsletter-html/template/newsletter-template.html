@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{페이지 설명 한 줄}}">
+  <title>{{문서 제목}}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <style>
+    /* ==========================================================================
+       Paper & Ink — 신문/뉴스레터 톤의 문서/칼럼용 스타일시트
+       핵심 원칙
+       - 색은 3+1개: 종이(--paper), 라벨(--label), 잉크(--ink), 레드(--red)
+       - 곡률 0 (border-radius 없음), 그림자는 딱딱한 오프셋(box-shadow: NpxNpx 0 ink)만
+       - 테두리는 2px 잉크 실선이 기본, 구분선은 헤어라인
+       - --red 하나만 바꿔도 전체 포인트 컬러가 바뀜
+       ========================================================================== */
+
+    :root {
+      --paper: #f1ecdf;
+      --label: #faf7ee;
+      --ink: #17130c;
+      --red: #5f0080;
+      --hairline: rgba(23, 19, 12, 0.28);
+      --hairline-soft: rgba(23, 19, 12, 0.14);
+      --ink-60: rgba(23, 19, 12, 0.6);
+      --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+        BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR",
+        "Malgun Gothic", sans-serif;
+      --measure: 40rem;
+      --wide: 68rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 16px;
+      font-feature-settings: "tnum";
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      position: relative;
+    }
+
+    /* 종이 질감: 화면 전체에 살짝 얹는 노이즈 오버레이 */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; }
+    ::selection { background: var(--red); color: var(--label); }
+
+    .wrap {
+      max-width: var(--wide);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* 구분 바 — 섹션분할용 굵은/가는 가로선 */
+    .bar-8 { height: 9px; background: var(--ink); border: 0; }
+    .bar-4 { height: 4px; background: var(--ink); border: 0; }
+    .bar-1 { height: 1px; background: var(--hairline); border: 0; }
+
+    /* 상단 바 — 발행 정보 한 줄 (좌: 매체명 / 우: 날짜·호수) */
+    .topbar {
+      border-bottom: 2px solid var(--ink);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .topbar .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 0.55rem;
+      padding-bottom: 0.55rem;
+    }
+    .topbar span:last-child { text-align: right; font-weight: 500; }
+
+    /* 히어로 — 표지 대형 타이틀. <em>은 레드 강조(기울임 아님) */
+    .hero {
+      position: relative;
+      padding: clamp(3rem, 8vw, 6rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+      overflow: hidden;
+    }
+    .hero-kicker {
+      display: inline-block;
+      border: 2px solid var(--ink);
+      padding: 0.2rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin-bottom: 1.4rem;
+      animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .hero h1 {
+      font-size: clamp(3.2rem, 13vw, 8.5rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 0.98;
+      text-wrap: balance;
+      animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s both;
+    }
+    .hero h1 em { font-style: normal; color: var(--red); }
+    .hero-sub {
+      margin-top: 1.6rem;
+      max-width: 34rem;
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      font-weight: 500;
+      line-height: 1.7;
+      animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.16s both;
+    }
+
+    /* 스탬프 — 기울어진 이중 원형 도장. 표지의 시그니처 오브젝트 */
+    .stamp {
+      position: absolute;
+      right: clamp(0.5rem, 6vw, 5rem);
+      top: clamp(2.2rem, 6vw, 4rem);
+      width: clamp(6.5rem, 14vw, 10rem);
+      height: clamp(6.5rem, 14vw, 10rem);
+      border: 3px double var(--red);
+      border-radius: 50%;
+      color: var(--red);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.15rem;
+      text-align: center;
+      transform: rotate(9deg);
+      font-weight: 900;
+      animation: stampIn 0.5s cubic-bezier(0.3, 1.6, 0.4, 1) 0.5s both;
+    }
+    .stamp b { font-size: clamp(1.05rem, 2.4vw, 1.6rem); letter-spacing: -0.02em; }
+    .stamp small { font-size: 0.6rem; letter-spacing: 0.22em; font-weight: 700; }
+
+    @keyframes rise {
+      0% { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes stampIn {
+      0% { opacity: 0; transform: rotate(9deg) scale(1.6); }
+      to { opacity: 1; transform: rotate(9deg) scale(1); }
+    }
+
+    /* 티커 — 레드 배경 흐르는 전광판. 내용은 두 번 반복해 넣어야 이어짐 */
+    .ticker {
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      background: var(--red);
+      color: var(--label);
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      padding: 0.45rem 0;
+    }
+    .ticker-track { display: inline-block; animation: ticker 28s linear infinite; }
+    .ticker-track span { margin-right: 2.5rem; }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* 리드 섹션 — 소개문(좌) + 스펙 카드(우) 2단 그리드 */
+    .lead { padding: clamp(3rem, 7vw, 5.5rem) 0; }
+    .lead .wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: clamp(2rem, 5vw, 4.5rem);
+      align-items: start;
+    }
+
+    /* 섹션 번호 라벨: "01 — 소개" 형태, 레드 */
+    .section-no {
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: var(--red);
+      margin-bottom: 0.6rem;
+    }
+    .lead h2,
+    .toc h2 {
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .lead-copy p { max-width: 30rem; font-weight: 500; margin-bottom: 1.1rem; }
+    .lead-copy p b,
+    .hl {
+      font-weight: 800;
+      box-shadow: inset 0 -0.5em 0 rgba(95, 0, 128, 0.18);
+    }
+
+    /* CTA 박스 — 딱딱한 오프셋 그림자 입력폼 (구독/문의/다운로드 등) */
+    .cta {
+      margin-top: 2rem;
+      border: 2px solid var(--ink);
+      background: var(--label);
+      padding: 1.4rem;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .cta-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      margin-bottom: 0.6rem;
+    }
+    .cta-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .cta input[type="email"],
+    .cta input[type="text"] {
+      flex: 1 1 12rem;
+      min-width: 0;
+      border: 2px solid var(--ink);
+      background: transparent;
+      font: inherit;
+      font-weight: 600;
+      padding: 0.7rem 0.9rem;
+      border-radius: 0;
+    }
+    .cta input:focus { outline: 3px solid var(--red); outline-offset: 2px; }
+    .btn,
+    .cta button {
+      border: 2px solid var(--ink);
+      background: var(--ink);
+      color: var(--label);
+      font: inherit;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      padding: 0.7rem 1.4rem;
+      cursor: pointer;
+      border-radius: 0;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+    .btn:hover,
+    .cta button:hover { background: var(--red); border-color: var(--red); }
+    .btn:active,
+    .cta button:active { transform: translate(2px, 2px); }
+    .cta-note {
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      color: rgba(23, 19, 12, 0.65);
+      font-weight: 500;
+    }
+
+    /* 스펙 카드 — 영양성분표 스타일 정보 박스 (문서 개요/스펙/요약에 사용) */
+    .spec {
+      border: 2px solid var(--ink);
+      background: var(--label);
+      padding: 0.9rem 1rem 1rem;
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+    .spec-title {
+      font-size: clamp(2rem, 4.5vw, 2.7rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .spec-serving {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.35rem 0;
+    }
+    .spec .bar-8 { margin: 0.35rem 0; }
+    .spec .bar-4 { margin: 0.45rem 0; }
+    .spec-colhead {
+      text-align: right;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .spec-row:last-of-type { border-bottom: 0; }
+    .spec-row b { font-weight: 800; }
+    .spec-row .amt { font-weight: 900; white-space: nowrap; }
+    .spec-row.sub {
+      padding-left: 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(23, 19, 12, 0.75);
+    }
+    .spec-foot {
+      font-size: 0.74rem;
+      line-height: 1.6;
+      color: rgba(23, 19, 12, 0.7);
+      font-weight: 500;
+    }
+    .spec-foot p + p { margin-top: 0.3rem; }
+
+    /* 목차/목록 — 시리즈 회차 리스트. 행 전체가 링크, 호버 시 흑백 반전 */
+    .toc {
+      border-top: 2px solid var(--ink);
+      padding: clamp(3rem, 7vw, 5rem) 0 clamp(4rem, 8vw, 6rem);
+    }
+    .toc-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+      flex-wrap: wrap;
+    }
+    .toc-meta {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
+    .toc-list { list-style: none; border-top: 3px solid var(--ink); }
+    .toc-list a {
+      display: grid;
+      grid-template-columns: 3.6rem minmax(0, 1fr) auto 1.9rem;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.72rem 0.5rem;
+      border-bottom: 1px solid var(--hairline);
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+    }
+    .toc-list a:hover { background: var(--ink); color: var(--label); }
+    .toc-list a:hover .chip { border-color: currentColor; }
+    .toc-no { font-weight: 900; font-size: 0.95rem; letter-spacing: 0.02em; }
+    .toc-title {
+      font-weight: 700;
+      font-size: 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .toc-sub {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--ink-60);
+      white-space: nowrap;
+    }
+    .toc-list a:hover .toc-sub { color: rgba(250, 247, 238, 0.7); }
+
+    /* 칩 — 행 끝의 정사각 태그 (분류/상태 한 글자) */
+    .chip {
+      width: 1.7rem;
+      height: 1.7rem;
+      border: 2px solid var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 900;
+      justify-self: end;
+    }
+    .chip.tbd {
+      border-style: dashed;
+      color: rgba(23, 19, 12, 0.5);
+      font-size: 0.65rem;
+    }
+    .toc-empty {
+      border: 2px dashed var(--hairline);
+      padding: 1.6rem 1.2rem;
+      text-align: center;
+      font-weight: 600;
+      color: rgba(23, 19, 12, 0.65);
+    }
+    .toc-note {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-60);
+    }
+
+    /* 푸터 — 흑백 반전 블록 */
+    .footer {
+      border-top: 3px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 2.2rem 0 2.6rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+    .footer .wrap p + p { margin-top: 0.2rem; }
+    .footer b { font-weight: 800; letter-spacing: 0.05em; }
+    .footer a { text-decoration: underline; text-underline-offset: 0.2em; }
+
+    /* ==========================================================================
+       이슈(개별 글) 페이지 (.issue) — 칼럼/상세 페이지. 좁은 measure 1단 컬럼
+       ========================================================================== */
+    .issue {
+      max-width: var(--measure);
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    .issue-back {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      border: 2px solid var(--ink);
+      padding: 0.25rem 0.7rem;
+      margin-bottom: 2rem;
+      transition: background 0.12s, color 0.12s;
+    }
+    .issue-back:hover { background: var(--ink); color: var(--paper); }
+
+    /* 헤드 메타: 좌측 대형 번호(#01 / 64) + 우측 시리즈명 */
+    .issue-head-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .issue-head-meta .no { font-size: 2rem; font-weight: 900; letter-spacing: -0.02em; }
+    .issue-head-meta .no small {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(23, 19, 12, 0.55);
+    }
+    .issue h1 {
+      font-size: clamp(1.9rem, 6.5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
+      margin: 0.4rem 0 0.9rem;
+      text-wrap: balance;
+    }
+
+    /* 제목 아래 레드 태그 (분류/카테고리) */
+    .issue-tag {
+      display: inline-block;
+      border: 2px solid var(--red);
+      color: var(--red);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 0.18rem 0.65rem;
+      margin-bottom: 1.2rem;
+    }
+    .issue .bar-8 { margin: 0.6rem 0 1.8rem; }
+
+    .issue-body { font-size: 1.0625rem; line-height: 1.72; }
+    /* 소제목: 위쪽 4px 잉크 굵은 선 — 섹션분할용 */
+    .issue-body h2 {
+      border-top: 4px solid var(--ink);
+      padding-top: 0.55rem;
+      margin: 1.8rem 0 0.65rem;
+      font-size: 1.28rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+    .issue-body h3 {
+      margin: 1.35rem 0 0.5rem;
+      font-size: 1.18rem;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+    }
+    .issue-body h4 {
+      margin: 1.15rem 0 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+    }
+    .issue-body p { margin-bottom: 0.65rem; }
+    .issue-body p.note {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: rgba(23, 19, 12, 0.66);
+      line-height: 1.7;
+    }
+
+    /* 번호 리스트: 01 02 03 레드 카운터 + 헤어라인. 링크를 넣으면 → 화살표 정렬 */
+    .issue-body ol {
+      list-style: none;
+      counter-reset: track;
+      margin-bottom: 0.85rem;
+    }
+    .issue-body ol li {
+      counter-increment: track;
+      display: flex;
+      gap: 0.8rem;
+      align-items: baseline;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--hairline-soft);
+    }
+    .issue-body ol li::before {
+      content: counter(track, decimal-leading-zero);
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: var(--red);
+      min-width: 1.6rem;
+    }
+    .issue-body ol li a {
+      text-decoration: none;
+      font-weight: 700;
+      flex: 1 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      align-items: baseline;
+    }
+    .issue-body ol li a .arrow {
+      color: var(--red);
+      font-weight: 900;
+      transition: transform 0.15s;
+    }
+    .issue-body ol li a:hover { color: var(--red); }
+    .issue-body ol li a:hover .arrow { transform: translate(3px, -3px); }
+
+    /* 불릿 리스트 */
+    .issue-body ul { list-style: none; margin-bottom: 0.85rem; }
+    .issue-body ul li {
+      display: flex;
+      gap: 0.8rem;
+      align-items: baseline;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--hairline-soft);
+    }
+    .issue-body ul li::before {
+      content: "▱";
+      color: var(--red);
+      font-weight: 900;
+      font-size: 0.85rem;
+      min-width: 1.6rem;
+    }
+
+    /* 본문 링크: 레드 + 두꺼운 밑줄 */
+    .issue-body p a {
+      color: var(--red);
+      font-weight: 700;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      word-break: break-all;
+    }
+
+    /* 인용: 레드 왼쪽 괘선 */
+    .issue-body blockquote {
+      border-left: 4px solid var(--red);
+      padding: 0.2rem 0 0.2rem 1rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* 표: 섹션분할 괘선 문법 */
+    .issue-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.2rem;
+      font-size: 0.95rem;
+    }
+    .issue-body th {
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      border-bottom: 3px solid var(--ink);
+      padding: 0.4rem 0.6rem 0.35rem 0;
+    }
+    .issue-body td {
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.5rem 0.6rem 0.5rem 0;
+      vertical-align: top;
+    }
+
+    /* 마무리 박스: 가운데 정렬 딱딱한 오프셋 */
+    .issue-outro {
+      margin-top: 2.6rem;
+      border: 2px solid var(--ink);
+      padding: 1rem 1.2rem;
+      text-align: center;
+      font-weight: 800;
+      background: var(--label);
+      box-shadow: 5px 5px 0 var(--ink);
+    }
+
+    /* 이전/다음 내비게이션 */
+    .issue-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-top: 2.5rem;
+      border-top: 3px solid var(--ink);
+      padding-top: 1.2rem;
+    }
+    .issue-nav a {
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      max-width: 46%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .issue-nav a:hover { color: var(--red); }
+    .issue-nav .next { margin-left: auto; text-align: right; }
+
+    @media (max-width: 52rem) {
+      .lead .wrap { grid-template-columns: 1fr; }
+      .spec { box-shadow: 6px 6px 0 var(--ink); }
+      .toc-list a { grid-template-columns: 2.9rem minmax(0, 1fr) 1.9rem; }
+      .toc-sub { display: none; }
+      .stamp { position: static; margin-top: 1.6rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, ::after, ::before {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media print {
+      body::after { display: none; }
+      .ticker-track { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <article class="issue">
+    <header>
+      <div class="issue-head-meta">
+        <span class="no">#{{회차 번호, 예: 01}}<small> / {{전체 회차 수}}</small></span>
+        <span>{{시리즈명, 예: SINGLE DOCUMENT}}</span>
+      </div>
+      <h1>{{문서 제목}}</h1>
+      <div class="issue-tag">{{제목 아래 분류 태그}}</div>
+      <hr class="bar-8">
+    </header>
+
+    <div class="issue-body">
+      <h2>1. {{첫 번째 섹션 제목}}</h2>
+      <p>{{본문 문단}}</p>
+
+      <h4>{{소제목}}</h4>
+      <ul>
+        <li>{{불릿 항목}}</li>
+        <li>{{불릿 항목}}</li>
+      </ul>
+
+      <h2>2. {{두 번째 섹션 제목}}</h2>
+      <p>{{본문 문단}}</p>
+      <blockquote>{{인용하고 싶은 핵심 문장}}</blockquote>
+
+      <h3>{{소제목}}</h3>
+      <ol>
+        <li><a href="#">{{항목명}} <span class="arrow">→</span></a></li>
+        <li><a href="#">{{항목명}} <span class="arrow">→</span></a></li>
+      </ol>
+
+      <table>
+        <tr><th>{{열1}}</th><th>{{열2}}</th></tr>
+        <tr><td>{{값}}</td><td>{{값}}</td></tr>
+      </table>
+
+      <h2>핵심 정리</h2>
+      <ul>
+        <li>{{요약 항목}}</li>
+        <li>{{요약 항목}}</li>
+      </ul>
+
+      <div class="issue-outro">{{마무리 한 문장}}</div>
+
+      <nav class="issue-nav">
+        <a href="#">← {{이전 글 제목}}</a>
+        <a class="next" href="#">{{다음 글 제목}} →</a>
+      </nav>
+    </div>
+  </article>
+</body>
+</html>

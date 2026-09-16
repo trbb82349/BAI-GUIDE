@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareerLens — 업무카드로 찾는 내 분야</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --ink: #16181d;
+    --muted: #62697a;
+    --faint: #9aa1b0;
+    --line: #e2e5eb;
+    --line-strong: #cdd2dc;
+    --brand: #4338ca;
+    --brand-soft: #eeecfd;
+    --brand-ink: #ffffff;
+    --shadow: 0 1px 2px rgba(20,20,30,.05), 0 10px 24px -16px rgba(20,20,30,.25);
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6; word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 60rem; margin: 0 auto; padding: 2rem 1.1rem 8rem; }
+
+  header.top { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.6rem; }
+  header.top .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 800; margin: 0; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: .98rem; max-width: 40rem; margin: 0; }
+
+  .guide {
+    display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+    background: var(--brand-soft); color: var(--brand); border-radius: 8px;
+    padding: .6rem .9rem; font-size: .86rem; font-weight: 600; margin-top: .8rem;
+  }
+  .guide .sub { font-weight: 500; color: #5b52c7; font-size: .82rem; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: .7rem; margin-top: 1.4rem;
+  }
+
+  .card {
+    text-align: left; cursor: pointer; border: 1.5px solid var(--line);
+    background: var(--surface); border-radius: 12px; padding: .95rem 1.05rem;
+    box-shadow: var(--shadow); transition: border-color 120ms ease, transform 120ms ease, background 120ms ease;
+    display: flex; flex-direction: column; gap: .3rem; font-family: inherit;
+  }
+  .card:hover { border-color: var(--brand); transform: translateY(-1px); }
+  .card:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  .card.selected { border-color: var(--brand); background: var(--brand-soft); }
+  .card .label {
+    font-weight: 800; font-size: 1rem; letter-spacing: -.01em; color: var(--ink);
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .card.selected .label { color: var(--brand); }
+  .card .label::before {
+    content: ""; width: 1.15rem; height: 1.15rem; border-radius: 50%;
+    border: 2px solid var(--line-strong); flex: none; background: var(--surface);
+  }
+  .card.selected .label::before {
+    border-color: var(--brand); background: var(--brand);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M7.6 13.4 4.3 10l-1.4 1.4 4.7 4.7 9-9L15.2 5.7z'/%3E%3C/svg%3E");
+    background-size: 70%; background-position: center; background-repeat: no-repeat;
+  }
+  .card .desc { color: var(--muted); font-size: .88rem; padding-left: 1.55rem; }
+
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(6px);
+    border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -16px rgba(20,20,30,.3);
+  }
+  .bar-inner {
+    max-width: 60rem; margin: 0 auto; padding: .85rem 1.1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .bar .count { font-weight: 700; font-size: .92rem; }
+  .bar .count b { color: var(--brand); font-variant-numeric: tabular-nums; }
+  .bar .hint { color: var(--faint); font-size: .8rem; }
+  button.primary {
+    font-family: inherit; font-weight: 800; font-size: .95rem; border: none; border-radius: 9px;
+    padding: .75rem 1.5rem; background: var(--brand); color: var(--brand-ink); cursor: pointer;
+    transition: transform 120ms ease, opacity 120ms ease;
+  }
+  button.primary:hover:not(:disabled) { transform: translateY(-1px); }
+  button.primary:disabled { background: var(--line-strong); color: var(--faint); cursor: not-allowed; }
+  button.ghost {
+    font-family: inherit; font-weight: 700; font-size: .86rem; border: 1.5px solid var(--line-strong);
+    border-radius: 9px; padding: .55rem 1.1rem; background: var(--surface); color: var(--muted); cursor: pointer;
+  }
+  button.ghost:hover { border-color: var(--brand); color: var(--brand); }
+
+  .result-view { display: none; flex-direction: column; gap: 1.2rem; }
+  .result-view.active { display: flex; }
+  .grid-view.hidden { display: none; }
+
+  .result-head { display: flex; flex-direction: column; gap: .4rem; }
+  .result-head h2 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -.02em; }
+  .result-head p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+  .result-card {
+    background: var(--surface); border: 1.5px solid var(--line); border-left: 5px solid var(--brand);
+    border-radius: 12px; padding: 1.3rem 1.4rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: .7rem;
+  }
+  .result-card .rank { font-family: var(--mono); font-size: .72rem; color: var(--brand); font-weight: 700; letter-spacing: .06em; }
+  .result-card h3 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -.015em; }
+  .result-card .why { color: var(--ink); font-size: .92rem; background: var(--brand-soft); border-radius: 8px; padding: .7rem .9rem; }
+  .result-card .why b { color: var(--brand); }
+  .result-card .picked { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .result-card .picked span {
+    font-size: .82rem; font-weight: 600; color: var(--muted); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 999px; padding: .3rem .7rem;
+  }
+
+  .reference-block {
+    border-top: 1px dashed var(--line-strong); padding-top: 1rem; margin-top: .3rem;
+    display: flex; flex-direction: column; gap: .6rem;
+  }
+  .reference-head { display: flex; flex-direction: column; gap: .15rem; }
+  .reference-title { font-size: .82rem; font-weight: 700; color: var(--faint); }
+  .reference-desc { font-size: .78rem; color: var(--faint); }
+  .reference-list { display: flex; flex-direction: column; gap: .4rem; }
+  .ref-item {
+    display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+    font-size: .8rem; color: var(--faint); background: var(--surface);
+    border: 1px dashed var(--line); border-radius: 8px; padding: .5rem .7rem;
+  }
+  .ref-item .ref-field { font-weight: 700; color: var(--muted); }
+  .ref-item .ref-cards { color: var(--faint); }
+
+  footer.note {
+    margin-top: 2.5rem; font-size: .8rem; color: var(--faint); border-top: 1px solid var(--line);
+    padding-top: 1rem; line-height: 1.7;
+  }
+
+  /* ---------- 상단 탭(카드 선택 / 설명) ---------- */
+  .tabnav { display: flex; gap: .3rem; border-bottom: 2px solid var(--line); margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .tab-btn {
+    font-family: inherit; font-weight: 800; font-size: .92rem; letter-spacing: -.01em;
+    padding: .7rem 1.1rem; border: none; background: transparent; color: var(--faint); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 120ms ease, border-color 120ms ease;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ---------- 설명 탭 ---------- */
+  .explain-panel { display: flex; flex-direction: column; gap: 1.6rem; padding-bottom: 2rem; }
+  /* display:flex가 [hidden]의 기본 display:none보다 우선 적용될 수 있어 명시적으로 강제 */
+  .explain-panel[hidden] { display: none !important; }
+  .explain-panel section { display: flex; flex-direction: column; gap: .7rem; }
+  .explain-panel h2 { font-size: 1.18rem; font-weight: 800; margin: 0; letter-spacing: -.01em; }
+  .explain-panel h3 { font-size: 1rem; font-weight: 800; margin: 0; }
+  .explain-panel p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.75; }
+  .explain-panel ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .55rem; }
+  .explain-panel li { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+  .explain-panel b { color: var(--ink); }
+  .explain-box {
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 1.1rem 1.3rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: .55rem;
+  }
+  .explain-box.accent { border-left: 5px solid var(--brand); background: var(--brand-soft); }
+  .explain-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table.explain-table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: .86rem; }
+  .explain-table th, .explain-table td { text-align: left; padding: .65rem .85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .explain-table thead { background: var(--brand-soft); }
+  .explain-table th { font-weight: 800; color: var(--brand); font-size: .78rem; }
+  .explain-table tbody tr:last-child td { border-bottom: none; }
+  .tag-ok { color: #1a7f4f; font-weight: 800; white-space: nowrap; }
+  .tag-diff { color: #b3690a; font-weight: 800; white-space: nowrap; }
+  .calc-box {
+    font-family: var(--mono); font-size: .82rem; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: .8rem 1rem; white-space: pre-wrap; line-height: 1.85; color: var(--ink);
+  }
+  .source-note { font-size: .78rem; color: var(--faint); }
+  .source-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1rem; }
+  .source-group-title {
+    font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: .3rem;
+  }
+  .source-list ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .2rem; }
+  .source-list li { font-size: .76rem; line-height: 1.5; }
+  .source-list a { color: var(--faint); text-decoration: none; }
+  .source-list a:hover { color: var(--brand); text-decoration: underline; }
+
+  @media (max-width: 30rem) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="kicker">CareerLens · MVP 프로토타입</div>
+    <h1>업무카드로 찾는 내 분야</h1>
+    <p class="lede">직무명이나 회사명 대신, <strong>실제로 하는 일</strong>만 보고 관심 가는 카드를 골라보세요. 고른 카드를 바탕으로 어울리는 분야를 묶어서 추천해드립니다.</p>
+  </header>
+
+  <nav class="tabnav" role="tablist">
+    <button class="tab-btn active" data-tab="app" role="tab" aria-selected="true">카드 선택 · 추천</button>
+    <button class="tab-btn" data-tab="explain" role="tab" aria-selected="false">이 프로그램은 어떻게 작동하나요?</button>
+  </nav>
+
+  <div id="appTab">
+  <div class="guide">
+    <span>📌 카드는 최소 <b id="minCountLabel">4</b>개 이상 골라주세요</span>
+    <span class="sub">— 너무 적게 고르면 묶어서 추천하는 의미가 약해져요</span>
+  </div>
+
+  <section id="gridView" class="grid-view">
+    <div id="cardGrid" class="grid"></div>
+  </section>
+
+  <section id="resultView" class="result-view">
+    <div class="result-head">
+      <h2 id="resultTitle">추천 결과</h2>
+      <p id="resultSub"></p>
+    </div>
+    <div id="resultList" style="display:flex; flex-direction:column; gap:1rem;"></div>
+
+    <div id="referenceSection" class="reference-block" style="display:none;">
+      <div class="reference-head">
+        <span class="reference-title">이런 관심사도 살짝 보였어요 (참고용)</span>
+        <span class="reference-desc">고르신 카드 중 상대적으로 적은 수만 묶여서, 확신도가 낮아 참고용으로만 보여드려요.</span>
+      </div>
+      <div id="referenceList" class="reference-list"></div>
+    </div>
+
+    <div>
+      <button class="ghost" id="backBtn">← 카드 다시 고르기</button>
+    </div>
+  </section>
+
+  <footer class="note">
+    이 화면에서는 요구 역량·자격요건은 보여주지 않습니다. 추천 결과가 실제 서비스에 연결되면, 그때 각 분야별로 필요한 역량을 함께 보여줄 예정입니다.<br>
+    추천 로직: 선택한 카드끼리 (같은 분야 여부 + 핵심 키워드 겹침)로 유사도를 계산해, 계층적 응집 군집화(가장 가까운 것부터 순서대로 묶고 기준선에서 멈추는 방식)로 몇 개 그룹이 나올지 자동으로 정합니다. 자세한 원리는 <b>"이 프로그램은 어떻게 작동하나요?"</b> 탭에서 확인하세요.
+  </footer>
+  </div>
+  <!-- ============================== /appTab ============================== -->
+
+  <div id="explainTab" class="explain-panel" hidden>
+
+    <div class="explain-box accent">
+      <h2>이 프로그램은 어떻게 만들어졌나요?</h2>
+      <p>이 프로그램은 "관심사를 자동으로 묶어서 어울리는 분야를 추천하는 방법" 설계 문서의 4단계를 실제로 구현한 것입니다. 다만 <b>인터넷 연결이나 서버 없이, 파일 하나로 브라우저에서 바로 작동해야 한다</b>는 조건 때문에, 4단계 중 일부는 설계 그대로, 일부는 다르게 만들었습니다. 대학교에서 직무나 데이터 분석을 한 번도 배운 적 없어도 이해할 수 있도록, 아래에서 하나씩 아주 쉽게 풀어드릴게요.</p>
+    </div>
+
+    <section>
+      <h2>설계 vs 실제 구현, 한눈에 비교</h2>
+      <div class="explain-table-wrap">
+        <table class="explain-table">
+          <thead><tr><th>단계</th><th>원래 설계</th><th>실제 구현</th><th>결과</th></tr></thead>
+          <tbody>
+            <tr><td>① 관심사 목록 준비</td><td>항목마다 큰 분야를 미리 표시해둔 목록</td><td>업무카드 74개에 분야(domain)를 미리 태깅</td><td class="tag-ok">설계대로</td></tr>
+            <tr><td>② 친밀도 계산</td><td>같이 나온 횟수(공동출현) + AI 의미 비교(코사인 유사도)를 섞기</td><td>수동으로 붙인 키워드의 겹침 정도(자카드 유사도) + "같은 분야면 보너스"</td><td class="tag-diff">다르게 구현</td></tr>
+            <tr><td>③ 선택 항목 자동으로 묶기</td><td>계층적 응집 군집화 + 기준선, 몇 개로 나뉠지는 데이터가 정함</td><td>평균 연결 방식의 계층적 응집 군집화를 그대로 구현</td><td class="tag-ok">설계대로</td></tr>
+            <tr><td>④ 분야 추천 + 이유 설명</td><td>묶음 안 분야를 다수결로 추천, 계산 근거를 문장으로 변환</td><td>분야 다수결 + 공통 키워드로 추천 문구 자동 생성 (+ 주요/참고용 구분 추가)</td><td class="tag-ok">설계대로</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>왜 ②단계만 다르게 만들었을까요?</h2>
+      <p>원래 설계는 <b>Sentence-BERT</b>라는 AI 모델로 문장의 "뜻"을 숫자로 바꾸고, 그 숫자끼리 비교하는 방식이었습니다. 그런데 이 AI 모델을 쓰려면 서버나 외부 인터넷 연결이 필요합니다. 이 프로그램은 <b>파일 하나만 있으면 인터넷 없이도 바로 실행되도록</b> 만들어야 했기 때문에, AI 모델 대신 사람이 미리 "이 카드는 이런 키워드와 관련 있다"고 손으로 태그를 붙여두고, 그 태그끼리 얼마나 겹치는지를 비교하는 훨씬 단순한 방법(자카드 유사도)으로 대신했습니다.</p>
+    </section>
+
+    <section>
+      <h2>자카드 유사도, 아주 쉽게 이해하기</h2>
+
+      <div class="explain-box">
+        <h3>비유로 먼저 이해하기</h3>
+        <p>두 사람의 취미 목록을 비교한다고 생각해보세요.</p>
+        <p>철수의 취미: <b>축구, 게임, 영화</b><br>영희의 취미: <b>게임, 독서, 영화</b></p>
+        <p>둘 다 가진 취미는 <b>게임, 영화</b>로 2개. 둘을 합친 전체 취미는 <b>축구, 게임, 영화, 독서</b>로 4개.</p>
+        <p>→ 겹치는 정도 = 2 ÷ 4 = <b>50%</b></p>
+        <p>이게 바로 자카드 유사도입니다. "완전히 똑같음"과 "완전히 다름" 사이에서, 얼마나 겹치는지를 0~1 사이 숫자 하나로 나타내는 방법이에요.</p>
+      </div>
+
+      <div class="explain-box">
+        <h3>이 프로그램에서는 "키워드"를 비교합니다</h3>
+        <p>취미 대신, 업무카드마다 미리 붙여둔 <b>3~4개의 키워드</b>를 비교합니다. 예를 들면:</p>
+        <div class="calc-box">카드 "개인화 추천"의 키워드: 추천시스템, 개인화, 맞춤형
+카드 "랭킹 시스템"의 키워드: 랭킹, 정렬알고리즘, 검색최적화
+
+겹치는 키워드: 없음 (0개)
+합친 키워드: 6개
+→ 자카드 유사도 = 0 ÷ 6 = 0</div>
+        <div class="calc-box">카드 "예측 모델 개발"의 키워드: 머신러닝, 예측모델, 딥러닝
+카드 "ML 프로토타이핑"의 키워드: 프로토타이핑, 머신러닝, 솔루션개발
+
+겹치는 키워드: 머신러닝 (1개)
+합친 키워드: 5개
+→ 자카드 유사도 = 1 ÷ 5 = 0.2</div>
+      </div>
+
+      <div class="explain-box">
+        <h3>이 키워드는 어떤 원리로 붙였나요?</h3>
+        <p>알고리즘이나 AI가 자동으로 뽑은 게 아니라, 업무카드 74개를 만들 때 <b>사람이 각 카드의 문장을 읽고 손으로 골라 붙인 것</b>입니다. 원칙은 두 가지였습니다.</p>
+        <p><b>① 그 업무의 "핵심 개념"만 2~3개 뽑기</b> — 카드 문장(예: "핵심 지표를 그래프·차트로 시각화해 관리")에서 조사·연결어를 빼고, 이 업무를 대표하는 명사·기술 용어만 남깁니다. 그래서 항상 3개가 아니라, 문장에 진짜 구분되는 개념이 몇 개인지에 따라 2개일 때도 있습니다(예: "가설 수립" 카드는 키워드가 "가설수립", "인사이트도출" 2개뿐입니다).</p>
+        <p><b>② 같은 개념이면 카드가 달라도 "똑같은 글자"로 재사용</b> — 이게 v1이 작동하는 핵심 트릭입니다. 자카드 유사도는 "글자가 정확히 같은 키워드가 있는가"만 확인하기 때문에, 뜻이 같은 개념이 여러 카드에 나올 때마다 표현을 다양하게 바꾸지 않고 일부러 똑같은 문자열을 반복해서 붙였습니다:</p>
+        <div class="calc-box">"지표 시각화" → 시각화, 지표관리, 대시보드
+"성장 지표 시각화" → 성장지표, 시각화, 지역비즈니스
+"통계 기반 분석 설계" → 통계분석, 로직설계, 시각화
+→ 세 카드 모두 "시각화"라는 같은 글자를 공유하도록 일부러 통일</div>
+        <p>만약 어떤 카드에는 "시각화"로, 다른 카드에는 "차트화"나 "그래프 작업"으로 다르게 적었다면, 자카드 유사도는 그 둘을 전혀 관련 없는 카드로 봤을 겁니다(글자가 다르면 안 겹친 것으로 계산하니까요). 그래서 개념별로 "대표 단어" 하나를 정해서 통일된 어휘로 관리한 것이 v1의 실질적인 원리입니다 — v2처럼 AI가 알아서 "시각화"와 "차트화"의 뜻이 비슷하다는 걸 찾아내는 게 아니라, 사람이 미리 "같은 뜻이면 같은 단어로 적어두는" 작업을 대신 해준 것입니다.</p>
+      </div>
+
+    </section>
+
+    <section>
+      <h2>같은 분야 보너스(DOMAIN_BONUS) — 설명과 계산 기준</h2>
+
+      <div class="explain-box accent">
+        <h3>공식: 점수 = 자카드 유사도 + (같은 분야면 0.35, 다르면 0)</h3>
+        <p>두 카드를 비교할 때, 키워드가 하나도 안 겹쳐도 두 카드의 <b>분야(domain)</b>가 같으면 무조건 <b>+0.35점</b>을 더해줍니다. 카드를 하나로 묶는 기준선(MERGE_THRESHOLD)이 <b>0.3</b>이기 때문에, 이 보너스 하나만으로 이미 기준선을 넘습니다 — 자카드 유사도가 0이어도 상관없습니다.</p>
+        <div class="calc-box">"지표 시각화"(데이터분석·BI) ↔ "예측 모델 개발"(데이터사이언스·ML)
+키워드 안 겹침 → 자카드 0 + 분야 다름(보너스 0) = 점수 0.00 → 기준선(0.3) 미달 → 안 묶임
+
+"지표 시각화"(데이터분석·BI) ↔ "데이터 정보 전달"(데이터분석·BI)
+키워드 안 겹침 → 자카드 0 + 분야 같음(보너스 +0.35) = 점수 0.35 → 기준선(0.3) 통과 → 묶임</div>
+      </div>
+
+      <div class="explain-box">
+        <h3>실제로 얼마나 자주 작동하나요? — 74개 카드 전체로 확인해본 숫자</h3>
+        <p>업무카드 74개(6개 분야)를 만들 수 있는 모든 쌍(2,701쌍)에 대해 직접 계산해보면:</p>
+        <div class="explain-table-wrap">
+          <table class="explain-table">
+            <thead><tr><th>조건</th><th>해당 쌍 수</th><th>기준선(0.3)을 넘는가</th></tr></thead>
+            <tbody>
+              <tr><td>같은 분야인 쌍</td><td>564쌍 (전체의 20.9%)</td><td class="tag-ok">항상 넘음 — 보너스 0.35만으로 충분</td></tr>
+              <tr><td>다른 분야인 쌍</td><td>2,137쌍 (전체의 79.1%)</td><td class="tag-diff">단 한 쌍도 못 넘음 — 자카드만으로는 최대 0.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>키워드가 겹치는 쌍은 74개 카드 전체에서 27쌍(약 1%)뿐이고, 그마저도 전부 자카드 값이 정확히 0.2입니다(키워드 3개 중 1개만 겹침 — 2개 이상 겹치는 쌍은 하나도 없음). 0.2는 기준선 0.3보다 낮기 때문에, <b>키워드 겹침만으로는 어떤 두 카드도 스스로 기준선을 넘어 묶이지 못합니다.</b> 그래서 지금 방식에서는 <b>분야가 다른 카드끼리는 사실상 절대 하나로 묶일 수 없습니다</b> — 실제로 위 계산에서 다른 분야 쌍 2,137개 중 병합 조건을 만족한 쌍은 0개였습니다.</p>
+      </div>
+
+      <div class="explain-box accent">
+        <p><b>정리:</b> 지금 프로그램에서 "묶을지 말지"를 정하는 힘은 거의 전적으로 <b>사람이 미리 붙여둔 분야(domain) 태그</b>이고, 자카드 키워드 겹침은 결과에 실질적인 영향을 거의 주지 않는 장식적 신호에 가깝습니다. 키워드 겹침이 하는 역할은, 이미 같은 분야라서 묶이기로 정해진 카드들 중에서 <b>평균 연결(average-linkage) 계산 시 어떤 쌍을 조금 더 먼저 합칠지</b>에 미세하게 영향을 주는 정도입니다.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>이 방식의 한계 — 솔직하게 알아야 할 점</h2>
+      <ul>
+        <li><b>완전히 똑같은 단어여야만 "겹친다"고 인정합니다.</b> "프로덕션적용"과 "프로덕션"은 사람이 보기엔 관련 있어 보여도, 프로그램은 서로 다른 단어로 취급해서 안 겹친 것으로 계산합니다.</li>
+        <li><b>키워드는 사람이 주관적으로 붙인 것입니다.</b> 실제 회사들이 채용공고에 쓰는 다양한 표현이 아니라, 카드 설명을 보고 요약해서 붙인 3~4개 단어일 뿐이라 놓치는 연결이 있을 수 있습니다.</li>
+        <li><b>진짜 AI가 뜻을 이해하는 게 아닙니다.</b> 설계에서 말한 Sentence-BERT였다면 "개인화 추천"과 "맞춤형 콘텐츠 제공"처럼 표현이 달라도 뜻이 비슷하면 알아서 찾아냈겠지만, 지금은 미리 붙여둔 키워드가 정확히 겹쳐야만 찾아냅니다.</li>
+        <li><b>다른 분야 카드끼리는 사실상 절대 묶이지 않습니다.</b> 바로 위에서 확인했듯, 다른 분야 쌍은 자카드만으로 기준선(0.3)을 넘는 경우가 전체 2,137쌍 중 0개입니다. 그래서 이 프로그램의 추천 결과는 항상 "미리 태깅해둔 6개 분야 중 하나(또는 그 조합)"의 틀 안에서만 나오고, 분야 태그 없이 순수하게 업무 내용만으로 새로운 묶음을 찾아내는 것은 지금 방식으로는 불가능합니다.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>나머지 단계는 왜 설계 그대로 만들었나요?</h2>
+      <ul>
+        <li><b>① 관심사 목록 준비</b> — 그냥 데이터를 미리 정리해두는 작업이라 AI나 서버가 필요 없어서 그대로 구현했습니다.</li>
+        <li><b>③ 자동으로 묶기(계층적 응집 군집화)</b> — "가장 비슷한 두 개를 먼저 묶고, 그 무리와 또 가까운 걸 계속 붙이다가, 기준선에 도달하면 멈춘다"는 방식 자체는 계산만 하면 되는 로직이라 AI 없이도 그대로 구현할 수 있었습니다. 그래서 몇 개 그룹이 나올지는 지금도 사람이 정하지 않고, 선택한 카드들의 유사도(데이터)가 정합니다.</li>
+        <li><b>④ 분야 추천 + 설명 문장</b> — 묶인 카드들의 분야를 다수결로 세고, 그 결과를 문장으로 바꾸는 것도 단순 계산이라 그대로 구현했습니다. 여기에 최근 추가한 "주요 추천 vs 참고용 구분" 기능도 포함됩니다.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>출처 — 업무카드 74개를 만들 때 참고한 채용공고 (18건)</h2>
+      <p class="source-note">2026-08-22, 원티드(wanted.co.kr)에서 수집한 실제 채용공고입니다. 카드 문구는 원문을 그대로 옮긴 게 아니라, 회사명·제품명 등을 지우고 이해하기 쉽게 다시 쓴 것입니다.</p>
+      <div class="source-list">
+        <div>
+          <div class="source-group-title">데이터분석·BI</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/52879" target="_blank" rel="noopener">와디즈 · 데이터 분석가</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/42454" target="_blank" rel="noopener">데이원컴퍼니 · 데이터 분석가</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/53378" target="_blank" rel="noopener">자비스앤빌런즈(삼쩜삼) · 데이터 분석가</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/166369" target="_blank" rel="noopener">당근마켓 · 데이터 분석가(로컬 비즈니스)</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/180945" target="_blank" rel="noopener">컬리 · BI팀 데이터 분석가</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="source-group-title">데이터사이언스·ML</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/75057" target="_blank" rel="noopener">토스뱅크 · Data Scientist</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/56257" target="_blank" rel="noopener">힐링페이퍼(강남언니) · 데이터 사이언티스트</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/305739" target="_blank" rel="noopener">스마트마인드에이아이 · 데이터 사이언티스트</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/65223" target="_blank" rel="noopener">당근마켓 · 데이터 사이언티스트(디시젼)</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/42992" target="_blank" rel="noopener">플라스크 · 머신러닝 엔지니어</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="source-group-title">데이터엔지니어링</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/226034" target="_blank" rel="noopener">업스테이지 · Data Engineer</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/197558" target="_blank" rel="noopener">쿠팡 · 데이터 엔지니어</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/34812" target="_blank" rel="noopener">무신사 · 데이터 엔지니어</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/148653" target="_blank" rel="noopener">당근마켓 · 데이터 엔지니어(당근페이)</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="source-group-title">경영·마케팅</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/314265" target="_blank" rel="noopener">히어닷컴코리아 · 콘텐츠 마케팅 매니저</a></li>
+            <li><a href="https://www.wanted.co.kr/wd/215018" target="_blank" rel="noopener">팀스파르타 · 그로스 마케터</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="source-group-title">경영·영업</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/227274" target="_blank" rel="noopener">엑스플라이어 · B2B 영업 및 제휴</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="source-group-title">경영·경영기획</div>
+          <ul>
+            <li><a href="https://www.wanted.co.kr/wd/106401" target="_blank" rel="noopener">중앙일보 · 경영기획</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <!-- ============================== /explainTab ============================== -->
+</div>
+
+<div class="bar">
+  <div class="bar-inner">
+    <div>
+      <div class="count">선택한 카드 <b id="selCount">0</b>개</div>
+      <div class="hint" id="selHint">최소 4개부터 추천을 받을 수 있어요</div>
+    </div>
+    <button class="primary" id="recommendBtn" disabled>선택한 카드로 추천받기</button>
+  </div>
+</div>
+
+<script>
+/* ===================== 데이터: 업무카드 74개 ===================== */
+const CARDS = [
+  // 데이터분석·BI (1-19)
+  {id:1, domain:"데이터분석·BI", label:"서비스 현황 분석", desc:"서비스 지표 파악 및 개선점 도출을 위한 데이터 분석", kw:["현황분석","개선점도출","서비스지표"]},
+  {id:2, domain:"데이터분석·BI", label:"지표 시각화", desc:"핵심 지표를 그래프·차트로 시각화해 관리", kw:["시각화","지표관리","대시보드"]},
+  {id:3, domain:"데이터분석·BI", label:"데이터 정보 전달", desc:"가공한 데이터를 필요 부서에 정리해 전달", kw:["정보전달","부서협업","데이터공유"]},
+  {id:4, domain:"데이터분석·BI", label:"데이터 기반 소통 지원", desc:"데이터를 근거로 부서 간 원활한 소통을 지원", kw:["소통지원","부서협업","데이터근거"]},
+  {id:5, domain:"데이터분석·BI", label:"비즈니스 문제 해결", desc:"데이터 분석과 시각화로 비즈니스 이슈 해결", kw:["문제해결","비즈니스분석","시각화"]},
+  {id:6, domain:"데이터분석·BI", label:"데이터 표준 관리", desc:"데이터 형식·품질 기준 수립 및 운영", kw:["데이터표준","품질관리","정책수립"]},
+  {id:7, domain:"데이터분석·BI", label:"BI 대시보드 구축", desc:"비즈니스 인텔리전스 대시보드 제작 및 운영", kw:["BI","대시보드","리포팅"]},
+  {id:8, domain:"데이터분석·BI", label:"실험 설계·분석", desc:"A/B 테스트 등 실험 설계 및 결과 분석", kw:["AB테스트","실험설계","가설검증"]},
+  {id:9, domain:"데이터분석·BI", label:"트렌드 분석", desc:"고객·서비스 이용 트렌드 분석", kw:["트렌드분석","고객데이터","서비스분석"]},
+  {id:10, domain:"데이터분석·BI", label:"마케팅 인사이트 제공", desc:"데이터 분석 결과로 마케팅 의사결정에 필요한 인사이트 제공", kw:["마케팅인사이트","데이터기반의사결정"]},
+  {id:11, domain:"데이터분석·BI", label:"핵심 지표 발굴", desc:"비즈니스 성과를 측정할 새로운 핵심 지표(KPI) 발굴", kw:["KPI","지표발굴","성과측정"]},
+  {id:12, domain:"데이터분석·BI", label:"비즈니스 리뷰 리포팅", desc:"정기적인 비즈니스 현황 리포트 작성으로 의사결정 지원", kw:["리포팅","비즈니스리뷰","의사결정지원"]},
+  {id:13, domain:"데이터분석·BI", label:"BI 데이터 설계", desc:"BI 도구에서 활용할 데이터 집계 및 구조 설계", kw:["데이터집계","BI설계","데이터구조"]},
+  {id:14, domain:"데이터분석·BI", label:"탐색적 분석 설계", desc:"탐색적 데이터 분석에 적합한 데이터 구조 설계", kw:["탐색적분석","데이터구조설계"]},
+  {id:15, domain:"데이터분석·BI", label:"가설 수립", desc:"데이터 분석 인사이트를 바탕으로 개선 가설 수립", kw:["가설수립","인사이트도출"]},
+  {id:16, domain:"데이터분석·BI", label:"성장 지표 시각화", desc:"소상공인·지역 비즈니스 성장 지표 설정 및 추적 시각화", kw:["성장지표","시각화","지역비즈니스"]},
+  {id:17, domain:"데이터분석·BI", label:"데이터 마트 구축", desc:"데이터 적재·정리로 대시보드·알림 등 결과물 제공", kw:["데이터마트","대시보드","알림"]},
+  {id:18, domain:"데이터분석·BI", label:"데이터 기반 문제 발굴", desc:"축적 데이터에서 비즈니스 문제 발굴 및 해결책 제안", kw:["문제발굴","해결책제안","데이터분석"]},
+  {id:19, domain:"데이터분석·BI", label:"커머스·물류 분석", desc:"커머스와 물류 전반에 걸친 데이터 분석", kw:["커머스","물류","도메인분석"]},
+
+  // 데이터사이언스·ML (20-41)
+  {id:20, domain:"데이터사이언스·ML", label:"문제 정의·해결", desc:"데이터 기반으로 비즈니스 문제 정의 및 해결 방안 도출", kw:["문제정의","해결방안","데이터기반"]},
+  {id:21, domain:"데이터사이언스·ML", label:"예측 모델 개발", desc:"머신러닝·딥러닝 기반 평가·전략용 예측 모델 개발", kw:["머신러닝","예측모델","딥러닝"]},
+  {id:22, domain:"데이터사이언스·ML", label:"프로세스 효율화", desc:"데이터 분석 기반 업무 프로세스 효율화 프로젝트 수행", kw:["프로세스효율화","데이터분석","업무개선"]},
+  {id:23, domain:"데이터사이언스·ML", label:"개인화 추천", desc:"사용자 맞춤형 콘텐츠 및 상품 추천", kw:["추천시스템","개인화","맞춤형"]},
+  {id:24, domain:"데이터사이언스·ML", label:"랭킹 시스템", desc:"검색 결과 및 데이터 노출 순서 최적화", kw:["랭킹","정렬알고리즘","검색최적화"]},
+  {id:25, domain:"데이터사이언스·ML", label:"NLP", desc:"텍스트·음성 데이터 분석 및 자연어 처리", kw:["NLP","자연어처리","텍스트분석"]},
+  {id:26, domain:"데이터사이언스·ML", label:"이미지 개발", desc:"영상·이미지 인식 및 생성 모델 개발", kw:["컴퓨터비전","이미지인식","생성모델"]},
+  {id:27, domain:"데이터사이언스·ML", label:"모델 서비스 적용", desc:"머신러닝 모델을 실제 서비스 환경에 적용·배포", kw:["모델배포","프로덕션적용","서비스화"]},
+  {id:28, domain:"데이터사이언스·ML", label:"통계 기반 분석 설계", desc:"통계 이론에 기반한 분석 로직 설계 및 시각화", kw:["통계분석","로직설계","시각화"]},
+  {id:29, domain:"데이터사이언스·ML", label:"이상 탐지", desc:"이상 거래·이상 신호를 자동으로 탐지하는 모델 개발", kw:["이상탐지","리스크감지","패턴탐지"]},
+  {id:30, domain:"데이터사이언스·ML", label:"업계 데이터 기반 서비스 기획", desc:"업계 특화 데이터를 활용한 신규 서비스 아이디어 도출", kw:["서비스기획","업계데이터","아이디어도출"]},
+  {id:31, domain:"데이터사이언스·ML", label:"심층 인사이트 도출", desc:"데이터 심층 분석으로 비즈니스 문제 해결 인사이트 도출", kw:["심층분석","인사이트","문제해결"]},
+  {id:32, domain:"데이터사이언스·ML", label:"AI 모델 성능 개선", desc:"LLM 등 AI 모델의 성능을 높이는 핵심 기능 개발", kw:["LLM","모델성능개선","AI개발"]},
+  {id:33, domain:"데이터사이언스·ML", label:"지식 추론 연구", desc:"지식 그래프 기반 개념 간 관계 분석 및 추론 기술 연구", kw:["지식그래프","추론","의미분석"]},
+  {id:34, domain:"데이터사이언스·ML", label:"비정형 데이터 구조화", desc:"비정형 데이터를 구조화된 형태로 변환하는 파이프라인 개발", kw:["비정형데이터","데이터구조화","파이프라인"]},
+  {id:35, domain:"데이터사이언스·ML", label:"AI 신사업 기획", desc:"AI 기술 기반 신규 사업 아이디어 발굴 및 기획", kw:["신사업기획","AI사업화"]},
+  {id:36, domain:"데이터사이언스·ML", label:"데이터 기반 의사결정 정의", desc:"핵심 질문을 데이터 관점에서 정의하고 의사결정 방향 제시", kw:["의사결정지원","데이터정의","방향성제시"]},
+  {id:37, domain:"데이터사이언스·ML", label:"임팩트 측정", desc:"의사결정·제품 변화의 실제 영향을 측정해 투명하게 공유", kw:["임팩트측정","효과분석","투명성"]},
+  {id:38, domain:"데이터사이언스·ML", label:"편향 제거 실험", desc:"A/B 테스트를 통한 의사결정 과정의 편향 제거", kw:["AB테스트","인과추론","편향제거"]},
+  {id:39, domain:"데이터사이언스·ML", label:"동작 인식 개발", desc:"이미지·영상 속 사람의 동작·자세 인식 기술 연구 개발", kw:["컴퓨터비전","동작인식","포즈추정"]},
+  {id:40, domain:"데이터사이언스·ML", label:"ML 프로토타이핑", desc:"머신러닝 기반 솔루션의 초기 프로토타입 개발", kw:["프로토타이핑","머신러닝","솔루션개발"]},
+  {id:41, domain:"데이터사이언스·ML", label:"연구 논문 구현·검증", desc:"최신 연구 논문을 분석해 직접 구현하고 성능 검증", kw:["논문연구","구현","검증"]},
+
+  // 데이터엔지니어링 (42-57)
+  {id:42, domain:"데이터엔지니어링", label:"데이터 시스템 구축", desc:"대용량 데이터 수집·저장·처리 시스템 설계 및 구축", kw:["대용량데이터","시스템구축","데이터처리"]},
+  {id:43, domain:"데이터엔지니어링", label:"데이터 파이프라인 개발", desc:"데이터 이동 경로(ETL) 개발 및 최적화", kw:["ETL","파이프라인","데이터흐름"]},
+  {id:44, domain:"데이터엔지니어링", label:"데이터 품질 모니터링", desc:"데이터 품질 및 처리 성능 지속 모니터링", kw:["품질모니터링","성능관리","안정성"]},
+  {id:45, domain:"데이터엔지니어링", label:"데이터 저장 구조 설계", desc:"데이터 웨어하우스·레이크 등 저장·분석 구조 설계", kw:["데이터웨어하우스","데이터레이크","아키텍처"]},
+  {id:46, domain:"데이터엔지니어링", label:"분산 시스템 운영", desc:"대규모 분산 처리 시스템 운영 및 관리", kw:["분산시스템","시스템운영","인프라"]},
+  {id:47, domain:"데이터엔지니어링", label:"고객사 데이터 운영", desc:"고객사 데이터 분석 및 파이프라인 운영 지원", kw:["고객사지원","파이프라인운영","데이터분석"]},
+  {id:48, domain:"데이터엔지니어링", label:"품질 평가 프로세스", desc:"결과물 품질을 검증하는 평가 절차 수립 및 운영", kw:["품질평가","프로세스수립","검증"]},
+  {id:49, domain:"데이터엔지니어링", label:"데이터 마트 설계", desc:"사업 영역별 데이터 저장소(데이터마트) 설계 및 관리", kw:["데이터마트","도메인설계","저장소관리"]},
+  {id:50, domain:"데이터엔지니어링", label:"데이터 통합 수집", desc:"여러 소스 시스템의 데이터를 한곳으로 통합 수집", kw:["데이터통합","수집시스템","소스연동"]},
+  {id:51, domain:"데이터엔지니어링", label:"저장소 최적화", desc:"데이터 저장 공간 활용을 효율화하는 최적화 작업", kw:["저장소최적화","효율화","비용절감"]},
+  {id:52, domain:"데이터엔지니어링", label:"안정적 데이터 흐름 지원", desc:"신뢰할 수 있는 안정적인 데이터 파이프라인 지원", kw:["안정성","신뢰성","파이프라인지원"]},
+  {id:53, domain:"데이터엔지니어링", label:"클라우드 분석 환경 구축", desc:"클라우드 기반 데이터 분석·모델링 환경 구축 및 운영", kw:["클라우드","분석환경","인프라운영"]},
+  {id:54, domain:"데이터엔지니어링", label:"프로덕션 파이프라인 운영", desc:"실제 서비스 수준의 데이터 파이프라인 구축 및 운영", kw:["프로덕션","파이프라인운영","서비스레벨"]},
+  {id:55, domain:"데이터엔지니어링", label:"데이터 인프라 구축", desc:"클라우드 기반 데이터 인프라·플랫폼 구축", kw:["클라우드인프라","플랫폼구축"]},
+  {id:56, domain:"데이터엔지니어링", label:"분석 환경 제공", desc:"데이터 기반 의사결정을 지원하는 분석 환경 제공", kw:["분석환경","의사결정지원","데이터플랫폼"]},
+  {id:57, domain:"데이터엔지니어링", label:"확장형 아키텍처 설계", desc:"데이터 증가에 대응 가능한 확장형 아키텍처 설계", kw:["확장성","아키텍처설계","스케일링"]},
+
+  // 경영·마케팅 (58-64)
+  {id:58, domain:"경영·마케팅", label:"콘텐츠 기획·제작", desc:"SNS 채널용 콘텐츠 기획·제작 및 성과 분석", kw:["콘텐츠기획","SNS마케팅","성과분석"]},
+  {id:59, domain:"경영·마케팅", label:"광고 콘텐츠 최적화", desc:"온라인 광고 콘텐츠 기획·제작 및 전환율 최적화", kw:["광고콘텐츠","전환율최적화","퍼포먼스마케팅"]},
+  {id:60, domain:"경영·마케팅", label:"성장 전략 실행", desc:"목표 고객 확보를 위한 성장 전략 수립 및 실행", kw:["성장전략","고객확보","그로스마케팅"]},
+  {id:61, domain:"경영·마케팅", label:"사업 방향 설계", desc:"시장 상황과 마케팅 인사이트 기반 비즈니스 방향 설계", kw:["사업설계","시장분석","로드맵"]},
+  {id:62, domain:"경영·마케팅", label:"캠페인 성과 분석", desc:"채널·캠페인별 성과 데이터 분석으로 광고 효율 개선", kw:["캠페인분석","광고효율","성과데이터"]},
+  {id:63, domain:"경영·마케팅", label:"광고 매체 운영", desc:"다양한 광고 매체 관리 및 채널 전략 수립", kw:["매체운영","채널전략","광고관리"]},
+  {id:64, domain:"경영·마케팅", label:"이탈 구간 개선", desc:"사용자 이탈 구간 파악 및 개선 가설 실험", kw:["퍼널분석","이탈개선","가설실험"]},
+
+  // 경영·영업 (65-70)
+  {id:65, domain:"경영·영업", label:"서비스 도입 제안", desc:"자사 서비스·제품 도입을 제안하는 영업 활동", kw:["영업제안","서비스영업","B2B"]},
+  {id:66, domain:"경영·영업", label:"시장·경쟁사 조사", desc:"시장 동향 및 경쟁사 현황 조사", kw:["시장조사","경쟁사분석"]},
+  {id:67, domain:"경영·영업", label:"세일즈 자료 개발", desc:"영업용 자료(세일즈 Kit) 개발 및 현장 적용", kw:["세일즈자료","영업지원","현장적용"]},
+  {id:68, domain:"경영·영업", label:"계약 조건 검토", desc:"계약 조건 분석 및 리스크 검토", kw:["계약검토","조건분석"]},
+  {id:69, domain:"경영·영업", label:"파트너 관계 관리", desc:"신규·기존 파트너와의 관계 관리 및 유지", kw:["파트너관리","관계유지","제휴"]},
+  {id:70, domain:"경영·영업", label:"잠재 고객 개발", desc:"신규 잠재 고객 발굴 및 영업 기회 개발", kw:["리드발굴","잠재고객","신규영업"]},
+
+  // 경영·경영기획 (71-74)
+  {id:71, domain:"경영·경영기획", label:"사업 전략 기획", desc:"중장기 사업 전략 수립 및 기획", kw:["사업전략","전략기획"]},
+  {id:72, domain:"경영·경영기획", label:"경영 계획·성과 관리", desc:"경영 계획 수립 및 실적 관리·성과 평가", kw:["경영계획","성과관리","실적평가"]},
+  {id:73, domain:"경영·경영기획", label:"경영 현황 보고", desc:"경영 현황 보고 및 주요 이슈 대응", kw:["경영보고","이슈대응"]},
+  {id:74, domain:"경영·경영기획", label:"의사결정·자회사 관리", desc:"의사결정 체계 운영 및 자회사 관리", kw:["의사결정체계","자회사관리","거버넌스"]},
+];
+
+const DOMAIN_RECOMMEND = {
+  "데이터분석·BI": "데이터 분석가 · BI 분석가",
+  "데이터사이언스·ML": "데이터 사이언티스트 · AI/머신러닝 엔지니어",
+  "데이터엔지니어링": "데이터 엔지니어",
+  "경영·마케팅": "마케터 · 그로스마케터",
+  "경영·영업": "영업 · 사업개발(BD)",
+  "경영·경영기획": "경영기획 · 전략기획",
+};
+
+const MIN_SELECT = 4;
+const DOMAIN_BONUS = 0.35;
+const MERGE_THRESHOLD = 0.3;
+/* 주요 추천 vs 참고용 판정 기준: 카드 2개 이상 + 가장 큰 그룹 크기의 50% 이상이어야 "주요 추천" */
+const PRIMARY_MIN_SIZE = 2;
+const PRIMARY_RATIO = 0.5;
+
+/* ===================== 상태 ===================== */
+const selected = new Set();
+
+/* Fisher-Yates 셔플: 카드가 분야별로 뭉쳐 보이지 않도록 화면 노출 순서만 섞음 */
+function shuffledIds() {
+  const ids = CARDS.map(c => c.id);
+  for (let i = ids.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  return ids;
+}
+const DISPLAY_ORDER = shuffledIds();
+const cardById = Object.fromEntries(CARDS.map(c => [c.id, c]));
+
+/* ===================== 카드 그리드 렌더링 ===================== */
+function renderGrid() {
+  const grid = document.getElementById("cardGrid");
+  grid.innerHTML = DISPLAY_ORDER.map(id => {
+    const c = cardById[id];
+    return `<button class="card" data-id="${c.id}" aria-pressed="false">
+      <div class="label">${c.label}</div>
+      <div class="desc">${c.desc}</div>
+    </button>`;
+  }).join("");
+
+  grid.querySelectorAll(".card").forEach(el => {
+    el.addEventListener("click", () => {
+      const id = Number(el.dataset.id);
+      if (selected.has(id)) { selected.delete(id); el.classList.remove("selected"); el.setAttribute("aria-pressed", "false"); }
+      else { selected.add(id); el.classList.add("selected"); el.setAttribute("aria-pressed", "true"); }
+      updateBar();
+    });
+  });
+}
+
+function updateBar() {
+  const n = selected.size;
+  document.getElementById("selCount").textContent = n;
+  const btn = document.getElementById("recommendBtn");
+  const hint = document.getElementById("selHint");
+  if (n < MIN_SELECT) {
+    btn.disabled = true;
+    hint.textContent = `최소 ${MIN_SELECT}개부터 추천을 받을 수 있어요 (${MIN_SELECT - n}개 더 골라주세요)`;
+  } else {
+    btn.disabled = false;
+    hint.textContent = "이제 추천을 받아볼 수 있어요";
+  }
+}
+
+/* ===================== 유사도 계산 ===================== */
+function jaccard(a, b) {
+  const setA = new Set(a), setB = new Set(b);
+  const inter = [...setA].filter(x => setB.has(x)).length;
+  const union = new Set([...setA, ...setB]).size;
+  return union === 0 ? 0 : inter / union;
+}
+
+function similarity(cardA, cardB) {
+  let score = jaccard(cardA.kw, cardB.kw);
+  if (cardA.domain === cardB.domain) score += DOMAIN_BONUS;
+  return Math.min(score, 1);
+}
+
+/* ===================== 계층적 응집 군집화 (평균 연결, 임계값 기반) ===================== */
+function clusterCards(cards) {
+  let clusters = cards.map(c => ({ members: [c] }));
+
+  while (clusters.length > 1) {
+    let bestI = -1, bestJ = -1, bestSim = -1;
+    for (let i = 0; i < clusters.length; i++) {
+      for (let j = i + 1; j < clusters.length; j++) {
+        let sum = 0, count = 0;
+        for (const a of clusters[i].members) {
+          for (const b of clusters[j].members) {
+            sum += similarity(a, b);
+            count++;
+          }
+        }
+        const avg = sum / count;
+        if (avg > bestSim) { bestSim = avg; bestI = i; bestJ = j; }
+      }
+    }
+    if (bestSim < MERGE_THRESHOLD) break;
+    clusters[bestI].members = clusters[bestI].members.concat(clusters[bestJ].members);
+    clusters.splice(bestJ, 1);
+  }
+  return clusters;
+}
+
+/* ===================== 추천 결과 생성 ===================== */
+function domainCounts(members) {
+  const counts = {};
+  members.forEach(m => { counts[m.domain] = (counts[m.domain] || 0) + 1; });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+}
+
+function sharedKeywords(members) {
+  const counts = {};
+  members.forEach(m => m.kw.forEach(k => { counts[k] = (counts[k] || 0) + 1; }));
+  return Object.entries(counts).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).map(([k]) => k);
+}
+
+function buildRecommendation(cluster) {
+  const members = cluster.members;
+  const domains = domainCounts(members);
+  const topDomains = domains.filter(([, n]) => n === domains[0][1]).map(([d]) => d);
+  const fieldLabel = topDomains.map(d => DOMAIN_RECOMMEND[d]).join(" + ");
+  const shared = sharedKeywords(members);
+
+  let why;
+  if (members.length === 1) {
+    why = `선택하신 카드 중 다른 카드들과는 결이 달라 별도로 분류했습니다. <b>"${members[0].label}"</b>은(는) <b>${members[0].domain}</b> 분야 업무입니다.`;
+  } else if (topDomains.length === 1) {
+    why = `고르신 카드 중 <b>${members.length}개</b>가 모두 <b>${topDomains[0]}</b> 분야 업무였습니다.`;
+    if (shared.length) why += ` 공통으로 등장한 키워드: <b>${shared.slice(0, 4).join(", ")}</b>`;
+  } else {
+    why = `이 카드들은 <b>${topDomains.join(", ")}</b> 분야가 섞여 있지만, 업무 내용(키워드)이 서로 겹쳐서 하나의 묶음으로 추천합니다.`;
+    if (shared.length) why += ` 공통 키워드: <b>${shared.slice(0, 4).join(", ")}</b>`;
+  }
+
+  return { fieldLabel, why, members };
+}
+
+/* ===================== 주요 추천 vs 참고용 분류 ===================== */
+function splitPrimaryAndReference(clusters) {
+  const maxSize = Math.max(...clusters.map(c => c.members.length));
+  const cutoff = maxSize * PRIMARY_RATIO;
+  const primary = [], reference = [];
+  clusters.forEach(c => {
+    const n = c.members.length;
+    if (n >= PRIMARY_MIN_SIZE && n >= cutoff) primary.push(c);
+    else reference.push(c);
+  });
+  return { primary, reference };
+}
+
+/* ===================== 결과 화면 렌더링 ===================== */
+function showResults() {
+  const chosenCards = [...selected].map(id => cardById[id]);
+  const clusters = clusterCards(chosenCards);
+  // 그룹 크기가 큰 순서로 정렬 (가장 뚜렷한 추천부터 보여주기)
+  clusters.sort((a, b) => b.members.length - a.members.length);
+
+  const { primary, reference } = splitPrimaryAndReference(clusters);
+  const primaryRecs = primary.map(buildRecommendation);
+  const referenceRecs = reference.map(buildRecommendation);
+
+  document.getElementById("resultTitle").textContent =
+    primaryRecs.length === 1 ? "1가지 분야를 추천합니다" : `${primaryRecs.length}가지 분야로 나뉘어 추천합니다`;
+  document.getElementById("resultSub").textContent =
+    `고르신 업무카드 ${chosenCards.length}개를 분석해서 만든 결과입니다. 아래에서 추천 근거와 관련 카드를 확인하세요.`
+    + (referenceRecs.length ? ` 상대적으로 비중이 작은 ${referenceRecs.length}개 묶음은 아래에 참고용으로 따로 표시했습니다.` : "");
+
+  document.getElementById("resultList").innerHTML = primaryRecs.map((r, i) => `
+    <article class="result-card">
+      <div class="rank">추천 ${i + 1}</div>
+      <h3>${r.fieldLabel}</h3>
+      <div class="why">${r.why}</div>
+      <div class="picked">${r.members.map(m => `<span>${m.label}</span>`).join("")}</div>
+    </article>
+  `).join("");
+
+  const refSection = document.getElementById("referenceSection");
+  if (referenceRecs.length) {
+    document.getElementById("referenceList").innerHTML = referenceRecs.map(r => `
+      <div class="ref-item">
+        <span class="ref-field">${r.fieldLabel}</span>
+        <span class="ref-cards">${r.members.map(m => m.label).join(", ")}</span>
+      </div>
+    `).join("");
+    refSection.style.display = "";
+  } else {
+    refSection.style.display = "none";
+  }
+
+  document.getElementById("gridView").classList.add("hidden");
+  document.getElementById("resultView").classList.add("active");
+  updateBarVisibility();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function backToGrid() {
+  document.getElementById("resultView").classList.remove("active");
+  document.getElementById("gridView").classList.remove("hidden");
+  updateBarVisibility();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ===================== 상단 탭(카드 선택 / 설명) 전환 ===================== */
+function updateBarVisibility() {
+  const bar = document.querySelector(".bar");
+  const explainHidden = document.getElementById("explainTab").hidden;
+  const resultActive = document.getElementById("resultView").classList.contains("active");
+  bar.style.display = (!explainHidden || resultActive) ? "none" : "";
+}
+
+function switchTab(tab) {
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    const active = b.dataset.tab === tab;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.getElementById("appTab").hidden = tab !== "app";
+  document.getElementById("explainTab").hidden = tab !== "explain";
+  updateBarVisibility();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ===================== 초기화 ===================== */
+document.getElementById("minCountLabel").textContent = MIN_SELECT;
+renderGrid();
+updateBar();
+updateBarVisibility();
+document.getElementById("recommendBtn").addEventListener("click", showResults);
+document.getElementById("backBtn").addEventListener("click", backToGrid);
+document.querySelectorAll(".tab-btn").forEach(b => b.addEventListener("click", () => switchTab(b.dataset.tab)));
+</script>
+</body>
+</html>

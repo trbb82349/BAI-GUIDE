@@ -1,0 +1,64 @@
+name: 자동 업데이트
+
+on:
+  schedule:
+    # 분(minute)을 0으로 두지 말 것: GitHub는 매시 정각을 혼잡 시간대로 안내하며,
+    # 정각에 예약하면 실행이 지연되거나 그 회차가 아예 건너뛰어질 수 있다.
+    # 실제로 이 스킬로 만든 프로젝트에서 정각(0 23 * * *) 예약이 하루 통째로
+    # 건너뛰어진 사례가 있었다 — 반드시 0이 아닌 분을 쓴다(예: 13분, 47분 등).
+    - cron: '13 0 * * 1'   # 매주 월요일 약 09:13 KST
+    - cron: '13 0 * * 4'   # 매주 목요일 약 09:13 KST
+  workflow_dispatch:
+
+concurrency:
+  group: update-workflow
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 데이터 수집
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # 필요에 따라 추가 Secret 등록
+          # NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          # NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+        run: python src/collect.py
+
+      - name: 웹사이트 빌드
+        run: python src/build_site.py
+
+      - name: 변경사항 커밋 & 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/data.json docs/index.html
+          if git diff --staged --quiet; then
+            echo "변경사항 없음"
+            exit 0
+          fi
+          git commit -m "update: $(date '+%Y-%m-%d')"
+          set +e
+          git push
+          RESULT=$?
+          set -e
+          if [ $RESULT -ne 0 ]; then
+            echo "Push 실패, rebase 후 재시도..."
+            git fetch origin main
+            git rebase origin/main
+            git push
+          fi

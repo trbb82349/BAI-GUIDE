@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>실무 사례와 설명 가능성 — 그룹 C·D 자료 세 편</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --ink: #191C22;
+    --muted: #5C626E;
+    --faint: #8A909C;
+    --rule: #E3E6EB;
+    --rule-strong: #C9CEd6;
+    --accent: #2E5D62;
+    --accent-soft: #E4EDEC;
+    --flag: #8C5312;
+    --flag-soft: #F6ECDF;
+
+    --teal: #1F6A6E;      --teal-soft: #DCEDEC;
+    --indigo: #3D4E9E;    --indigo-soft: #E3E7F7;
+    --plum: #7A3F73;      --plum-soft: #F1E4EF;
+    --moss: #4A6B2A;      --moss-soft: #E6EEDC;
+    --clay: #9A4B2C;      --clay-soft: #F7E6DE;
+    --shadow: 0 1px 2px rgba(25, 28, 34, .05), 0 8px 24px -16px rgba(25, 28, 34, .25);
+
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+      --rule: #282C34; --rule-strong: #3A404A;
+      --accent: #83B7B2; --accent-soft: #1E2A2B;
+      --flag: #D6A354; --flag-soft: #2A2318;
+      --teal: #7FBDB9; --teal-soft: #16292A;
+      --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+      --plum: #D19BC9; --plum-soft: #2B1E29;
+      --moss: #A8C482; --moss-soft: #1E2618;
+      --clay: #E0997A; --clay-soft: #2E1D16;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+    --rule: #282C34; --rule-strong: #3A404A;
+    --accent: #83B7B2; --accent-soft: #1E2A2B;
+    --flag: #D6A354; --flag-soft: #2A2318;
+    --teal: #7FBDB9; --teal-soft: #16292A;
+    --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+    --plum: #D19BC9; --plum-soft: #2B1E29;
+    --moss: #A8C482; --moss-soft: #1E2618;
+    --clay: #E0997A; --clay-soft: #2E1D16;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.72; letter-spacing: -.011em;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 50rem; margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex; flex-direction: column; gap: 3.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: 1.1rem; }
+  .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+  .masthead::after {
+    content: ""; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal) 0 20%, var(--indigo) 20% 40%, var(--plum) 40% 60%, var(--moss) 60% 80%, var(--clay) 80% 100%);
+  }
+  h1 { font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.15; font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.035em; }
+  .standfirst { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 38rem; }
+  .roster { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding-top: .3rem; }
+  .roster .roster-label { border: none; background: none; padding: 0 .25rem 0 0; font-weight: 600; font-size: .78rem; color: var(--ink); }
+  .roster span {
+    font-weight: 500; font-size: .8rem; font-family: var(--mono); padding: .2rem .55rem;
+    border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  /* 탭 내비게이션 */
+  .tabnav { display: flex; gap: .3rem; border-bottom: 2px solid var(--rule); flex-wrap: wrap; margin-top: -1.2rem; }
+  .tab-btn {
+    font-family: var(--sans); font-weight: 700; font-size: 1rem; letter-spacing: -.015em;
+    padding: .8rem 1.3rem; border: none; background: transparent; color: var(--faint); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 120ms ease, border-color 120ms ease;
+  }
+  .tab-btn .sub { display: block; font-family: var(--mono); font-weight: 500; font-size: .7rem; letter-spacing: .04em; margin-top: .15rem; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active[data-tab="linkedin"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab-btn.active[data-tab="explain"] { color: var(--clay); border-bottom-color: var(--clay); }
+  .tab-btn.active[data-tab="semantic"] { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-panel[hidden] { display: none; }
+  .tab-panel { display: flex; flex-direction: column; gap: 3.25rem; }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; --hue: var(--teal); --hue-soft: var(--teal-soft); }
+  section.s-indigo { --hue: var(--indigo); --hue-soft: var(--indigo-soft); }
+  section.s-plum   { --hue: var(--plum);   --hue-soft: var(--plum-soft); }
+  section.s-moss   { --hue: var(--moss);   --hue-soft: var(--moss-soft); }
+  section.s-clay   { --hue: var(--clay);   --hue-soft: var(--clay-soft); }
+  section + section { margin-top: 2rem; }
+
+  h2 {
+    font-size: 1.32rem; letter-spacing: -.025em; font-weight: 700; margin: 0;
+    padding-bottom: .75rem; border-bottom: 2px solid var(--hue);
+    display: flex; align-items: center; gap: .65rem;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .22rem .45rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .5rem; }
+  ul ul { margin-top: .5rem; padding-left: 1.1rem; }
+  li::marker { color: var(--faint); }
+  strong { font-weight: 600; }
+  p { margin: 0; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.4rem 1.6rem; box-shadow: var(--shadow);
+  }
+
+  h4 { margin: 1.1rem 0 0; font-size: .95rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h4:first-child { margin-top: 0; }
+
+  .analogy { background: var(--hue-soft); border-radius: 3px; padding: 1rem 1.2rem; font-size: .95rem; color: var(--ink); }
+  .analogy b { color: var(--hue); }
+
+  .terms { display: flex; flex-direction: column; gap: .7rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.1rem 1.3rem; box-shadow: var(--shadow); }
+  .term dt { font-weight: 700; color: var(--hue); font-size: .92rem; }
+  .term dd { margin: .2rem 0 0; color: var(--muted); font-size: .92rem; }
+
+  .source-card { border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); padding: 1.1rem 1.3rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: .55rem; }
+  .source-card h3 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: -.015em; }
+  .source-card p { color: var(--ink); font-size: .95rem; }
+  .src {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: .3rem;
+    font-family: var(--mono); font-size: .72rem; color: var(--hue); background: var(--hue-soft);
+    border-radius: 3px; padding: .2rem .55rem; text-decoration: none; white-space: nowrap;
+  }
+  .src::before { content: "↗"; }
+  .src:hover { text-decoration: underline; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead { background: var(--hue-soft); }
+  thead th { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule-strong); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.who { white-space: nowrap; font-weight: 700; color: var(--hue); }
+  td.what { color: var(--muted); line-height: 1.6; }
+  td.n { font-family: var(--mono); color: var(--faint); font-variant-numeric: tabular-nums; width: 2.2rem; }
+
+  .notice { background: var(--hue-soft); border-left: 4px solid var(--hue); border-radius: 3px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--ink); }
+
+  .open { list-style: none; padding: 0; gap: 0; }
+  .open li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .open li:first-child { border-top: 1px solid var(--rule); }
+  .open .idx { font-family: var(--mono); font-size: .75rem; font-weight: 600; color: var(--hue); font-variant-numeric: tabular-nums; }
+  .open .note { display: block; color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+
+  .pill-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .pill-grid span {
+    font-size: .86rem; font-weight: 600; padding: .35rem .7rem; border-radius: 3px;
+    background: var(--hue-soft); color: var(--hue); border: 1px solid transparent;
+  }
+
+  .deep-card {
+    border: 1px solid var(--rule); border-left: 4px solid var(--hue); border-radius: 3px;
+    background: var(--surface); padding: 1rem 1.2rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: .4rem;
+  }
+  .deep-card h4 { margin: 0; font-size: 1rem; color: var(--hue); }
+  .deep-card .ex { font-size: .88rem; color: var(--muted); }
+  .deep-card .ex b { color: var(--ink); font-weight: 600; }
+  .deep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
+  @media (max-width: 40rem) { .deep-grid { grid-template-columns: 1fr; } }
+
+  .script {
+    background: var(--surface); border: 1px dashed var(--rule-strong); border-radius: 3px;
+    padding: 1.1rem 1.3rem; font-size: .96rem; color: var(--ink); position: relative;
+  }
+  .script::before { content: "발표 스크립트"; position: absolute; top: -.6rem; left: 1rem; background: var(--bg); padding: 0 .5rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--hue); }
+
+  .qa { display: flex; flex-direction: column; gap: 1rem; }
+  .qa .q { font-weight: 700; font-size: .95rem; }
+  .qa .q::before { content: "Q. "; color: var(--hue); }
+  .qa .a { color: var(--muted); font-size: .93rem; margin-top: .25rem; }
+  .qa .a::before { content: "A. "; color: var(--ink); font-weight: 700; }
+
+  /* 파이프라인 단계 표시 */
+  .steps { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+  .steps .step { display: grid; grid-template-columns: 2.6rem 1fr; gap: .9rem; padding: .9rem 1.1rem; border-bottom: 1px solid var(--rule); align-items: start; }
+  .steps .step:last-child { border-bottom: none; }
+  .steps .step .no { font-family: var(--mono); font-weight: 700; color: var(--surface); background: var(--hue); border-radius: 3px; width: 1.9rem; height: 1.9rem; display: flex; align-items: center; justify-content: center; font-size: .85rem; }
+  .steps .step b { display: block; font-size: .95rem; margin-bottom: .2rem; }
+  .steps .step span.d { color: var(--muted); font-size: .9rem; }
+
+  footer { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .04em; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 6-8/8 (그룹 C·D, 마지막 자료) · 2026.08.21</div>
+    <h1>실무 사례와 설명 가능성<br>그룹 C·D 자료 세 편</h1>
+    <p class="standfirst">아래 탭을 눌러 세 자료를 각각 볼 수 있습니다. LinkedIn(그룹 C)이 그룹 A·B를 실제로 합쳐 쓰는 사례였다면, 그룹 D의 두 논문은 "왜 이렇게 추천했는지 설명하는 방법" 자체를 다룹니다. 이 세 번째 탭으로 조사3 자료 8개 전체가 마무리됩니다.</p>
+    <div class="roster">
+      <span class="roster-label">핵심 정보</span>
+      <span>LinkedIn: 스킬 3.9만+개</span><span>JD/Resume(Barrak): 몬트리올, 2022</span><span>채용추천(Al Awad): 시리아, 2026</span>
+    </div>
+  </header>
+
+  <nav class="tabnav" role="tablist">
+    <button class="tab-btn active" data-tab="linkedin" role="tab" aria-selected="true">LinkedIn<span class="sub">그룹 C · 실무 사례</span></button>
+    <button class="tab-btn" data-tab="explain" role="tab" aria-selected="false">JD/Resume 매칭<span class="sub">그룹 D · Barrak 외, 2022</span></button>
+    <button class="tab-btn" data-tab="semantic" role="tab" aria-selected="false">채용 추천 시스템<span class="sub">그룹 D · Al Awad 외, 2026</span></button>
+  </nav>
+
+  <div class="tab-panel" data-panel="linkedin" id="panel-linkedin">
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>LinkedIn Skills Graph는 <strong>그룹 A(사람이 만든 분류표)와 그룹 B(AI 임베딩·군집화)를 실제로 합쳐서</strong> 서비스에 쓰고 있는 실무 사례입니다.</li>
+        <li>규모: 스킬 <strong>3.9만여 개</strong>(26개 언어), 별칭 37.4만여 개, 스킬 간 관계(엣지) <strong>20만여 개</strong>, 회원 8.75억 명, 기업 5,900만여 개.</li>
+        <li>스킬을 찾아내는 방식이 하이브리드입니다 — <strong>① 빠르고 단순한 사전 매칭</strong> + <strong>② AI가 뜻을 이해해서 매칭하는 의미 기반 방식</strong>을 같이 씁니다.</li>
+        <li>AI가 제안한 결과를 <strong>사람(전문 분류학자)이 검증</strong>하는 과정도 있습니다 — 완전 자동도, 완전 수동도 아닌 하이브리드 운영입니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> LinkedIn Skills Graph가 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 전 세계 직장인들의 "능력"을 하나로 연결한 거대한 지도라고 생각하면 됩니다. 지도에서 서울과 부산이 도로로 연결되어 있듯, 이 지도에서는 "데이터 분석"과 "SQL"이 연결되어 있고, "SQL"은 다시 여러 직업·강의·사람과 연결됩니다. LinkedIn은 이 지도를 이용해 학력이나 직함이 아니라 <strong>실제 능력</strong>을 기준으로 사람과 기회를 연결하려고 합니다("스킬 우선(skills-first)" 채용 문화).
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>목적:</strong> 학력·직함 대신 실제 능력(스킬)을 기준으로 사람과 채용공고·강의·인맥을 연결하는 "공통 언어" 만들기</li>
+      <li><strong>데이터 출처:</strong> 채용공고, 회원 프로필·자기소개, 경력 설명, 이력서, 강의 콘텐츠</li>
+      <li><strong>규모(2023년 기준):</strong> 스킬 약 3.9만 개(26개 언어), 별칭 37.4만여 개, 스킬 간 관계(엣지) 20만여 개, 회원 8.75억 명, 기업 5,900만여 개</li>
+    </ul>
+
+    <a class="src" href="https://www.linkedin.com/blog/engineering/skills-graph/building-linkedin-s-skills-graph-to-power-a-skills-first-world" target="_blank" rel="noopener">LinkedIn Engineering · Skills Graph 소개</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 스킬을 텍스트에서 어떻게 뽑아내나요? — 하이브리드 추출 방식</h2>
+    <p>채용공고나 자기소개 같은 텍스트에서 "스킬"을 자동으로 찾아내야 하는데, LinkedIn은 방법 두 가지를 같이 씁니다.</p>
+
+    <div class="deep-grid">
+      <div class="deep-card">
+        <h4>① 사전 기반 방식 (빠름)</h4>
+        <p class="ex">미리 정리해둔 스킬 이름 목록을 사전처럼 만들어두고, 텍스트에서 정확히 일치하는 단어를 빠르게 찾아냅니다. 정확하고 속도가 매우 빠르지만, "다른 말로 표현된 같은 스킬"은 놓칠 수 있습니다.</p>
+      </div>
+      <div class="deep-card">
+        <h4>② 의미 기반 방식 (AI)</h4>
+        <p class="ex">"비용 관리"와 "cost management"처럼 표현이 달라도 뜻이 같은 스킬을 AI가 찾아냅니다. 문장과 스킬 이름을 각각 숫자(임베딩)로 바꾼 뒤, 두 숫자가 얼마나 가까운지 비교하는 AI 모델(BERT 계열)을 씁니다.</p>
+      </div>
+    </div>
+
+    <div class="notice">사람의 역할: AI 혼자 다 하지 않습니다. 사람(라벨러)이 AI와 함께 학습용 데이터에 스킬을 표시하고, <strong>훈련된 분류학자(taxonomist)</strong>가 최종적으로 결과를 검증합니다. 이건 지난 ESCO 딥다이브에서 본 "사람이 최종 확인한다"는 원칙과 같은 맥락입니다.</div>
+
+    <a class="src" href="https://www.linkedin.com/blog/engineering/skills-graph/extracting-skills-from-content" target="_blank" rel="noopener">LinkedIn Engineering · 콘텐츠에서 스킬 추출하기</a>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 스킬 사이의 관계는 어떻게 만드나요? — 그래프 만들기</h2>
+
+    <h4>먼저 알아두면 좋은 단어</h4>
+    <dl class="terms">
+      <div class="term"><dt>코사인 유사도(cosine similarity)</dt><dd>두 숫자 목록(임베딩)이 얼마나 비슷한 방향을 가리키는지 재는 계산법. 지난 arXiv 딥다이브에서 본 유클리디안 거리와 비슷한 역할이지만, "거리"가 아니라 "방향"으로 비교한다는 점이 다릅니다.</dd></div>
+      <div class="term"><dt>커뮤니티 탐지(community detection)</dt><dd>거대한 네트워크(그래프) 안에서 서로 긴밀하게 연결된 무리를 자동으로 찾아내는 알고리즘. 친구 관계 네트워크에서 "친한 친구 그룹"을 자동으로 찾아내는 것과 같은 원리입니다.</dd></div>
+    </dl>
+
+    <div class="steps">
+      <div class="step"><span class="no">1</span><div><b>모든 스킬을 숫자 공간에 배치</b><span class="d">3.9만여 개 스킬을 딥러닝으로 같은 고차원 숫자 공간(임베딩)에 배치합니다.</span></div></div>
+      <div class="step"><span class="no">2</span><div><b>스킬 쌍마다 유사도 계산</b><span class="d">모든 스킬 쌍 사이의 코사인 유사도를 계산합니다.</span></div></div>
+      <div class="step"><span class="no">3</span><div><b>유사도를 연결 강도로 네트워크 구성</b><span class="d">유사도가 높을수록 굵은 선으로 연결된 네트워크(그래프)를 만듭니다.</span></div></div>
+      <div class="step"><span class="no">4</span><div><b>약한 연결 잘라내기</b><span class="d">너무 약한 연결은 잘라내서 핵심 뼈대(backbone)만 남깁니다.</span></div></div>
+      <div class="step"><span class="no">5</span><div><b>커뮤니티 탐지로 스킬 군집 발견</b><span class="d">서로 보완적인 스킬끼리 자동으로 그룹(군집)을 찾아냅니다.</span></div></div>
+    </div>
+
+    <h4>계층 구조 예시 (Structured Skills)</h4>
+    <div class="pill-grid">
+      <span>인공신경망 → 딥러닝 → 머신러닝</span>
+      <span>공급망 엔지니어링 → 공급망 관리 · 산업공학</span>
+    </div>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 실제로 어디에 쓰이나요?</h2>
+    <ul>
+      <li><strong>채용 매칭:</strong> 표현이 달라도 같은 스킬로 인식 (예: "비용 관리" ↔ "프로젝트 예산 관리")</li>
+      <li><strong>학습 콘텐츠 추천:</strong> 커리어 경로에 맞는 강의를 찾아 보여줌</li>
+      <li><strong>피드 개인화:</strong> 관련 게시물·인맥·회사를 추천</li>
+      <li><strong>채용담당자 도구:</strong> LinkedIn 채용담당자의 40% 이상이 스킬 데이터를 채용에 활용</li>
+    </ul>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "LinkedIn Skills Graph는 전 세계 직장인들의 스킬 3만 9천여 개를 하나로 연결한 거대한 네트워크예요. 특징은 스킬을 찾아내는 방식이 두 가지를 섞은 하이브리드라는 거예요. 하나는 미리 만들어둔 사전으로 빠르게 찾는 방식이고, 다른 하나는 AI가 뜻을 이해해서 표현이 달라도 같은 스킬을 찾아내는 방식이에요. 그리고 스킬끼리 얼마나 비슷한지는 AI로 숫자로 바꾼 다음 코사인 유사도로 계산하고, 이걸로 네트워크를 만들어서 비슷한 스킬 그룹을 자동으로 찾아내요. 근데 여기서 끝이 아니라, 사람 전문가가 이 결과를 최종 검증해요. 그러니까 저희가 지금까지 본 그룹 A(사람이 정한 규칙)랑 그룹 B(AI 자동 계산)를 실제 회사가 이렇게 같이 쓰고 있다는 걸 보여주는 사례예요."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">이런 대규모 시스템을 CareerLens 같은 소규모 프로젝트에서 따라 할 수 있어요?</p>
+        <p class="a">규모 그대로는 불가능합니다. LinkedIn은 8억 명이 넘는 회원 데이터로 AI 모델을 훈련하지만, 저희는 데이터가 훨씬 적습니다. 다만 "빠른 사전 매칭 + 정밀한 유사도 계산을 단계적으로 결합한다"는 설계와 "AI 결과를 사람이 최종 검증한다"는 원칙은 소규모로도 그대로 적용할 수 있습니다.</p>
+      </div>
+      <div>
+        <p class="q">코사인 유사도랑 유클리디안 거리는 뭐가 달라요?</p>
+        <p class="a">둘 다 "두 숫자 목록이 얼마나 비슷한가"를 재지만 기준이 다릅니다. 유클리디안 거리(지난 국내 논문에서 사용)는 직선 거리를, 코사인 유사도는 두 벡터가 가리키는 방향의 각도를 봅니다. 텍스트·스킬처럼 "크기보다 패턴이 중요한 데이터"에는 코사인 유사도가 더 자주 쓰입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">07</span> 지금까지 본 그룹 A·B와 어떻게 연결되나</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>앞서 본 개념</th><th>LinkedIn이 실제로 쓰는 방식</th></tr></thead>
+        <tbody>
+          <tr><td class="who">그룹 A · 사람이 만든 분류(O*NET·ESCO·KNOW)</td><td class="what">Structured Skills 계층 구조 + 훈련된 분류학자의 최종 검증</td></tr>
+          <tr><td class="who">그룹 B · 임베딩·군집화(arXiv 논문)</td><td class="what">스킬 임베딩 + 코사인 유사도 + 커뮤니티 탐지로 스킬 그래프 자동 생성</td></tr>
+          <tr><td class="who">그룹 B · 필수/선택 스킬 구분(ESCO)</td><td class="what">스킬 간 관계(엣지)로 "이 직무에 핵심적인 스킬 묶음"을 표현</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>LinkedIn 사례가 중요한 이유는, 저희가 따로따로 살펴본 방법들이 <strong>실제로는 함께 쓰여야 잘 작동한다</strong>는 걸 실증한다는 점입니다.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">08</span> CareerLens 조사3에 왜 중요한가</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>LinkedIn에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">사전 기반(빠름) + AI 의미 기반(정확함)을 섞은 하이브리드 추출이 실제로 검증됐다</td><td class="what">태그 추출 시 키워드 매칭(1차 빠른 필터링) → 유사도 계산(정밀 검증)의 단계적 구조로 설계</td></tr>
+          <tr><td class="what">AI가 제안한 결과를 사람이 최종 검증한다</td><td class="what">자동 추출한 태그를 팀원이 검수하는 단계를 프로세스에 명시적으로 포함</td></tr>
+          <tr><td class="what">표현이 다른 같은 의미의 업무를 자동으로 매칭한다</td><td class="what">채용공고마다 다르게 쓰는 업무 표현(동의어)을 같은 태그로 묶는 실전 근거로 사용</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div>
+  <!-- ============================== /LinkedIn 탭 ============================== -->
+
+  <!-- ============================== JD/Resume 매칭(그룹 D) 탭 ============================== -->
+  <div class="tab-panel" data-panel="explain" id="panel-explain" hidden>
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>이 연구는 캐나다 몬트리올 폴리테크닉의 <strong>박사 연구 제안서</strong>로, "이력서-채용공고 매칭 시스템"에 <strong>추적 가능성(traceable)·설명 가능성(explainable)·공정성(fair)</strong>을 어떻게 넣을지 설계했습니다.</li>
+        <li>⚠️ 완성된 시스템의 최종 결과 논문이 아니라, 2022년 시점의 <strong>문헌조사(109편) + 제안 아키텍처</strong>를 담은 연구 제안서라는 점을 먼저 밝혀두는 게 정확합니다.</li>
+        <li>스킬을 매칭할 때 <strong>지난번 본 ESCO를 지식베이스로 그대로 사용</strong>합니다 — 그룹 A(공식 분류체계)와 그룹 D(설명 가능성)를 잇는 실제 다리입니다.</li>
+        <li>핵심 아이디어: <strong>"누구에게 설명하느냐"에 따라 설명 내용이 달라야 한다</strong> — 채용담당자용·구직자용·채용기업용 설명을 각각 따로 만듭니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> AI 면접관이 있는데, 왜 이 사람을 뽑았는지 왜 나는 떨어졌는지 아무도 설명해주지 않는다면 믿을 수 있을까요? 이 연구는 바로 그 문제를 풉니다. "잘 맞혔다"는 결과만이 아니라, <strong>"왜 이렇게 판단했는지"</strong>까지 시스템 설계에 처음부터 포함시키려는 시도입니다.
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>제목:</strong> Toward a traceable, explainable, and fair JD/Resume recommendation system</li>
+      <li><strong>저자:</strong> Amine Barrak (지도교수: Bram Adams, Amal Zouaq)</li>
+      <li><strong>소속:</strong> Polytechnique Montréal(캐나다 몬트리올 폴리테크닉), 컴퓨터·소프트웨어공학과</li>
+      <li><strong>제출:</strong> 2022년 2월 · <strong>성격: 박사 연구 제안서</strong>(전체 시스템의 설계도 + 초기 문헌조사·예비실험)</li>
+    </ul>
+
+    <a class="src" href="https://arxiv.org/abs/2202.08960" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 왜 이 문제가 중요한가요? — 자동 채용의 딜레마</h2>
+    <ul>
+      <li><strong>수작업 채용</strong>은 시간과 비용이 많이 들어서, 많은 회사가 자동화된 매칭 시스템을 원합니다.</li>
+      <li>그런데 자동화된 매칭이 <strong>"왜 이 사람을 골랐는지" 설명을 안 해주면</strong>, 채용담당자도 구직자도 결과를 신뢰하기 어렵습니다.</li>
+      <li>저자들이 2014~2021년 논문 <strong>109편</strong>을 검토해보니, <strong>"지식베이스(ESCO 등)"와 "최신 AI 언어모델(트랜스포머)"을 같이 쓴 연구가 없었습니다</strong> — 이 빈틈을 채우는 것이 이 연구의 핵심 기여입니다.</li>
+    </ul>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 어떻게 매칭하나요? — ESCO + AI 언어모델</h2>
+    <p>지식베이스(사람이 만든 규칙)와 AI 언어모델(자동 계산)을 함께 씁니다 — 지금까지 본 그룹 A와 그룹 B를 실제로 결합한 또 하나의 사례입니다.</p>
+
+    <h4>2단계 스킬 매칭</h4>
+    <ul>
+      <li><strong>직접 매칭:</strong> 이력서의 "C++"과 공고의 "c++"처럼 완전히 같은 단어를 매칭</li>
+      <li><strong>계층 매칭:</strong> <strong>ESCO의 계층 구조</strong>를 이용해 "C++"을 더 큰 범주인 "컴퓨터 프로그래밍"으로도 연결 — 단어가 달라도 상위 개념이 같으면 매칭됨</li>
+    </ul>
+
+    <h4>AI 모델: CamemBERT</h4>
+    <p>프랑스어 이력서·공고를 다루기 위해 <strong>CamemBERT</strong>(프랑스어 버전 BERT)라는 AI 언어모델을 이 연구의 목적에 맞게 추가 학습(미세조정)해서 사용합니다.</p>
+
+    <div class="deep-grid">
+      <div class="deep-card">
+        <h4>이력서에서 뽑는 항목</h4>
+        <p class="ex">학력(학위·전공·수상), 스킬(전문·일반), 개인정보, 경력(현재 직위·연봉·산업), 언어 능력</p>
+      </div>
+      <div class="deep-card">
+        <h4>채용공고에서 뽑는 항목</h4>
+        <p class="ex">인적 요건, 학력 요건, 제시 직위·연봉, 요구 경력 연수, 기술·협업 요건</p>
+      </div>
+    </div>
+
+    <p style="margin-top:.6rem"><strong>매칭 순서:</strong> ESCO 기반 특징 유사도로 1차 필터링 → 후보 압축 → CamemBERT로 정밀 순위 매기기 → NDCG(추천 순위가 얼마나 정확한지 재는 지표)로 성능 평가</p>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 설명 가능성 — "누구에게" 설명하느냐가 다르다</h2>
+    <p>이 논문이 가장 강조하는 부분입니다. 같은 매칭 결과라도 <strong>보는 사람에 따라 필요한 설명이 다릅니다.</strong></p>
+
+    <div class="notice">용어 구분: <strong>해석가능성(interpretability)</strong>은 "왜 이런 결과가 나왔는지 원인-결과 관계를 이해하는 것"이고, <strong>설명가능성(explainability)</strong>은 그 이유를 "사람이 알아들을 수 있는 말로 풀어서 전달하는 것"입니다. 이 논문은 후자, 즉 사람에게 어떻게 전달할지에 집중합니다.</div>
+
+    <div class="deep-grid">
+      <div class="deep-card">
+        <h4>채용담당자용 리포트</h4>
+        <p class="ex">상위 후보를 선정한 기준 + 후보 간 비교 분석</p>
+      </div>
+      <div class="deep-card">
+        <h4>구직자용 리포트</h4>
+        <p class="ex">합격 또는 불합격이 된 구체적인 이유</p>
+      </div>
+      <div class="deep-card">
+        <h4>채용기업용 리포트</h4>
+        <p class="ex">채용담당자의 평가 기준이 타당했는지에 대한 근거</p>
+      </div>
+    </div>
+
+    <p style="margin-top:.6rem"><strong>설명을 만드는 방법(검토된 기법들):</strong> 레이어별 관련성 전파(어떤 특징이 결과에 얼마나 영향을 줬는지 역추적), LIME(입력값을 살짝 바꿔보며 원인을 추정), 어텐션 기반 강조 표시(AI 모델이 어떤 단어에 집중했는지 시각화)</p>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 추적 가능성과 공정성도 함께</h2>
+    <ul>
+      <li><strong>추적 가능성(traceability):</strong> 데이터가 어떻게 바뀌어왔는지, 모델 설정이 언제 어떻게 바뀌었는지, 각 매칭 결정의 근거가 무엇인지 전부 기록합니다. (DVC, MLFlow 같은 기존 도구를 활용)</li>
+      <li><strong>공정성(fairness):</strong> 성별·나이 같은 민감한 정보로 인한 편향이 없는지 데이터를 정제하고, 특정 단어 단위로 편향된 판단을 하는지 검사하며, 특정 집단에 치우치지 않은 균형 잡힌 학습 데이터를 구성합니다.</li>
+    </ul>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">07</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "이 연구는 캐나다 몬트리올 폴리테크닉의 박사 연구 제안서인데요, 이력서랑 채용공고를 자동으로 매칭하는 시스템을 만들 때 '왜 이렇게 추천했는지'를 설명하는 방법까지 처음부터 설계에 포함시켰어요. 스킬을 매칭할 때 저희가 앞서 본 ESCO를 지식베이스로 그대로 쓰고요, 프랑스어 이력서를 다루려고 CamemBERT라는 AI 언어모델도 같이 써요. 근데 제일 흥미로운 부분은, 설명을 채용담당자용, 구직자용, 채용기업용으로 각각 다르게 만든다는 거예요. 같은 매칭 결과라도 누가 보느냐에 따라 필요한 설명이 다르다는 거죠. 다만 이건 완성된 시스템이 아니라 연구 제안서라서, 최종 결과가 다 나온 건 아니고 설계와 초기 실험 단계까지만 진행됐다는 것도 같이 말씀드리는 게 정확해요."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">이 논문은 완성된 연구예요, 제안서예요?</p>
+        <p class="a">연구 제안서에 가깝습니다. 2014~2021년 문헌 109편을 분석한 체계적 문헌조사와, 초기 실험(NDCG로 CamemBERT 여러 버전을 비교) 결과는 있지만, 완성되어 배포된 시스템의 최종 성능 결과까지는 이 논문 시점에 나와 있지 않습니다. 발표에서는 "완성된 결과"가 아니라 "설계도이자 방향성"으로 인용하는 게 정확합니다.</p>
+      </div>
+      <div>
+        <p class="q">CareerLens에서 "이해관계자별 설명 나누기" 아이디어를 쓸 수 있어요?</p>
+        <p class="a">네, 이 부분이 규모와 상관없이 그대로 참고할 수 있는 아이디어입니다. CareerLens도 "사용자에게 보여줄 설명"과 "팀 내부에서 태그 근거를 확인할 설명"을 다르게 설계할 수 있습니다 — 이미 이전 문서들에서 이야기한 `reason` 문구 같은 사용자용 설명과, 태그 겹침 근거 같은 내부용 설명을 구분하는 것과 같은 맥락입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">08</span> 그룹 A~D를 하나로 잇기 + CareerLens 적용</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>그룹</th><th>이 논문에서 대응하는 부분</th></tr></thead>
+        <tbody>
+          <tr><td class="who">그룹 A · 공식 분류(ESCO)</td><td class="what">스킬 매칭의 지식베이스로 ESCO를 그대로 사용, 계층 구조로 "직접 매칭 + 계층 매칭" 구현</td></tr>
+          <tr><td class="who">그룹 B · AI 임베딩(arXiv)</td><td class="what">CamemBERT 트랜스포머 모델로 이력서·공고 텍스트를 정밀 순위 매김</td></tr>
+          <tr><td class="who">그룹 C · 실무 사례(LinkedIn)</td><td class="what">지식베이스+AI를 함께 쓰는 하이브리드 구조가 실제로도, 연구에서도 반복되는 패턴임을 재확인</td></tr>
+          <tr><td class="who">그룹 D · 설명 가능성(이 논문)</td><td class="what">이해관계자별 맞춤 설명 + 추적 가능성 + 공정성까지 시스템 설계에 포함</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>CareerLens 조사3에 적용하는 방법</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">"누구에게 설명하느냐"에 따라 설명 내용을 다르게 설계해야 한다</td><td class="what">사용자용 추천 이유 문구와, 팀 내부 검토용 근거 기록을 별도로 설계</td></tr>
+          <tr><td class="what">직접 매칭 + 계층 매칭을 함께 쓰면 놓치는 경우를 줄일 수 있다</td><td class="what">태그가 정확히 일치하지 않아도 상위 범주가 같으면 연결되도록 태그 체계에 계층을 둘지 검토</td></tr>
+          <tr><td class="what">완성 전 연구도 "설계 방향"으로는 충분히 인용할 가치가 있다</td><td class="what">발표에서 자료의 완성도(제안서 vs 완성 논문)를 정확히 구분해서 인용하는 습관 유지</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div>
+  <!-- ============================== /JD/Resume 매칭 탭 ============================== -->
+
+  <!-- ============================== 채용 추천 시스템(그룹 D #2) 탭 ============================== -->
+  <div class="tab-panel" data-panel="semantic" id="panel-semantic" hidden>
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>이 논문은 2026년 5월 발표된 <strong>가장 최신 자료</strong>이자, 앞선 Barrak의 제안서와 달리 <strong>실제로 완성해서 성능까지 측정한 실험 논문</strong>입니다.</li>
+        <li>핵심 특징: 채용공고의 전체 설명문이 아니라 <strong>제목·회사·지역·연차·직무분야·고용형태·산업</strong> 같은 메타데이터만 사용합니다.</li>
+        <li>키워드 매칭(TF-IDF)과 의미 기반 매칭(Sentence-BERT)을 <strong>실제 숫자 비율(0.6:0.4)</strong>로 섞어서 씁니다.</li>
+        <li>설명 방식이 실용적입니다 — SHAP·LIME 같은 복잡한 AI 해석 도구 대신, <strong>"어떤 키워드가 겹쳤는지, 어떤 필터가 적용됐는지"</strong>를 그대로 보여주는 단순한 방식을 택했습니다. 조사3에서 본 자료 중 <strong>CareerLens와 철학이 가장 비슷한</strong> 논문입니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 도서관에서 "제목에 정확히 그 단어가 들어간 책"만 찾아주는 사서(키워드 검색)와, "무슨 내용인지 이해하고 비슷한 책까지 찾아주는" 사서(의미 검색)를 <strong>둘 다 고용해서 같이 일하게 하는 것</strong>과 비슷합니다. 그리고 손님(사용자)에게는 "이 책을 추천한 이유"를 두 사서 중 누가 찾았는지까지 알려줍니다.
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>제목:</strong> Developing an Intelligent Job Recommendation System Using Semantic Retrieval and Explainable AI Techniques</li>
+      <li><strong>저자:</strong> Hussein Ali Al Awad (지도교수: Khaled Fathi Omar)</li>
+      <li><strong>소속:</strong> 시리아 가상대학교(Syrian Virtual University) 웹과학 석사과정</li>
+      <li><strong>게재:</strong> arXiv 2605.27656, 2026년 5월 26일</li>
+      <li><strong>목적:</strong> 채용공고 전체 설명문이나 사용자 행동 기록 없이도, 구조화된 메타데이터만으로 효과적이고 설명 가능한 추천이 가능한지 확인</li>
+    </ul>
+
+    <a class="src" href="https://arxiv.org/abs/2605.27656" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 어떤 데이터로 실험했나요?</h2>
+    <div class="source-card">
+      <h3>LinkedIn 채용공고 31,262건</h3>
+      <ul>
+        <li><strong>수집:</strong> 31,597건 수집 → 정제 후 31,262건 사용 (335건 제거)</li>
+        <li><strong>사용한 필드:</strong> 직무명, 회사명, 지역, 채용상태, 게시일, 연차수준, 직무분야, 고용형태, 산업</li>
+        <li><strong>전처리:</strong> 결측값 처리, 공백 정규화, 약어 확장(ML→machine learning, SWE→software engineer 등), 노이즈 제목 제거</li>
+      </ul>
+    </div>
+    <div class="notice">LinkedIn(그룹 C)과 이 논문 둘 다 LinkedIn 채용 데이터를 다룬다는 공통점이 있습니다. 다만 그룹 C는 회사가 공개한 시스템 구조를, 이 논문은 공개된 채용공고 데이터셋으로 <strong>독립적으로 실험한 연구</strong>라는 차이가 있습니다.</div>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 시스템 구조 — 6단계 파이프라인</h2>
+
+    <div class="steps">
+      <div class="step"><span class="no">1</span><div><b>데이터 수집·전처리</b><span class="d">채용공고 정제, 텍스트 정규화, 약어 확장</span></div></div>
+      <div class="step"><span class="no">2</span><div><b>인덱싱</b><span class="d">키워드 매칭용 TF-IDF 행렬과, 의미 매칭용 임베딩 벡터를 둘 다 미리 구축</span></div></div>
+      <div class="step"><span class="no">3</span><div><b>검색</b><span class="d">벡터 유사도로 의미상 비슷한 후보 채용공고를 추출</span></div></div>
+      <div class="step"><span class="no">4</span><div><b>하이브리드 순위화</b><span class="d">키워드 점수와 의미 점수를 가중치로 합쳐 최종 순위 계산</span></div></div>
+      <div class="step"><span class="no">5</span><div><b>(선택) 재순위화</b><span class="d">상위 100개 후보만 Cross-Encoder라는 더 정밀한 AI 모델로 다시 정렬</span></div></div>
+      <div class="step"><span class="no">6</span><div><b>설명 생성</b><span class="d">검색어와 추천 결과를 연결하는 근거를 정리해 함께 제공</span></div></div>
+    </div>
+
+    <h4>핵심 공식</h4>
+    <div class="calc">
+      <div class="row"><span class="label">키워드 점수</span><span class="val">TF-IDF: 단어가 이 공고에 자주 나오면서, 다른 공고에는 드물게 나올수록 높은 점수</span></div>
+      <div class="row"><span class="label">의미 점수</span><span class="val">Sentence-BERT 임베딩 간 코사인 유사도</span></div>
+      <div class="row"><span class="label">최종 결합</span><span class="val">s_hybrid = 0.4 × 의미점수 + 0.6 × 키워드점수</span></div>
+      <div class="row"><span class="label">왜 키워드 비중이 더 큰가</span><span class="val">직무명·지역·연차 같은 "정확한 단어"가 채용 검색에서는 특히 중요하기 때문</span></div>
+    </div>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 설명 가능성 — 단순하지만 실용적인 선택</h2>
+    <p>이 논문이 조사3에서 가장 눈여겨볼 부분입니다. SHAP·LIME 같은 복잡한 AI 해석 도구를 쓰지 않고, <strong>"특징 기반 설명"</strong>이라는 단순한 방식을 택했습니다.</p>
+
+    <ul>
+      <li>질의(검색어)와 채용공고 사이에 <strong>겹치는 키워드</strong></li>
+      <li><strong>적용된 필터 조건</strong> (원격근무, 연차, 지역 등)</li>
+      <li><strong>메타데이터 근거</strong> (직무분야·산업·고용형태가 일치하는지)</li>
+      <li>이 결과가 <strong>키워드 검색 / 의미 검색 / 재순위화</strong> 중 어디서 나왔는지</li>
+    </ul>
+
+    <div class="notice">저자들의 표현을 그대로 옮기면, <strong>"임베딩 공간 내부를 설명하기보다, 사용자가 직접 볼 수 있는 메타데이터에 기반한 실용적 투명성"</strong>을 목표로 했습니다. 앞서 본 Barrak 논문(레이어별 관련성 전파, LIME 등 학술적 해석 기법)과 뚜렷하게 대비되는 지점입니다.</div>
+
+    <h4>예시 쿼리로 보는 작동 방식</h4>
+    <div class="source-card">
+      <p><strong>검색어:</strong> "remote junior data analyst London"</p>
+      <p><strong>① 필터 추출:</strong> 근무형태=원격, 연차=주니어, 지역=런던</p>
+      <p><strong>② 후보 추출:</strong> 의미 검색으로 관련 채용공고 후보를 찾음</p>
+      <p><strong>③ 순위화:</strong> 키워드 비중을 높여 하이브리드 순위 계산</p>
+      <p><strong>④ 설명 생성:</strong> "data, analyst, remote, London" 키워드 일치 + 적용된 필터를 함께 제시</p>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 실험 결과는 어땠나요?</h2>
+
+    <h4>평가 방법 — 정답이 없을 때는 어떻게 채점하나</h4>
+    <p>사람이 직접 라벨링한 정답 데이터가 없어서, <strong>메타데이터 일치도로 등급을 매기는 방식</strong>을 만들어 썼습니다.</p>
+    <div class="pill-grid">
+      <span>등급3: 정규화된 직무명 동일</span><span>등급2: 직무분야·산업 일치</span>
+      <span>등급1: 연차·고용형태 동일</span><span>등급0: 메타데이터 불일치</span>
+    </div>
+
+    <h4>최종 성능</h4>
+    <div class="calc">
+      <div class="row"><span class="label">최적 조합</span><span class="val">의미 후보 250개, 의미:키워드 = 0.4:0.6</span></div>
+      <div class="row"><span class="label">Precision@10</span><span class="val">0.8032 (상위 10개 중 약 80%가 관련성 있음)</span></div>
+      <div class="row"><span class="label">nDCG@10</span><span class="val">0.9496 (순위까지 고려한 정확도, 1에 가까울수록 좋음)</span></div>
+      <div class="row"><span class="label">Cross-Encoder 재순위화 추가 시</span><span class="val">Precision +0.52%p, nDCG +0.72%p (소폭 개선, 계산 비용 대비 이득은 크지 않음)</span></div>
+    </div>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">07</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "이 논문은 2026년 5월에 나온 가장 최근 자료인데요, 실제로 시스템을 완성해서 성능까지 측정한 논문이에요. 채용공고 3만 1천여 건을 가지고, 제목이나 지역, 연차 같은 메타데이터만 써서 추천 시스템을 만들었어요. 키워드 검색이랑 AI 의미 검색을 6:4 비율로 섞어서 쓰는데, 키워드 쪽 비중을 더 높였어요. 직무명이나 지역 같은 건 정확하게 맞는 게 중요하니까요. 그리고 제일 흥미로운 게 설명 방식인데, SHAP이나 LIME 같은 복잡한 AI 해석 도구를 안 쓰고, 그냥 '어떤 키워드가 겹쳤는지, 어떤 필터가 적용됐는지'를 보여주는 단순한 방식을 썼어요. 저자들이 직접 '사용자가 볼 수 있는 것에 기반한 실용적 투명성'이라고 표현했는데, 이게 저희 CareerLens가 하려는 것과 철학이 제일 비슷해요."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">SHAP·LIME 같은 정교한 도구를 안 쓴 이유가 뭐예요?</p>
+        <p class="a">논문에서 명확한 이유를 밝히진 않았지만, 결과로 미루어보면 "사용자가 이해하기 쉬운 설명"이 목표였기 때문으로 보입니다. SHAP·LIME은 AI 모델 내부(임베딩 공간)를 수학적으로 분석하는 도구라 전문가가 아니면 결과를 해석하기 어렵습니다. 반면 "겹치는 키워드"와 "적용된 필터"는 누구나 바로 이해할 수 있죠. 정확성보다 사용자 신뢰를 우선한 설계 판단으로 보입니다.</p>
+      </div>
+      <div>
+        <p class="q">이 논문 방법을 CareerLens에 가장 가깝게 적용한다면 어떤 모습이에요?</p>
+        <p class="a">가장 근접한 그림입니다. CareerLens도 채용공고 전체 설명 대신 구조화된 필드(직무명·지역·기업형태 등)를 쓸 가능성이 높고, 키워드 겹침(그룹 A식 태그 매칭)과 텍스트 유사도(그룹 B식 계산)를 같이 쓴다는 점도 같습니다. 설명도 "어떤 태그가 겹쳤는지"를 그대로 보여주면 되니, 복잡한 AI 해석 도구 없이도 설명 가능성을 확보할 수 있다는 걸 이 논문이 증명해줍니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">08</span> 그룹 D 두 논문 비교 + 조사3 마무리</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>JD/Resume 매칭 (Barrak 외, 2022)</th><th>채용 추천 시스템 (Al Awad 외, 2026)</th></tr></thead>
+        <tbody>
+          <tr><td class="who">완성도</td><td class="what">연구 제안서 (설계 + 초기 실험)</td><td class="what">완성된 실험 논문 (구체적 성능 수치 존재)</td></tr>
+          <tr><td class="who">사용 데이터</td><td class="what">이력서 전체 + ESCO 지식베이스</td><td class="what">채용공고 메타데이터만 (전체 설명문 제외)</td></tr>
+          <tr><td class="who">설명 방식</td><td class="what">레이어별 관련성 전파, LIME 등 학술적 기법</td><td class="what">키워드 겹침·필터 조건 등 실용적 기법</td></tr>
+          <tr><td class="who">이해관계자 설계</td><td class="what">채용담당자·구직자·기업용 설명을 각각 분리</td><td class="what">단일 사용자 대상 설명(검색자에게 보여줄 근거)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>CareerLens 조사3에 적용하는 방법</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">메타데이터만으로도 충분히 쓸만한 추천 성능을 낼 수 있다 (Precision@10 = 0.80)</td><td class="what">채용공고 전체 텍스트 분석이 어렵다면, 직무명·지역·경력 같은 필드부터 먼저 활용하는 현실적 시작점으로 참고</td></tr>
+          <tr><td class="what">키워드 매칭과 의미 매칭을 섞을 때 키워드 비중을 더 높게 줄 수 있다 (0.6:0.4)</td><td class="what">그룹 A(태그 겹침)와 그룹 B(텍스트 유사도)를 결합할 때, 태그 겹침 쪽에 더 높은 가중치를 주는 방향을 실험해볼 근거로 사용</td></tr>
+          <tr><td class="what">복잡한 XAI 도구 없이도 "겹치는 키워드·적용된 필터"만으로 충분히 신뢰할 만한 설명이 가능하다</td><td class="what">CareerLens의 설명 문구도 복잡한 모델을 만들지 않고, 태그 겹침 근거를 그대로 보여주는 지금의 방향을 계속 유지</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notice">이 탭으로 <strong>조사3 자료 8개</strong>(O*NET, ESCO, KNOW, 국내논문, ScienceDirect, arXiv 클러스터링, LinkedIn, JD/Resume 매칭 2편)를 모두 정리했습니다. 다음 단계는 이 자료들을 근거로 CareerLens의 실제 태그·클러스터링 방법을 결정하는 것입니다.</div>
+  </section>
+
+  </div>
+  <!-- ============================== /채용 추천 시스템 탭 ============================== -->
+
+  <footer>CareerLens B팀 · 조사 3 자료 딥다이브 6-8/8 (완료) · LinkedIn Skills Graph &amp; JD/Resume 매칭(Barrak 외, 2022) &amp; 채용 추천 시스템(Al Awad 외, 2026) · 2026.08.21 · 원문은 각 카드의 링크에서 확인 가능</footer>
+
+</div>
+
+<script>
+  var tabButtons = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabButtons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+      panels.forEach(function (p) { p.hidden = p.dataset.panel !== btn.dataset.tab; });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

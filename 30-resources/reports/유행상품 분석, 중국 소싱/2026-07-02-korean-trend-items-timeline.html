@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <m뷰티 소품, 액세서리, 문구류도 포함하고, 최근 감성 아이템 중 유행했던 키링, 말랑이, 라부부, 클리커, 두쫀쿠, 왁뿌볼, 휴대용 선풍기 등과 비슷한 부류는 모두 다 포함할 수 있도록 해서 (감성 아이템은 디자인이 예쁘고 아기자기한 모습이라면 어떤 카테고리의 제품이라도 사람들의 감정을 자극할 수 있기에 카테고리 한정이 어려운 것 같아) rset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>한국 유행템 기간·피크 타임라인</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --ink: #222426;
+      --muted: #687078;
+      --line: #d8d2c4;
+      --bar: #8fb8a8;
+      --peak: #e25f48;
+      --early: #4d83c7;
+      --middle: #cf8d2e;
+      --late: #9a6fc7;
+      --panel: #ffffff;
+      --shadow: 0 18px 45px rgba(34, 36, 38, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    header {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 820px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      align-items: center;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(34, 36, 38, 0.08);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .chart-wrap {
+      overflow-x: auto;
+      padding: 18px 18px 10px;
+    }
+
+    svg {
+      display: block;
+      min-width: 1040px;
+      width: 100%;
+      height: auto;
+    }
+
+    .axis text,
+    .row-label,
+    .duration-label,
+    .peak-label {
+      font-size: 12px;
+      fill: var(--muted);
+    }
+
+    .row-label {
+      font-size: 13px;
+      fill: var(--ink);
+      font-weight: 650;
+    }
+
+    .grid-line {
+      stroke: var(--line);
+      stroke-width: 1;
+      stroke-dasharray: 3 5;
+    }
+
+    .trend-bar {
+      fill: var(--bar);
+      opacity: 0.86;
+    }
+
+    .peak-bar {
+      fill: var(--peak);
+    }
+
+    .guide {
+      fill: #f3efe4;
+    }
+
+    .table-section {
+      margin-top: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      border: 1px solid rgba(34, 36, 38, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(34, 36, 38, 0.08);
+    }
+
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #ece7db;
+      vertical-align: top;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #eee7d8;
+      color: #303336;
+      white-space: nowrap;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-width: 62px;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .early { background: var(--early); }
+    .middle { background: var(--middle); }
+    .late { background: var(--late); }
+
+    .notes {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .notes a {
+      color: #345f90;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(52, 95, 144, 0.35);
+    }
+
+    @media (max-width: 720px) {
+      main { padding: 24px 12px 40px; }
+      th, td { font-size: 13px; padding: 9px 8px; }
+      .table-scroll { overflow-x: auto; }
+      table { min-width: 860px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>한국 유행템 기간·피크 타임라인</h1>
+      <p class="subtitle">
+        위 대화에서 조사한 유행템을 월 단위로 정리했습니다. 연한 막대는 전체 유행 기간,
+        붉은 막대는 피크 타임입니다. 피크 위치는 전체 유행 기간 안에서 피크 중심점이 어디쯤인지로 계산했습니다.
+      </p>
+      <div class="legend">
+        <span><i class="swatch" style="background: var(--bar)"></i>전체 유행 기간</span>
+        <span><i class="swatch" style="background: var(--peak)"></i>피크 타임</span>
+        <span><i class="swatch" style="background: var(--early)"></i>초반 피크</span>
+        <span><i class="swatch" style="background: var(--middle)"></i>중반 피크</span>
+        <span><i class="swatch" style="background: var(--late)"></i>후반 피크</span>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="chart-wrap">
+        <svg id="timeline" role="img" aria-label="한국 유행템 전체 기간과 피크 타임라인"></svg>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2 class="section-title">해석 표</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>아이템</th>
+              <th>전체 기간</th>
+              <th>전체 길이</th>
+              <th>피크 타임</th>
+              <th>피크 길이</th>
+              <th>피크 위치</th>
+              <th>읽는 법</th>
+            </tr>
+          </thead>
+          <tbody id="summary"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="notes">
+      기준: 공개 기사·검색 결과·쇼츠/SNS 확산 사례를 바탕으로 한 추정치입니다. 품목별 유행은 지역과 세대에 따라 다르게 체감될 수 있습니다.
+      참고 링크:
+      <a href="https://www.businessinsider.com/needoh-squishies-viral-toy-schylling-2026-4">NeeDoh 2026</a>,
+      <a href="https://www.businessinsider.com/k-pop-stars-blind-box-fueling-labubu-frenzy-south-korea-2025-6">Labubu Korea</a>,
+      <a href="https://www.ft.com/content/a6334989-fc28-4807-ab1e-9f3826c5e7b0">Dujjonku</a>,
+      <a href="https://en.wikipedia.org/wiki/Tanghulu">Tanghulu</a>,
+      <a href="https://en.wikipedia.org/wiki/Fidget_spinner">Fidget spinner</a>,
+      <a href="https://en.wikipedia.org/wiki/10_won_bread">10 won bread</a>.
+    </p>
+  </main>
+
+  <script>
+    const items = [
+      {
+        name: "대왕 카스테라",
+        start: "2016-09",
+        end: "2017-04",
+        peakStart: "2016-11",
+        peakEnd: "2017-02",
+        note: "창업 붐 이후 과포화와 방송 논란으로 빠르게 꺼진 짧고 강한 먹거리 유행"
+      },
+      {
+        name: "피젯스피너",
+        start: "2017-03",
+        end: "2017-09",
+        peakStart: "2017-05",
+        peakEnd: "2017-06",
+        note: "전체 기간 중 비교적 초중반에 정점이 왔고, 학교 금지 이슈 뒤 빠르게 하락"
+      },
+      {
+        name: "키캡 / 커스텀 키보드",
+        start: "2020-04",
+        end: "2023-12",
+        peakStart: "2021-01",
+        peakEnd: "2022-06",
+        note: "재택·데스크테리어·타건음 콘텐츠가 붙어 긴 취미 유행으로 정착"
+      },
+      {
+        name: "스퀴시멜로우류",
+        start: "2020-09",
+        end: "2022-12",
+        peakStart: "2021-03",
+        peakEnd: "2022-03",
+        note: "코로나 시기 위안형 봉제/촉감 수집품으로 길게 소비"
+      },
+      {
+        name: "말랑이",
+        start: "2021-07",
+        end: "2022-06",
+        peakStart: "2021-09",
+        peakEnd: "2022-02",
+        note: "초등학생 거래·DIY·촉감 놀이 중심. 피크가 앞쪽에 몰린 편"
+      },
+      {
+        name: "포켓몬빵",
+        start: "2022-02",
+        end: "2022-12",
+        peakStart: "2022-03",
+        peakEnd: "2022-06",
+        note: "재출시 직후 띠부씰 수집과 품절 사냥으로 초반 피크"
+      },
+      {
+        name: "10원빵",
+        start: "2022-09",
+        end: "2023-09",
+        peakStart: "2023-03",
+        peakEnd: "2023-06",
+        note: "관광지 먹거리에서 전국 복제품으로 번지며 중후반 피크"
+      },
+      {
+        name: "탕후루",
+        start: "2023-03",
+        end: "2024-05",
+        peakStart: "2023-07",
+        peakEnd: "2023-10",
+        note: "여름~가을에 쇼츠와 프랜차이즈 확장이 맞물려 중반 정점"
+      },
+      {
+        name: "두바이 초콜릿",
+        start: "2024-07",
+        end: "2025-03",
+        peakStart: "2024-09",
+        peakEnd: "2024-12",
+        note: "틱톡 비주얼과 피스타치오·카다이프 식감이 초중반 피크를 만듦"
+      },
+      {
+        name: "라부부",
+        start: "2024-08",
+        end: "2026-06",
+        peakStart: "2025-04",
+        peakEnd: "2025-08",
+        note: "K-pop 노출, 블라인드박스, 희소성, 리셀이 결합해 중반에 크게 폭발"
+      },
+      {
+        name: "두쫀쿠",
+        start: "2025-11",
+        end: "2026-04",
+        peakStart: "2026-01",
+        peakEnd: "2026-03",
+        note: "두바이 초콜릿 변주가 아이돌 노출·줄서기·헌혈 사은품 이슈로 짧게 급등"
+      },
+      {
+        name: "말랑이 2026형 / NeeDoh",
+        start: "2025-12",
+        end: "2026-07",
+        peakStart: "2026-03",
+        peakEnd: "2026-06",
+        note: "NeeDoh·Squishy Dumpling 품절 사냥과 틱톡 촉감 영상. 한국어권에서는 말랑이류로 체감"
+      }
+    ];
+
+    const chartStart = "2016-09";
+    const chartEnd = "2026-07";
+    const svg = document.getElementById("timeline");
+    const summary = document.getElementById("summary");
+
+    const parseMonth = value => {
+      const [year, month] = value.split("-").map(Number);
+      return year * 12 + month - 1;
+    };
+
+    const formatRange = (start, end) => `${start.replace("-", ".")}~${end.replace("-", ".")}`;
+    const monthsInclusive = (start, end) => parseMonth(end) - parseMonth(start) + 1;
+
+    const totalMonths = monthsInclusive(chartStart, chartEnd);
+    const margin = { top: 34, right: 128, bottom: 52, left: 172 };
+    const rowHeight = 42;
+    const width = 1120;
+    const plotWidth = width - margin.left - margin.right;
+    const height = margin.top + margin.bottom + items.length * rowHeight;
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+    const x = value => {
+      const monthIndex = parseMonth(value) - parseMonth(chartStart);
+      return margin.left + (monthIndex / Math.max(1, totalMonths - 1)) * plotWidth;
+    };
+
+    const rectWidth = (start, end) => {
+      const first = parseMonth(start) - parseMonth(chartStart);
+      const last = parseMonth(end) - parseMonth(chartStart) + 1;
+      return ((last - first) / totalMonths) * plotWidth;
+    };
+
+    const add = (tag, attrs = {}, text = "") => {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text) node.textContent = text;
+      svg.appendChild(node);
+      return node;
+    };
+
+    const classifyPeak = item => {
+      const start = parseMonth(item.start);
+      const end = parseMonth(item.end);
+      const peakCenter = (parseMonth(item.peakStart) + parseMonth(item.peakEnd)) / 2;
+      const position = (peakCenter - start) / Math.max(1, end - start);
+      if (position < 0.4) return { key: "early", label: "초반", ratio: position };
+      if (position <= 0.62) return { key: "middle", label: "중반", ratio: position };
+      return { key: "late", label: "후반", ratio: position };
+    };
+
+    for (let year = 2017; year <= 2026; year += 1) {
+      const xpos = x(`${year}-01`);
+      add("line", {
+        x1: xpos,
+        y1: margin.top - 12,
+        x2: xpos,
+        y2: height - margin.bottom + 12,
+        class: "grid-line"
+      });
+      add("text", {
+        x: xpos + 4,
+        y: height - 20,
+        class: "axis"
+      }, String(year));
+    }
+
+    add("text", {
+      x: margin.left,
+      y: 18,
+      class: "axis"
+    }, "2016.09부터 2026.07까지 월 단위 비교");
+
+    items.forEach((item, index) => {
+      const y = margin.top + index * rowHeight;
+      const peakClass = classifyPeak(item);
+      const fullMonths = monthsInclusive(item.start, item.end);
+      const peakMonths = monthsInclusive(item.peakStart, item.peakEnd);
+      const peakPercent = Math.round(peakClass.ratio * 100);
+
+      add("rect", {
+        x: margin.left,
+        y: y + 7,
+        width: plotWidth,
+        height: 22,
+        rx: 11,
+        class: "guide"
+      });
+      add("text", {
+        x: 12,
+        y: y + 23,
+        class: "row-label"
+      }, item.name);
+      add("rect", {
+        x: x(item.start),
+        y: y + 9,
+        width: rectWidth(item.start, item.end),
+        height: 18,
+        rx: 9,
+        class: "trend-bar"
+      });
+      add("rect", {
+        x: x(item.peakStart),
+        y: y + 12,
+        width: rectWidth(item.peakStart, item.peakEnd),
+        height: 12,
+        rx: 6,
+        class: "peak-bar"
+      });
+      add("text", {
+        x: x(item.end) + 12,
+        y: y + 23,
+        class: "duration-label"
+      }, `${fullMonths}개월`);
+      add("circle", {
+        cx: x(item.peakStart) + rectWidth(item.peakStart, item.peakEnd) / 2,
+        cy: y + 18,
+        r: 5,
+        fill: `var(--${peakClass.key})`,
+        stroke: "#fff",
+        "stroke-width": 2
+      });
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${item.name}</strong></td>
+        <td>${formatRange(item.start, item.end)}</td>
+        <td>${fullMonths}개월</td>
+        <td>${formatRange(item.peakStart, item.peakEnd)}</td>
+        <td>${peakMonths}개월</td>
+        <td><span class="badge ${peakClass.key}">${peakClass.label}</span> ${peakPercent}% 지점</td>
+        <td>${item.note}</td>
+      `;
+      summary.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

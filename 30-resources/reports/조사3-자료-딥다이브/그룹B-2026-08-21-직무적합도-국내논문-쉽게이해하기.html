@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>그룹 B 콘텐츠 기반 논문 세 편 — 거리 재기, 공고 묶기, AI로 재현하기</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --ink: #191C22;
+    --muted: #5C626E;
+    --faint: #8A909C;
+    --rule: #E3E6EB;
+    --rule-strong: #C9CEd6;
+    --accent: #2E5D62;
+    --accent-soft: #E4EDEC;
+    --flag: #8C5312;
+    --flag-soft: #F6ECDF;
+
+    --teal: #1F6A6E;      --teal-soft: #DCEDEC;
+    --indigo: #3D4E9E;    --indigo-soft: #E3E7F7;
+    --plum: #7A3F73;      --plum-soft: #F1E4EF;
+    --moss: #4A6B2A;      --moss-soft: #E6EEDC;
+    --clay: #9A4B2C;      --clay-soft: #F7E6DE;
+    --shadow: 0 1px 2px rgba(25, 28, 34, .05), 0 8px 24px -16px rgba(25, 28, 34, .25);
+
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+      --rule: #282C34; --rule-strong: #3A404A;
+      --accent: #83B7B2; --accent-soft: #1E2A2B;
+      --flag: #D6A354; --flag-soft: #2A2318;
+      --teal: #7FBDB9; --teal-soft: #16292A;
+      --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+      --plum: #D19BC9; --plum-soft: #2B1E29;
+      --moss: #A8C482; --moss-soft: #1E2618;
+      --clay: #E0997A; --clay-soft: #2E1D16;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+    --rule: #282C34; --rule-strong: #3A404A;
+    --accent: #83B7B2; --accent-soft: #1E2A2B;
+    --flag: #D6A354; --flag-soft: #2A2318;
+    --teal: #7FBDB9; --teal-soft: #16292A;
+    --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+    --plum: #D19BC9; --plum-soft: #2B1E29;
+    --moss: #A8C482; --moss-soft: #1E2618;
+    --clay: #E0997A; --clay-soft: #2E1D16;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.72; letter-spacing: -.011em;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 50rem; margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex; flex-direction: column; gap: 3.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: 1.1rem; }
+  .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+  .masthead::after {
+    content: ""; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal) 0 20%, var(--indigo) 20% 40%, var(--plum) 40% 60%, var(--moss) 60% 80%, var(--clay) 80% 100%);
+  }
+  h1 { font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.15; font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.035em; }
+  .standfirst { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 38rem; }
+  .roster { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding-top: .3rem; }
+  .roster .roster-label { border: none; background: none; padding: 0 .25rem 0 0; font-weight: 600; font-size: .78rem; color: var(--ink); }
+  .roster span {
+    font-weight: 500; font-size: .8rem; font-family: var(--mono); padding: .2rem .55rem;
+    border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  /* 탭 내비게이션 */
+  .tabnav { display: flex; gap: .3rem; border-bottom: 2px solid var(--rule); flex-wrap: wrap; margin-top: -1.2rem; }
+  .tab-btn {
+    font-family: var(--sans); font-weight: 700; font-size: 1rem; letter-spacing: -.015em;
+    padding: .8rem 1.3rem; border: none; background: transparent; color: var(--faint); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 120ms ease, border-color 120ms ease;
+  }
+  .tab-btn .sub { display: block; font-family: var(--mono); font-weight: 500; font-size: .7rem; letter-spacing: .04em; margin-top: .15rem; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active[data-tab="kr"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab-btn.active[data-tab="sd"] { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-btn.active[data-tab="arxiv"] { color: var(--moss); border-bottom-color: var(--moss); }
+  .tab-panel[hidden] { display: none; }
+  .tab-panel { display: flex; flex-direction: column; gap: 3.25rem; }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; --hue: var(--teal); --hue-soft: var(--teal-soft); }
+  section.s-indigo { --hue: var(--indigo); --hue-soft: var(--indigo-soft); }
+  section.s-plum   { --hue: var(--plum);   --hue-soft: var(--plum-soft); }
+  section.s-moss   { --hue: var(--moss);   --hue-soft: var(--moss-soft); }
+  section.s-clay   { --hue: var(--clay);   --hue-soft: var(--clay-soft); }
+  section + section { margin-top: 2rem; }
+
+  h2 {
+    font-size: 1.32rem; letter-spacing: -.025em; font-weight: 700; margin: 0;
+    padding-bottom: .75rem; border-bottom: 2px solid var(--hue);
+    display: flex; align-items: center; gap: .65rem;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .22rem .45rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .5rem; }
+  ul ul { margin-top: .5rem; padding-left: 1.1rem; }
+  li::marker { color: var(--faint); }
+  strong { font-weight: 600; }
+  p { margin: 0; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.4rem 1.6rem; box-shadow: var(--shadow);
+  }
+
+  h4 { margin: 1.1rem 0 0; font-size: .95rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h4:first-child { margin-top: 0; }
+
+  .analogy { background: var(--hue-soft); border-radius: 3px; padding: 1rem 1.2rem; font-size: .95rem; color: var(--ink); }
+  .analogy b { color: var(--hue); }
+
+  .terms { display: flex; flex-direction: column; gap: .7rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.1rem 1.3rem; box-shadow: var(--shadow); }
+  .term dt { font-weight: 700; color: var(--hue); font-size: .92rem; }
+  .term dd { margin: .2rem 0 0; color: var(--muted); font-size: .92rem; }
+
+  .source-card { border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); padding: 1.1rem 1.3rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: .55rem; }
+  .source-card h3 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: -.015em; }
+  .source-card p { color: var(--ink); font-size: .95rem; }
+  .src {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: .3rem;
+    font-family: var(--mono); font-size: .72rem; color: var(--hue); background: var(--hue-soft);
+    border-radius: 3px; padding: .2rem .55rem; text-decoration: none; white-space: nowrap;
+  }
+  .src::before { content: "↗"; }
+  .src:hover { text-decoration: underline; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead { background: var(--hue-soft); }
+  thead th { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule-strong); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.who { white-space: nowrap; font-weight: 700; color: var(--hue); }
+  td.what { color: var(--muted); line-height: 1.6; }
+  td.n { font-family: var(--mono); color: var(--faint); font-variant-numeric: tabular-nums; width: 2.2rem; }
+
+  .notice { background: var(--hue-soft); border-left: 4px solid var(--hue); border-radius: 3px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--ink); }
+
+  .open { list-style: none; padding: 0; gap: 0; }
+  .open li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .open li:first-child { border-top: 1px solid var(--rule); }
+  .open .idx { font-family: var(--mono); font-size: .75rem; font-weight: 600; color: var(--hue); font-variant-numeric: tabular-nums; }
+  .open .note { display: block; color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+
+  .pill-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .pill-grid span {
+    font-size: .86rem; font-weight: 600; padding: .35rem .7rem; border-radius: 3px;
+    background: var(--hue-soft); color: var(--hue); border: 1px solid transparent;
+  }
+
+  .deep-card {
+    border: 1px solid var(--rule); border-left: 4px solid var(--hue); border-radius: 3px;
+    background: var(--surface); padding: 1rem 1.2rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: .4rem;
+  }
+  .deep-card h4 { margin: 0; font-size: 1rem; color: var(--hue); }
+  .deep-card .ex { font-size: .88rem; color: var(--muted); }
+  .deep-card .ex b { color: var(--ink); font-weight: 600; }
+  .deep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
+  @media (max-width: 40rem) { .deep-grid { grid-template-columns: 1fr; } }
+
+  .script {
+    background: var(--surface); border: 1px dashed var(--rule-strong); border-radius: 3px;
+    padding: 1.1rem 1.3rem; font-size: .96rem; color: var(--ink); position: relative;
+  }
+  .script::before { content: "발표 스크립트"; position: absolute; top: -.6rem; left: 1rem; background: var(--bg); padding: 0 .5rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--hue); }
+
+  .qa { display: flex; flex-direction: column; gap: 1rem; }
+  .qa .q { font-weight: 700; font-size: .95rem; }
+  .qa .q::before { content: "Q. "; color: var(--hue); }
+  .qa .a { color: var(--muted); font-size: .93rem; margin-top: .25rem; }
+  .qa .a::before { content: "A. "; color: var(--ink); font-weight: 700; }
+
+  /* 수식/계산 예시 박스 */
+  .calc { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1rem 1.2rem; box-shadow: var(--shadow); font-size: .92rem; }
+  .calc .row { display: flex; gap: .8rem; padding: .35rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; flex-wrap: wrap; }
+  .calc .row:last-child { border-bottom: none; }
+  .calc .label { font-weight: 700; color: var(--hue); min-width: 6.5rem; }
+  .calc .val { font-family: var(--mono); color: var(--ink); }
+
+  footer { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .04em; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 3-5/8 (그룹 B · 콘텐츠 기반) · 2026.08.21</div>
+    <h1>숫자로 직무를 비교하다<br>그룹 B 콘텐츠 기반 논문 세 편</h1>
+    <p class="standfirst">아래 탭을 눌러 세 논문을 각각 볼 수 있습니다. 모두 "태그가 겹치는지 세는" 그룹 A와 달리, 직무 데이터를 숫자로 바꿔서 계산하는 그룹 B 자료입니다.</p>
+    <div class="roster">
+      <span class="roster-label">핵심 정보</span>
+      <span>국내논문: 저자 4인 · 2022년</span><span>ScienceDirect: 저자 5인 · 2020년</span><span>arXiv: 저자 3인 · 2025년</span>
+    </div>
+  </header>
+
+  <nav class="tabnav" role="tablist">
+    <button class="tab-btn active" data-tab="kr" role="tab" aria-selected="true">국내 논문<span class="sub">홍세희 외, 2022</span></button>
+    <button class="tab-btn" data-tab="sd" role="tab" aria-selected="false">ScienceDirect<span class="sub">Mhamdi 외, 2020</span></button>
+    <button class="tab-btn" data-tab="arxiv" role="tab" aria-selected="false">arXiv<span class="sub">Vázquez García 외, 2025</span></button>
+  </nav>
+
+  <div class="tab-panel" data-panel="kr" id="panel-kr">
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>2022년 한국 연구자 4명이 쓴 논문으로, 재직자·구직자의 <strong>"특성 프로필"을 숫자로 만들어 거리를 계산</strong>해서 어울리는 직업을 추천하는 알고리즘을 개발했습니다.</li>
+        <li>사용한 데이터는 한국고용정보원이 운영하는 <strong>KNOW(한국직업정보시스템)</strong> — 지난번에 본 O*NET의 <strong>한국판</strong>이라고 보면 됩니다.</li>
+        <li>핵심 계산 방법은 <strong>유클리디안 거리(Euclidean distance)</strong> — 중·고등학교 수학에서 배우는 "두 점 사이의 거리" 공식과 똑같습니다.</li>
+        <li>검증 방법이 영리합니다. 이미 직업이 있는 사람 데이터를 거꾸로 넣어서 "이 사람의 진짜 직업을 1등으로 추천하는지" 테스트했고, 실제로 잘 맞혔습니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 온라인 쇼핑몰의 "이 상품과 비슷한 상품" 추천을 떠올려보세요. 상품마다 가격·색상·크기 같은 특성을 숫자로 매겨두면, 특성이 비슷한 상품끼리 묶어 추천할 수 있습니다. 이 논문은 상품 대신 <strong>"사람"과 "직업"</strong>에 똑같은 방식을 적용합니다 — 각각을 여러 특성 점수로 표현해두고, 점수가 가까운 사람과 직업을 서로 추천하는 것입니다.
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>제목(국문):</strong> 직무특성 기반 직업추천 프로그램 개발에 관한 연구</li>
+      <li><strong>제목(영문):</strong> The Study on the Development of Job Recommendation Program Based on Work-Oriented Characteristics</li>
+      <li><strong>저자:</strong> 홍세희, 장유나, 이은수, 최기성</li>
+      <li><strong>게재:</strong> 「직업과 자격 연구」 2022년 11권 3호, 39~64쪽</li>
+      <li><strong>목적:</strong> 스킬·지식·업무활동 같은 "직무 중심(work-oriented) 요인"을 바탕으로 직업을 추천하는 알고리즘 개발. 궁극적으로는 직업 만족도를 높이고, 이직·진로전환을 더 매끄럽게 돕는 것이 목표</li>
+    </ul>
+
+    <a class="src" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002883321" target="_blank" rel="noopener">KCI · 논문 원문 바로가기</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 어떤 데이터를 썼나요? — KNOW, 한국판 O*NET</h2>
+    <p>이 논문이 사용한 <strong>KNOW(한국직업정보시스템)</strong>는 한국고용정보원이 운영하는 자료로, 지난 딥다이브에서 본 O*NET과 구조가 매우 비슷합니다. O*NET·ESCO를 이미 보셨다면 바로 감이 올 것입니다.</p>
+
+    <div class="source-card">
+      <h3>KNOW (Korea Network for Occupations and Workers)</h3>
+      <ul>
+        <li><strong>운영:</strong> 한국고용정보원</li>
+        <li><strong>조사 방식:</strong> 2001년부터 매년, 직업분류(KECO) 세분류 기준으로 재직자를 약 30명씩 조사</li>
+        <li><strong>조사 영역 4가지:</strong> 직무수행능력·가치관 / 일반 업무활동 / 작업환경·흥미 / 지식·성격 (4년 주기로 순환)</li>
+        <li><strong>규모(2016년 조사):</strong> 639개 직업, 재직자 19,827명 대상</li>
+        <li><strong>제공 직업 수(2021.12 기준):</strong> 약 537개 대표 직업</li>
+        <li><strong>용도:</strong> 청소년·성인 진로선택, 진로설계, 진로상담, 구인구직</li>
+      </ul>
+    </div>
+
+    <div class="notice">연결 포인트: O*NET이 미국 정부의 "직업 백과사전"이었다면, <strong>KNOW는 한국판</strong>입니다. 이 논문은 이런 자료를 실제로 "추천 알고리즘"을 만드는 데 활용한 사례라서, 그룹 A(공식 분류체계)와 그룹 B(콘텐츠 기반 계산)를 이어주는 다리 역할을 합니다.</div>
+
+    <a class="src" href="http://know.work.go.kr/" target="_blank" rel="noopener">한국직업정보시스템(KNOW) 바로가기</a>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 핵심 아이디어 — 사람과 직업을 숫자로 바꿔 거리 재기</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 지도 위 GPS 좌표를 생각해보세요. 서울과 부산의 거리를 잴 때 위도·경도라는 숫자 두 개로 계산하죠. 이 논문도 똑같습니다. "사람"과 "직업"을 각각 여러 개의 특성 점수(좌표)로 표현한 다음, 그 점들 사이의 거리를 계산해서 <strong>"얼마나 가까운지 = 얼마나 잘 맞는지"</strong>를 구합니다.
+    </div>
+
+    <h4>먼저 알아두면 좋은 단어 3개</h4>
+    <dl class="terms">
+      <div class="term"><dt>프로필(profile)</dt><dd>한 사람 또는 한 직업을 여러 특성 점수로 표현한 것. 예: [문제해결력 7점, 대인관계 5점, 손재주 3점, ...]</dd></div>
+      <div class="term"><dt>유클리디안 거리(Euclidean distance)</dt><dd>두 프로필(숫자 목록) 사이의 직선 거리를 재는 공식. 중·고등학교 수학의 "두 점 사이의 거리" 공식과 똑같습니다. 거리가 가까울수록 두 프로필이 비슷하다는 뜻입니다.</dd></div>
+      <div class="term"><dt>요인분석(factor analysis)</dt><dd>수십 개의 세부 항목(스킬·지식·업무활동 등)을 몇 개의 더 큰 "요인"으로 압축하는 통계 기법. 예: "숫자 계산", "통계 활용", "데이터 해석" 같은 세부 항목을 "분석적 사고"라는 하나의 요인으로 묶는 식.</dd></div>
+    </dl>
+
+    <h4>간단한 예시로 계산 감 잡기</h4>
+    <div class="calc">
+      <div class="row"><span class="label">직업 A 프로필</span><span class="val">[분석적 사고 8, 대인관계 3]</span></div>
+      <div class="row"><span class="label">구직자 프로필</span><span class="val">[분석적 사고 7, 대인관계 4]</span></div>
+      <div class="row"><span class="label">거리 계산</span><span class="val">√((8-7)² + (3-4)²) = √2 ≈ 1.41</span></div>
+      <div class="row"><span class="label">해석</span><span class="val">숫자가 작을수록 가까움 → 이 구직자에게는 직업 A가 유력한 추천 후보</span></div>
+    </div>
+
+    <h4>알고리즘 이름: H-JFIT</h4>
+    <p>이 논문은 <strong>H-JFIT</strong>이라는 프레임워크를 사용합니다. H-JFIT은 원래 적성검사 등 다양한 검사에 폭넓게 쓸 수 있도록 만든 "직무적합도 지수 계산 방법"으로, 직무별·영역별·차원별 가중치를 도입해 여러 하위 점수를 하나의 지수로 통합합니다. 이 논문은 H-JFIT을 KNOW 데이터에 적용해서, 재직자 데이터(직업 프로필)와 구직자 데이터(개인 프로필)를 요인분석으로 정리한 뒤 유클리디안 거리로 "프로필의 모양(패턴)"과 "프로필의 수준(전체적으로 높은지 낮은지)"이 얼마나 일치하는지 계산합니다.</p>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 검증은 어떻게 했나요? — "자기 직업 맞히기" 테스트</h2>
+    <p>좋은 추천 알고리즘인지 확인하려면 "정답"이 있어야 하는데, 구직자는 아직 직업이 없으니 정답을 알 수 없습니다. 그래서 저자들은 영리한 우회 방법을 씁니다.</p>
+    <ul>
+      <li><strong>방법:</strong> 이미 직업을 가진 재직자의 프로필을 거꾸로 알고리즘에 넣습니다.</li>
+      <li><strong>질문:</strong> 이 알고리즘이 이 사람에게 "가장 잘 맞는 직업 1위"로, 그 사람이 실제로 하고 있는 <strong>현재 직업</strong>을 추천하는가?</li>
+      <li><strong>결과:</strong> 교차검증(cross-validation) 결과, 재직자 자신의 현재 직업을 상당히 정확하게 다시 맞혀냈습니다 — 즉 알고리즘이 실제로 쓸만한 성능을 보인다는 근거로 제시했습니다.</li>
+    </ul>
+    <div class="notice">이 검증 방식 자체가 저희 조사3에도 참고할 만합니다. "정답이 없는 추천"을 검증하려면, 정답을 이미 아는 다른 데이터(재직자의 현재 직업)로 우회 검증하는 전략이 필요하다는 교훈입니다.</div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "이 논문은 2022년에 한국 연구자 4명이 쓴 논문인데요, 사람이랑 직업을 각각 숫자로 된 '특성 프로필'로 표현한 다음, 그 둘 사이의 거리를 계산해서 어울리는 직업을 추천하는 알고리즘을 만들었어요. 데이터는 한국고용정보원이 운영하는 KNOW라는, 한국판 O*NET 같은 자료를 썼고요. 거리 계산은 중학교 수학에서 배우는 '두 점 사이 거리' 공식이랑 똑같은 유클리디안 거리를 썼습니다. 재미있는 건 검증 방법인데, 이미 직업을 가진 사람들 데이터를 거꾸로 넣어서 '이 알고리즘이 이 사람의 진짜 직업을 1등으로 추천하는지' 테스트했고, 실제로 잘 맞혔대요. 저희는 여기서 '태그가 겹치는 걸 세는' 규칙 기반 방식 말고, '숫자로 바꿔서 거리를 재는' 방식도 실제로 검증된 방법이라는 근거를 가져왔습니다."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">이 논문 방법을 CareerLens에 그대로 쓸 수 있어요?</p>
+        <p class="a">그대로는 어렵습니다. 이 논문은 "사람의 적성 점수 vs 직업의 요구 점수"를 재는 것이고, 저희는 "채용공고 텍스트끼리" 비슷한지 재는 것이라 비교 대상 자체가 다릅니다. 다만 "여러 항목을 숫자로 바꾸고 거리로 유사도를 잰다"는 방법론 자체는 그대로 참고할 수 있습니다.</p>
+      </div>
+      <div>
+        <p class="q">유클리디안 거리 말고 다른 방법은 없어요?</p>
+        <p class="a">있습니다. 코사인 유사도(방향/각도로 비교), 자카드 유사도(집합이 겹치는 비율로 비교) 등 여러 방법이 있고, 데이터 형태에 따라 더 잘 맞는 방법이 다릅니다. 이후 살펴볼 논문(ScienceDirect, arXiv)에서는 텍스트 데이터에 쓰는 다른 유사도 계산법을 비교해볼 예정입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span> CareerLens 조사3에 왜 중요한가</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">KNOW라는 "한국판 O*NET"이 실제로 존재하고, 이미 알고리즘 개발에 활용된 선례가 있다</td><td class="what">향후 국내 직무 태그를 설계할 때 KNOW의 조사 영역(직무수행능력·업무활동·지식 등) 구조를 참고</td></tr>
+          <tr><td class="what">특성을 숫자(프로필)로 바꾸고 거리로 비교하는 방법이 실제로 검증됐다</td><td class="what">그룹 B(콘텐츠 기반) 검증 방법의 기술적 근거로 사용 — 태그 겹침(그룹 A)과 대조할 실험 설계에 참고</td></tr>
+          <tr><td class="what">"정답 없는 추천"은 교차검증 같은 우회 전략으로 검증해야 한다</td><td class="what">그룹 A(태그 겹침) vs 그룹 B(텍스트 유사도) 결과를 비교하는 실험에도 비슷한 검증 전략 도입 검토</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div>
+  <!-- ============================== /국내 논문 탭 ============================== -->
+
+  <!-- ============================== ScienceDirect 탭 ============================== -->
+  <div class="tab-panel" data-panel="sd" id="panel-sd" hidden>
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>2020년 Procedia Computer Science에 실린 연구로, <strong>채용공고를 자동으로 그룹핑(클러스터링)</strong>한 다음 구직자의 행동 데이터(지원·좋아요·평점)를 결합해서 추천하는 <strong>하이브리드 시스템</strong>을 제안합니다.</li>
+        <li>국내 논문(사람의 적성 점수 vs 직업 요구 점수를 비교)과 달리, 이 논문은 실제 <strong>"채용공고 텍스트"</strong>에서 직무명·기술 스택 같은 특징을 뽑아 자동으로 그룹을 만듭니다 — CareerLens가 실제로 하려는 작업과 가장 가까운 사례입니다.</li>
+        <li>방법이 두 가지를 섞은 하이브리드입니다: <strong>① 콘텐츠 기반</strong>(채용공고 특징으로 클러스터 만들기) + <strong>② 협업 필터링</strong>(비슷한 취향의 다른 사용자 행동 참고하기).</li>
+        <li>※ 원문이 유료 논문(ScienceDirect)이라 세부 알고리즘 이름까지는 확인이 어려웠습니다. 아래 내용은 논문 초록과 이 논문을 인용한 다른 자료들로 교차 확인된 범위까지만 정리했습니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 유튜브나 넷플릭스의 "이 영상을 본 사람들이 좋아한 다른 영상" 추천을 떠올려보세요. 이 논문은 영상 대신 <strong>채용공고</strong>에 같은 방식을 적용합니다 — "이 공고와 비슷한 공고들"을 미리 그룹으로 묶어두고, "이 공고에 관심을 보인 사람들이 좋아한 다른 공고"까지 함께 참고해서 추천합니다.
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>제목:</strong> Job Recommendation based on Job Profile Clustering and Job Seeker Behavior</li>
+      <li><strong>저자:</strong> D. Mhamdi, R. Moulouki, M. Y. El Ghoumari, M. Azzouazi, L. Moussaid</li>
+      <li><strong>게재:</strong> Procedia Computer Science, 2020, 175권, 695~699쪽 (국제 학회 발표 논문을 모아 신속히 출판하는 저널)</li>
+      <li><strong>목적:</strong> 구직자가 자신에게 맞는 채용공고를 더 쉽게 찾을 수 있도록 돕는 추천 시스템 설계</li>
+    </ul>
+
+    <a class="src" href="https://www.sciencedirect.com/science/article/pii/S1877050920318020" target="_blank" rel="noopener">ScienceDirect · 논문 페이지</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 어떻게 작동하나요? — 3단계로 이해하기</h2>
+    <ul>
+      <li><strong>1단계 · 공고 모으기:</strong> 여러 채용 사이트에서 채용공고를 수집합니다.</li>
+      <li><strong>2단계 · 특징 뽑고 자동으로 묶기:</strong> 공고 텍스트에서 직무명, 요구 기술(예: Python, 회계) 같은 의미 있는 특징을 뽑아내고, 특징이 비슷한 공고끼리 자동으로 그룹(클러스터)을 만듭니다.</li>
+      <li><strong>3단계 · 행동 데이터와 결합해 추천:</strong> 구직자가 특정 클러스터 안의 공고 하나에 반응(지원·좋아요·평점)을 보이면, 같은 클러스터 안의 다른 공고도 좋아할 가능성이 높다고 보고 상위 N개 추천 목록을 만듭니다.</li>
+    </ul>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 핵심 아이디어 — 콘텐츠 기반과 협업 필터링을 섞다</h2>
+
+    <h4>먼저 알아두면 좋은 단어 3개</h4>
+    <dl class="terms">
+      <div class="term"><dt>콘텐츠 기반 필터링(content-based filtering)</dt><dd>아이템(여기선 채용공고) 자체의 특징을 비교해서 비슷한 것끼리 묶는 방식. 국내 논문도, 지난 O*NET·ESCO도 모두 이 계열입니다.</dd></div>
+      <div class="term"><dt>협업 필터링(collaborative filtering)</dt><dd>아이템 자체 내용은 보지 않고, "취향이 비슷한 다른 사람들의 행동"을 참고해서 추천하는 방식. "이 상품을 산 사람들이 함께 산 상품" 같은 추천이 대표적입니다.</dd></div>
+      <div class="term"><dt>하이브리드 추천(hybrid recommendation)</dt><dd>콘텐츠 기반과 협업 필터링을 함께 쓰는 방식. 이 논문이 바로 이 방식입니다.</dd></div>
+    </dl>
+
+    <div class="notice">지난 국내 논문(홍세희 외)은 <strong>순수 콘텐츠 기반</strong>이었습니다 — 사람과 직업의 점수를 직접 비교했죠. 이 논문은 여기에 <strong>"다른 구직자들의 행동"</strong>이라는 새로운 정보를 더합니다. 텍스트만으로는 못 잡아내는 유사성(예: 서로 다른 클러스터에 있어도 같은 사람들이 함께 관심을 보이는 공고 조합)까지 잡아낼 수 있다는 게 하이브리드 방식의 장점입니다.</div>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "이 논문은 2020년에 발표된 채용공고 추천 시스템 연구예요. 채용 사이트에서 공고를 모은 다음, 직무명이나 요구 기술 같은 특징을 뽑아서 비슷한 공고끼리 자동으로 그룹을 만들어요. 여기까지는 저희가 하려는 것과 거의 똑같아요. 그런데 이 논문은 한 발 더 나가서, 구직자가 어떤 공고에 지원하거나 좋아요를 눌렀는지 같은 행동 데이터도 같이 봐요. '이 그룹의 공고를 좋아한 사람은 다른 공고도 좋아할 것이다'라는 아이디어인 거죠. 콘텐츠 기반이랑 협업 필터링을 섞은 하이브리드 방식이에요. 저희는 아직 사용자 행동 데이터가 없으니까 지금은 콘텐츠 기반 부분만 참고하고, 나중에 사용자가 늘면 이 논문처럼 행동 데이터를 더하는 걸 다음 단계로 고려할 수 있어요."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">이 논문에서 정확히 어떤 클러스터링 알고리즘을 썼어요?</p>
+        <p class="a">솔직히 말씀드리면, 원문이 유료 논문이라 저희도 정확한 알고리즘 이름(예: K-Means 등)까지는 확인하지 못했습니다. 초록과 인용 자료에서 확인되는 건 "공고 특징을 뽑아 클러스터로 묶고, 행동 데이터와 결합한다"는 큰 흐름까지입니다. 이 부분은 저희 조사에서 확인이 제한된 지점이라고 투명하게 밝히는 게 맞다고 생각합니다.</p>
+      </div>
+      <div>
+        <p class="q">협업 필터링을 지금 CareerLens에 바로 쓸 수 있어요?</p>
+        <p class="a">아직은 어렵습니다. 협업 필터링은 "여러 사용자의 행동 데이터"가 쌓여야 작동하는데, 저희는 아직 사용자가 없는 1차 프로토타입 단계입니다. 지금은 콘텐츠 기반(태그 겹침, 텍스트 유사도)에 집중하고, 협업 필터링은 서비스가 커진 뒤의 확장 방향으로 남겨두는 게 현실적입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 국내 논문과 나란히 비교하기</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>국내 논문 (홍세희 외, 2022)</th><th>이 논문 (Mhamdi 외, 2020)</th></tr></thead>
+        <tbody>
+          <tr><td class="who">비교 대상</td><td class="what">사람의 적성 점수 vs 직업의 요구 점수</td><td class="what">채용공고 텍스트끼리</td></tr>
+          <tr><td class="who">방법</td><td class="what">유클리디안 거리 (순수 콘텐츠 기반)</td><td class="what">클러스터링 + 협업 필터링 (하이브리드)</td></tr>
+          <tr><td class="who">데이터</td><td class="what">KNOW 심리검사 · 재직자 조사</td><td class="what">채용 사이트 공고 + 사용자 행동 로그</td></tr>
+          <tr><td class="who">CareerLens와의 유사성</td><td class="what">낮음 (개인 심리검사가 필요)</td><td class="what">높음 (채용공고 텍스트를 그대로 다룸)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span> CareerLens 조사3에 왜 중요한가</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">채용공고 텍스트에서 특징을 뽑아 자동으로 클러스터링하는 게 실제로 검증된 접근이다</td><td class="what">CareerLens의 그룹 B(검증용) 실험에 가장 직접적인 선례로 사용</td></tr>
+          <tr><td class="what">콘텐츠 기반만으로는 부족할 수 있어, 행동 데이터(협업 필터링)를 더하면 성능이 좋아질 수 있다</td><td class="what">1차 프로토타입 이후 사용자 클릭·저장 행동 데이터가 쌓이면 추천 방식을 확장할 로드맵으로 참고</td></tr>
+          <tr><td class="what">유료 논문은 세부 알고리즘 확인이 제한적일 수 있다</td><td class="what">발표에서 "이 부분은 원문 접근 제한으로 개요 수준까지만 확인했다"고 밝히는 것도 정직한 리서치 태도로 언급</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div>
+  <!-- ============================== /ScienceDirect 탭 ============================== -->
+
+  <!-- ============================== arXiv 탭 ============================== -->
+  <div class="tab-panel" data-panel="arxiv" id="panel-arxiv" hidden>
+
+  <section>
+    <h2><span class="num">01</span> 결론 먼저 (발표 오프닝 멘트로 쓰기 좋은 요약)</h2>
+    <div class="lede">
+      <ul>
+        <li>2025년 발표된 논문으로, <strong>"직업 설명 텍스트만 보고 컴퓨터가 O*NET의 공식 분류를 얼마나 잘 재현하는지"</strong>를 실험했습니다. 지난번 O*NET 탭에서 본 그 데이터를 그대로 정답지로 사용한 논문입니다.</li>
+        <li>핵심 파이프라인은 4단계: <strong>① 텍스트를 숫자로 바꾸기(임베딩) → ② 숫자 개수 줄이기(차원 축소) → ③ 그룹으로 나누기(군집화) → ④ 정답과 비교해 채점</strong>.</li>
+        <li>실험 규모가 매우 큽니다 — AI 임베딩 모델 6개 × 차원 축소 방법 7개 × 군집화 알고리즘 4개를 전부 조합해서 비교했습니다.</li>
+        <li>핵심 발견: 차원을 잘 줄이고 "몇 개로 나눌지"를 스스로 찾게 하면 정확도가 <strong>80.5% → 93.3%</strong>까지 크게 올랐습니다. 이 조사3에서 그룹 A(O*NET)와 그룹 B(자동 계산)를 가장 직접적으로 이어주는 자료입니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+    <div class="analogy">
+      <b>비유로 먼저 이해하기 —</b> 직업 설명을 사진처럼 찍어서, 비슷하게 생긴 사진끼리 자동으로 앨범(폴더)에 정리해주는 프로그램을 만든다고 생각하면 됩니다. 다만 사진 대신 <strong>텍스트</strong>를 씁니다. 그리고 이 프로그램이 정리한 앨범이, 사람이 미리 만들어둔 "정답 앨범"(O*NET의 공식 분류)과 얼마나 비슷한지 점수를 매깁니다.
+    </div>
+
+    <h4>기본 정보</h4>
+    <ul>
+      <li><strong>제목:</strong> Improving Clustering on Occupational Text Data through Dimensionality Reduction</li>
+      <li><strong>저자·소속:</strong> Iago Xabier Vázquez García(스페인 ITCL Technology Center), Damla Partanaz·E. Fatih Yetkin(터키 Kadir Has University)</li>
+      <li><strong>게재:</strong> Expert Systems with Applications(저널) · arXiv 2507.07582, 2025년 7월</li>
+      <li><strong>목적:</strong> 회사마다·나라마다 다르게 부르는 직업 이름을 서로 매칭하기 위한 <strong>"최적의 자동 분류 방법"</strong>을 찾는 것 (예: "데이터 분석가"와 "Data Analyst"가 사실 같은 일인지 컴퓨터가 스스로 알아채게 만들기)</li>
+    </ul>
+
+    <a class="src" href="https://arxiv.org/html/2507.07582" target="_blank" rel="noopener">arXiv · 논문 원문(전문 공개)</a>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">03</span> 어떤 데이터로 실험했나요?</h2>
+    <div class="source-card">
+      <h3>O*NET 직업 설명 1,016개</h3>
+      <ul>
+        <li><strong>출처:</strong> O*NET 데이터베이스(onetonline.org) — 지난 O*NET 탭에서 본 바로 그 자료</li>
+        <li><strong>사용한 항목:</strong> 각 직업의 "정의(definition)" 설명 텍스트</li>
+        <li><strong>정답지(ground truth):</strong> O*NET·SOC 체계의 <strong>23개 대분류</strong> — "컴퓨터가 자동으로 나눈 그룹이 이 23개 정답과 얼마나 비슷한가"로 채점</li>
+      </ul>
+    </div>
+    <div class="notice">연결 포인트: 지난 O*NET 딥다이브에서 본 "Job Family(당시 기준 23개)"가 바로 이 논문의 정답지입니다. 즉 이 논문은 <strong>"사람이 만든 그룹(그룹 A)을 컴퓨터가 텍스트만으로 다시 만들어낼 수 있는가"</strong>를 실제로 테스트한 실험입니다.</div>
+  </section>
+
+  <section class="s-moss">
+    <h2><span class="num">04</span> 핵심 파이프라인 — 4단계로 이해하기</h2>
+
+    <h4>먼저 알아두면 좋은 단어 3개</h4>
+    <dl class="terms">
+      <div class="term"><dt>임베딩(embedding)</dt><dd>문장을 AI 모델(BERT 계열)에 넣어 384~768개짜리 숫자 목록으로 바꾸는 것. 뜻이 비슷한 문장은 숫자도 비슷하게 나옵니다.</dd></div>
+      <div class="term"><dt>차원 축소(dimensionality reduction)</dt><dd>숫자 개수(차원)를 줄이는 작업. 고화질 사진을 저화질로 압축해도 알아볼 수 있는 것처럼, 계산을 가볍게 하면서도 중요한 특징은 최대한 남깁니다.</dd></div>
+      <div class="term"><dt>실루엣 점수(silhouette score)</dt><dd>정답이 없을 때 "이 그룹 나누기가 잘 됐는지"를 스스로 채점하는 지표. 한 점이 자기 그룹과는 가깝고, 다른 그룹과는 멀리 떨어져 있을수록 높은 점수를 줍니다.</dd></div>
+    </dl>
+
+    <ul>
+      <li><strong>1단계 · 텍스트를 숫자로:</strong> BERT 계열 AI 모델 6종(distilbert, MiniLM 등)으로 직업 설명 1,016개를 각각 숫자 목록으로 변환</li>
+      <li><strong>2단계 · 숫자 개수 줄이기:</strong> PCA, t-SNE 등 7가지 차원 축소 방법을 비교. 5~700차원까지 다양한 크기로 줄여봄</li>
+      <li><strong>3단계 · 그룹으로 나누기:</strong> K-means, K-medoids, DBSCAN, Spectral clustering 4종의 군집화 알고리즘으로 그룹을 나눔</li>
+      <li><strong>4단계 · 채점하기:</strong> O*NET의 23개 정답 그룹과 비교해 정확도·조정랜드지수 등 여러 지표로 평가하고, 정답 없이 스스로 평가하는 실루엣 점수도 함께 사용</li>
+    </ul>
+  </section>
+
+  <section class="s-clay">
+    <h2><span class="num">05</span> 실험 결과 — 뭐가 제일 잘 됐나요?</h2>
+
+    <div class="calc">
+      <div class="row"><span class="label">실루엣 분석 전</span><span class="val">최고 정확도 약 80.5% (모델·방법마다 성적이 들쭉날쭉함)</span></div>
+      <div class="row"><span class="label">실루엣 분석 후</span><span class="val">최고 정확도 약 93.3%로 상승 (같은 모델 조합 기준)</span></div>
+      <div class="row"><span class="label">가장 안정적인 방법</span><span class="val">차원 축소 기법 중에는 t-SNE가 여러 지표에서 꾸준히 좋은 성적</span></div>
+    </div>
+
+    <div class="notice">흥미로운 발견: 정답은 23개 그룹인데, "몇 개로 나누는 게 최선인가"를 컴퓨터가 스스로 찾게 하니 지표에 따라 <strong>10개~29개</strong>로 제각각 다르게 나왔습니다. 즉 "몇 개 그룹으로 나눌지"조차 하나의 정답이 없다는 뜻입니다 — 앞서 본 O*NET(16→14개)·KECO(24→10개) 개편 사례와 같은 교훈을 컴퓨터 실험에서도 똑같이 확인한 셈입니다.</div>
+  </section>
+
+  <section class="s-indigo">
+    <h2><span class="num">06</span> 발표할 때 이렇게 설명하면 됩니다</h2>
+
+    <div class="script">
+      "이 논문은 2025년 논문인데요, 직업 설명 텍스트만 가지고 컴퓨터가 O*NET의 공식 분류를 얼마나 잘 다시 만들어낼 수 있는지 실험했어요. 방법은 크게 네 단계예요. 먼저 직업 설명을 AI 모델로 숫자로 바꾸고, 그 숫자 개수를 줄이고, 비슷한 것끼리 그룹으로 나누고, 마지막에 진짜 정답이랑 얼마나 비슷한지 채점하는 거죠. AI 모델 6개, 숫자 줄이는 방법 7개, 그룹 나누는 방법 4개를 다 조합해서 실험했는데, 그냥 돌렸을 때는 정확도가 80%대였는데, '몇 개 그룹이 제일 자연스러운지'를 컴퓨터가 스스로 찾게 하니까 93%까지 올라갔어요. 저희는 여기서 '텍스트만으로도 상당히 정확하게 자동 분류가 가능하다'는 기술적 근거를 가져왔고, 동시에 '그룹 개수도 하나의 정답이 없다'는 것도 함께 확인했어요."
+    </div>
+
+    <h4>예상 질문 대비</h4>
+    <div class="qa">
+      <div>
+        <p class="q">이 방법을 CareerLens에 그대로 쓸 수 있어요?</p>
+        <p class="a">파이프라인 자체(임베딩 → 차원 축소 → 군집화 → 평가)는 그대로 참고할 수 있습니다. 다만 이 논문은 영어 텍스트·BERT 모델을 썼기 때문에, 한국어 채용공고에는 한국어를 지원하는 임베딩 모델로 바꿔야 합니다. 또 저희 데이터는 1,016개보다 훨씬 적을 가능성이 높아서, 모델·설정을 그대로 복사하기보다 규모에 맞게 단순화해서 참고하는 게 현실적입니다.</p>
+      </div>
+      <div>
+        <p class="q">정답(23개 그룹)이 있는데 왜 컴퓨터는 다른 개수를 찾아요?</p>
+        <p class="a">"정답"이라는 23개 그룹도 결국 사람이 정한 기준일 뿐, 텍스트 자체의 통계적 패턴과 완벽히 일치하지는 않기 때문입니다. 컴퓨터는 "텍스트가 실제로 얼마나 비슷한가"만 보고 그룹을 나누는데, 이 기준과 사람이 만든 분류 기준이 항상 같지는 않다는 걸 보여주는 결과입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-plum">
+    <h2><span class="num">07</span> 그룹 B 세 논문, 한눈에 비교하기</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>국내 논문 (2022)</th><th>ScienceDirect (2020)</th><th>arXiv (2025)</th></tr></thead>
+        <tbody>
+          <tr><td class="who">비교 대상</td><td class="what">사람 점수 vs 직업 점수</td><td class="what">채용공고 텍스트끼리</td><td class="what">직업 설명 텍스트끼리</td></tr>
+          <tr><td class="who">방법</td><td class="what">유클리디안 거리</td><td class="what">클러스터링 + 협업 필터링</td><td class="what">AI 임베딩 + 차원축소 + 클러스터링</td></tr>
+          <tr><td class="who">정답 검증</td><td class="what">재직자 현재 직업으로 교차검증</td><td class="what">원문 접근 제한으로 불확실</td><td class="what">O*NET 23개 그룹과 직접 비교</td></tr>
+          <tr><td class="who">기술 난이도</td><td class="what">중간 (통계)</td><td class="what">중간 (하이브리드)</td><td class="what">높음 (최신 AI 임베딩)</td></tr>
+          <tr><td class="who">CareerLens 적용 난이도</td><td class="what">낮음 (개념만 참고)</td><td class="what">중간</td><td class="what">중간~높음 (AI 모델 필요, 파이프라인은 재현 가능)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">08</span> CareerLens 조사3에 왜 중요한가</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+        <tbody>
+          <tr><td class="what">임베딩+차원축소+군집화 파이프라인이 실제로 공식 분류를 상당 부분 재현할 수 있다</td><td class="what">그룹 B(콘텐츠 기반) 검증 실험을 설계할 때 이 4단계 파이프라인을 참고 모델로 사용</td></tr>
+          <tr><td class="what">그룹 개수는 지표마다 다르게 나온다 — 하나의 정답이 없다</td><td class="what">CareerLens 태그·묶음 개수도 여러 방법으로 비교한 뒤 팀이 합의로 최종 결정</td></tr>
+          <tr><td class="what">차원 축소·실루엣 분석 같은 튜닝 단계를 더하면 성능이 크게 개선된다</td><td class="what">"묶어보기"로 끝내지 않고, 결과를 평가하고 다듬는 단계를 실험 설계에 포함</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  </div>
+  <!-- ============================== /arXiv 탭 ============================== -->
+
+  <footer>CareerLens B팀 · 조사 3 자료 딥다이브 3-5/8 · 국내 논문(홍세희 외, 2022) &amp; ScienceDirect(Mhamdi 외, 2020) &amp; arXiv(Vázquez García 외, 2025) · 2026.08.21 · 원문은 각 카드의 링크에서 확인 가능</footer>
+
+</div>
+
+<script>
+  var tabButtons = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabButtons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+      panels.forEach(function (p) { p.hidden = p.dataset.panel !== btn.dataset.tab; });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

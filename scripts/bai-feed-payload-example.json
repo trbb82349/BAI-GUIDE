@@ -1,0 +1,8 @@
+{
+  "did": "베이스라인 모델 정확도 0.81 확보, 데이터 300건 정제",
+  "learned": "단순 모델 기준선이 생각보다 강했다",
+  "blocked": "라벨 기준을 어떻게 잡을지 고민됩니다",
+  "tags": "NLP, 실험, 베이스라인",
+  "links": "https://github.com/example/project",
+  "project_id": null
+}

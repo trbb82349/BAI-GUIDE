@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>직무지도 데모</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --gridline: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+
+    --cat-data: #2a78d6;    /* 데이터분석 - blue */
+    --cat-bi: #eb6834;      /* BI - orange */
+    --cat-marketing: #1baf7a; /* 마케팅분석 - aqua */
+    --cat-ai: #e87ba4;      /* AI·ML - magenta */
+    --cat-empty: #c3c2b7;   /* 데이터 없음 (CRM분석) */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  header h1 {
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+  header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 1fr) 380px;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .map-card, .panel-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .map-card {
+    padding: 8px;
+  }
+
+  svg { display: block; width: 100%; height: auto; }
+
+  .edge {
+    stroke: var(--text-muted);
+    fill: none;
+    transition: opacity 0.15s ease, stroke-width 0.15s ease;
+  }
+  .edge-label {
+    fill: var(--text-muted);
+    font-size: 10px;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+
+  .node-circle {
+    cursor: pointer;
+    stroke: var(--surface-1);
+    stroke-width: 2px;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .node-circle.empty {
+    fill: var(--surface-1);
+    stroke: var(--cat-empty);
+    stroke-width: 2px;
+    stroke-dasharray: 4 3;
+  }
+  .node-group:hover .node-circle:not(.empty) {
+    filter: brightness(1.08);
+    transform: scale(1.04);
+  }
+  .node-group.selected .node-circle:not(.empty) {
+    stroke: var(--text-primary);
+    stroke-width: 3px;
+  }
+
+  .node-label {
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--text-primary);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .node-sublabel {
+    font-size: 11px;
+    fill: var(--text-secondary);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+
+  .caption {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 12px 12px;
+  }
+
+  .panel-card {
+    padding: 18px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .panel-card h2 {
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+  .panel-hint {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 16px;
+  }
+  .chip {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--page);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .role-card {
+    border-top: 1px solid var(--gridline);
+    padding: 14px 0;
+  }
+  .role-card:first-of-type { border-top: none; padding-top: 0; }
+  .role-org {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .role-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 2px 0 8px;
+  }
+  .role-field {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+  .role-field b {
+    display: block;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 12px 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* 탭 */
+  .tabnav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--gridline);
+  }
+  .tab-btn {
+    appearance: none;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active {
+    color: var(--cat-data);
+    border-bottom-color: var(--cat-data);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  #tab-map.tab-panel.active { display: block; }
+  #tab-map .layout { display: grid; }
+
+  /* 글 탭 (의의 / 만든 방법) */
+  .article {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    max-width: 760px;
+  }
+  .article h2 {
+    font-size: 18px;
+    margin: 28px 0 10px;
+  }
+  .article h2:first-child { margin-top: 0; }
+  .article h3 {
+    font-size: 14px;
+    margin: 18px 0 6px;
+    color: var(--text-primary);
+  }
+  .article p {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin: 0 0 10px;
+  }
+  .article ul, .article ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+  }
+  .article li {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .article b { color: var(--text-primary); }
+  .callout {
+    background: var(--page);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cat-data);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 14px 0;
+  }
+  .callout p { margin: 0; }
+  .lede {
+    background: rgba(42,120,214,0.06);
+    border: 1px solid rgba(42,120,214,0.25);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin: 0 0 26px;
+  }
+  .lede p {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin: 0 0 12px;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+  .lede b { color: var(--cat-data); }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px;
+    font-size: 13px;
+  }
+  .compare-table th, .compare-table td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--gridline);
+    color: var(--text-secondary);
+  }
+  .compare-table th {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .pipeline {
+    counter-reset: step;
+    margin: 12px 0 18px;
+    padding: 0;
+    list-style: none;
+  }
+  .pipeline li {
+    counter-increment: step;
+    position: relative;
+    padding: 2px 0 14px 34px;
+    border-left: 1px solid var(--gridline);
+    margin-left: 12px;
+  }
+  .pipeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .pipeline li::before {
+    content: counter(step);
+    position: absolute;
+    left: -12px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--cat-data);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pipeline .step-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .pipeline .step-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .pipeline code {
+    background: var(--page);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 12px;
+  }
+  .encode-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .encode-sample-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--cat-data); flex-shrink: 0;
+  }
+  .encode-sample-line {
+    width: 40px; height: 6px; border-radius: 3px;
+    background: var(--text-muted); flex-shrink: 0;
+  }
+
+  /* 카드 탭 */
+  .card-list-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .card-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .card-list-item:hover { background: var(--page); }
+  .card-list-item.selected { background: var(--page); }
+  .card-list-item .dot {
+    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  }
+  .card-list-item .titles { min-width: 0; }
+  .card-list-item .role-name-sm {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-list-item .org-sm {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .job-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .job-card-top {
+    padding: 22px 26px 18px;
+    color: #fff;
+  }
+  .job-card-brand {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+    margin-bottom: 10px;
+  }
+  .job-card-title {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+  .job-card-summary {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.95;
+  }
+  .job-card-body { padding: 20px 26px 24px; }
+  .job-card-section { margin-bottom: 18px; }
+  .job-card-section:last-child { margin-bottom: 0; }
+  .job-card-section h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+  }
+  .job-card-section p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .job-card-footer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--gridline);
+    border-top: 1px solid var(--gridline);
+  }
+  .job-card-footer div {
+    background: var(--page);
+    padding: 12px 14px;
+  }
+  .job-card-footer .k {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 3px;
+  }
+  .job-card-footer .v {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .job-card-footer a { color: var(--cat-data); text-decoration: none; }
+  .job-card-footer a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .job-card-footer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>직무지도 데모 — 알리오 공고 기반</h1>
+    <p>공공기관 채용공고(job.alio.go.kr)에서 실제 업무·필요지식·필요기술 텍스트를 뽑아, 직무 카테고리 간 키워드 유사도로 지도를 그렸습니다.<br>
+    원(노드) 크기 = 확보된 채용공고 역할 수, 선 굵기 = 두 직무가 공유하는 업무·역량 키워드의 유사도. 노드를 클릭하면 실제 채용공고 근거가 오른쪽에 나옵니다.</p>
+  </header>
+
+  <nav class="tabnav">
+    <button class="tab-btn active" data-tab="map">지도</button>
+    <button class="tab-btn" data-tab="cards">공고 카드</button>
+    <button class="tab-btn" data-tab="about">왜 직무지도인가</button>
+    <button class="tab-btn" data-tab="howto">어떻게 만들었나</button>
+  </nav>
+
+  <div id="tab-map" class="tab-panel active">
+    <div class="layout">
+      <div class="map-card">
+        <svg id="mapSvg" viewBox="0 0 640 520"></svg>
+        <div class="legend" id="legend"></div>
+        <div class="caption">CRM분석은 점선 원으로 표시했습니다 — 이번 수집 범위(알리오)에서는 실제 CRM 업무 공고를 찾지 못했습니다.</div>
+      </div>
+
+      <div class="panel-card" id="panel">
+        <h2>직무를 클릭해 보세요</h2>
+        <p class="panel-hint">지도의 원을 클릭하면 그 직무에 연결된 실제 채용공고와 핵심 키워드를 볼 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-cards" class="tab-panel">
+    <p style="color:var(--text-secondary); font-size:13px; margin:0 0 14px; max-width:760px; line-height:1.6;">
+      지금까지 수집한 채용공고를 <b style="color:var(--text-primary);">카드 제작 키트</b>와 같은 방식(한 줄 설명 → 하는 일 → 필요 역량 → 회사소개 → 접수 정보)으로 정리했습니다. 왼쪽에서 직무명을 클릭하면 오른쪽에 카드가 뜹니다.
+    </p>
+    <div class="layout">
+      <div class="card-list-card">
+        <div id="cardList"></div>
+      </div>
+      <div id="cardDetail"></div>
+    </div>
+  </div>
+
+  <div id="tab-about" class="tab-panel">
+    <div class="article">
+      <div class="lede">
+        <p>기존 취업사이트는 직무를 각각 따로 보여주지만, 실제 회사의 채용공고를 보면 <b>서로 다른 직무에서도 비슷한 업무나 역량이 많이 나타납니다.</b></p>
+        <p>직무지도는 이런 공통점을 <b>실제 채용공고에서 찾아서</b>, 어떤 직무들이 서로 연결되어 있는지를 한눈에 보여주는 서비스입니다.</p>
+        <p>예를 들어 '데이터 분석'과 '마케팅 분석'이 별개의 직무처럼 보이더라도, 실제 공고를 분석해보면 고객 데이터 분석, KPI 분석 등의 업무가 겹칠 수 있습니다. 직무지도에서는 이런 관계를 선으로 연결해서 보여줍니다.</p>
+        <p><b>즉, 직무를 단순히 분류해서 보여주는 것이 아니라, 실제 채용공고를 통해 직무와 직무 사이의 관계를 보여주는 것이 핵심입니다.</b></p>
+      </div>
+
+      <h2>"직무 목록"이 아니라 "직무 관계망"</h2>
+      <p>취업 사이트에서 "데이터 분석"을 검색하면 보통 카테고리 하나에 걸린 공고 목록이 나옵니다. 그런데 실제 채용공고를 들여다보면, 데이터 분석·BI·마케팅 분석·CRM 분석은 이름은 달라도 <b>겹치는 업무와 요구 역량</b>이 상당히 많습니다. 반대로 같은 "경영·회계·사무"로 분류돼도 실제 업무는 완전히 다른 경우도 흔합니다.</p>
+      <p>직무지도는 이 지점에서 출발합니다. 미리 정해둔 분류 체계에 공고를 끼워 맞추는 대신, <b>실제 공고에 적힌 업무·필요지식·필요기술 텍스트가 서로 얼마나 겹치는지</b>를 계산해서 직무 사이의 거리를 정합니다.</p>
+
+      <table class="compare-table">
+        <tr><th></th><th>기존 채용사이트의 분류</th><th>직무지도</th></tr>
+        <tr><td>기준</td><td>사람이 미리 정한 카테고리</td><td>공고에 실제로 적힌 업무·역량 텍스트</td></tr>
+        <tr><td>답하는 질문</td><td>"이 공고는 어디에 속하는가"</td><td>"이 직무는 무엇과 연결되어 있는가"</td></tr>
+        <tr><td>공고 하나가</td><td>보통 카테고리 하나에만 속함</td><td>여러 직무 영역에 동시에 걸릴 수 있음</td></tr>
+      </table>
+
+      <h2>왜 "지도"라는 형태가 중요한가</h2>
+      <p>지도는 "데이터 분석과 마케팅은 얼마나 가까운가", "데이터 분석을 하던 사람이 CRM으로 이동할 수 있는가", "내가 가진 역량을 살릴 수 있는 다른 직무는 무엇인가" 같은 질문에 답할 수 있습니다. 지금 데모의 지도에서 데이터분석과 AI·ML이 가장 굵은 선으로 이어진 것도, 두 직무가 실제로 Python·데이터 분석·통계 같은 키워드를 많이 공유하고 있기 때문입니다 — 사람이 임의로 정한 게 아니라 텍스트 유사도 계산 결과입니다.</p>
+
+      <div class="callout">
+        <p>이 지도에서 CRM분석이 점선(데이터 없음)으로 남아있는 것도 같은 원리입니다. 실제로 그 직무를 뒷받침하는 공고를 못 찾았기 때문에, 억지로 채우지 않고 비어있는 채로 정직하게 보여줍니다.</p>
+      </div>
+
+      <h2>다중 소속 문제가 자연스럽게 풀림</h2>
+      <p>"고객 행동 데이터를 분석해서 마케팅 전략을 세우는 직무는 데이터분석일까, 마케팅일까?" 같은 질문은 기존 분류 체계에서는 골치 아픈 문제입니다. 직무지도에서는 오히려 당연합니다 — 하나의 공고가 여러 직무 노드와 동시에 연결될 수 있다는 전제로 설계되어 있기 때문입니다. 지금 데모에서도 일부 역할(예: IBK기업은행의 데이터 기반 마케팅 직무)은 마케팅분석 노드에 속해 있지만, 그 안의 텍스트("데이터 분석 도구 활용", "A/B 테스트 설계")가 데이터분석·AI·ML 노드와의 연결선을 함께 끌어올리고 있습니다.</p>
+
+      <h2>온톨로지가 하는 역할</h2>
+      <p>여기서 온톨로지는 단순히 "이 공고는 이 카테고리"라고 태그를 붙이는 분류 기술이 아니라, <b>회사 → 공고 → 업무 → 역량 → 직무 → 관련 직무</b>로 이어지는 관계망을 표현하는 도구로 씁니다. 지금 데모는 이 관계망의 가장 단순한 형태(카테고리 5개 사이의 유사도)만 구현했지만, 같은 방식을 역할(공고) 단위로 확장하면 "이 공고와 저 공고가 왜 가까운지"까지 보여줄 수 있습니다.</p>
+
+      <h2>카드 제작 키트와의 연결</h2>
+      <p>직무지도에서 노드를 클릭했을 때 나오는 "하는 일 / 필요지식 / 필요기술"은 <b>30-resources/카드 제작 키트</b>가 채용공고 한 장을 이해하기 쉬운 카드로 바꿀 때 쓰는 것과 같은 종류의 정보입니다. 지금은 텍스트 목록으로만 보여주지만, 같은 데이터를 카드 키트의 디자인에 흘려보내면 "지도에서 직무를 탐색하다가, 관심 가는 공고는 카드로 바로 확인한다"는 흐름을 만들 수 있습니다.</p>
+
+      <h2>이 프로젝트가 답하려는 핵심 질문</h2>
+      <p style="font-weight:600; color:var(--text-primary);">"채용공고에서 추출한 업무와 요구 역량을 바탕으로, 직무 간 연결성을 어떤 기준으로 정의하고 시각화할 것인가?"</p>
+      <p>지금 쓰고 있는 기준은 TF-IDF 키워드 유사도이지만, 업무 유사도·역량 유사도·산업 유사도·공고 키워드 유사도 중 무엇을 쓰느냐에 따라 지도의 모양이 달라질 수 있습니다. 이 기준을 어떻게 정하고 검증할지가 이 프로젝트의 기술적 핵심입니다. (자세한 계산 방식은 "어떻게 만들었나" 탭을 참고하세요.)</p>
+    </div>
+  </div>
+
+  <div id="tab-howto" class="tab-panel">
+    <div class="article">
+      <h2>데이터가 만들어진 과정</h2>
+      <p>이 지도는 사람이 그린 다이어그램이 아니라, 실제 공공기관 채용공고(<b>job.alio.go.kr</b>, 잡알리오)에서 뽑은 텍스트를 계산해서 만들었습니다. 아래 4단계 스크립트가 순서대로 돌아갑니다.</p>
+
+      <ol class="pipeline">
+        <li>
+          <div class="step-title">공고 수집 — <code>scrape_postings.py</code></div>
+          <div class="step-desc">직무 카테고리별 키워드(예: 데이터분석/빅데이터/데이터사이언티스트)로 알리오를 검색합니다. 처음엔 검색 결과 아무데나 키워드가 있으면 다 가져왔더니, "고객관리"로 검색해서 실제로는 상수도 현장직 채용공고가 잡히는 오탐이 많았습니다. 그래서 <b>제목에 키워드가 실제로 들어있는 공고만</b> 채택하도록 바꿨습니다.</div>
+        </li>
+        <li>
+          <div class="step-title">업무 텍스트 추출 — <code>extract_job_descriptions.py</code></div>
+          <div class="step-desc">공고 상세 페이지에는 응시자격·전형절차 같은 행정 정보만 있고, 실제 "하는 일"은 첨부된 <b>직무기술서 PDF</b>에만 있었습니다. PDF 양식이 기관마다 달라서, NCS 표준 형식을 쓰는 것만 정규식으로 자동 인식하고, 나머지는 사람이 직접 읽어서 정리했습니다.</div>
+        </li>
+        <li>
+          <div class="step-title">역할 데이터 정리 — <code>combine_roles.py</code></div>
+          <div class="step-desc">자동 추출분과 수동 정리분을 합치고, 같은 PDF 안에 섞여 있던 무관한 역할(예: AI 채용 PDF 안의 발전소 안전관리원)을 제외해서 최종 15개 역할로 정리했습니다.</div>
+        </li>
+        <li>
+          <div class="step-title">유사도 계산 — <code>build_similarity.py</code></div>
+          <div class="step-desc">카테고리별로 소속 역할들의 "하는 일 + 필요지식 + 필요기술" 텍스트를 합친 뒤, <b>TF-IDF</b>로 키워드 가중치를 매기고 <b>코사인 유사도</b>로 카테고리 간 거리를 계산했습니다. "의사소통능력"처럼 모든 공고에 상투적으로 들어가는 표현은 미리 제거했습니다.</div>
+        </li>
+      </ol>
+
+      <h2>왜 TF-IDF인가</h2>
+      <p>단순히 키워드가 몇 번 나왔는지(빈도)만 세면, "책임감"·"엑셀 활용" 같은 범용 표현이 모든 직무 쌍을 "비슷하다"고 만들어 버립니다. TF-IDF는 "이 직무군에는 자주 나오지만 전체적으로는 드문 키워드"에 가중치를 더 줘서, SQL·Tableau·마케팅 같은 실제 직무를 구분 짓는 단어가 유사도 계산을 주도하게 합니다.</p>
+
+      <h2>지도를 읽는 법 (인코딩 기준)</h2>
+      <div class="encode-row"><div class="encode-sample-circle" style="width:34px;height:34px;"></div><span>원 크기 = 그 직무에서 확보된 채용공고 역할 수. 클수록 데이터가 많다는 뜻입니다.</span></div>
+      <div class="encode-row"><div class="encode-sample-circle" style="width:20px;height:20px;background:transparent;border:1.5px dashed var(--cat-empty);"></div><span>점선 원 = 이번 수집 범위에서 데이터를 찾지 못한 직무(CRM분석).</span></div>
+      <div class="encode-row"><div class="encode-sample-line" style="width:60px;height:8px;"></div><span>굵고 진한 선 = 두 직무의 코사인 유사도가 높음 (업무·역량 키워드를 많이 공유).</span></div>
+      <div class="encode-row"><div class="encode-sample-line" style="width:60px;height:2px;opacity:0.4;"></div><span>가늘고 옅은 선 = 유사도가 낮음. 유사도 2% 미만인 쌍은 아예 선을 그리지 않았습니다.</span></div>
+
+      <h2>한계 (다음에 보강할 부분)</h2>
+      <ul>
+        <li>직무당 역할 수가 1~8개로 적어서, 유사도 수치가 통계적으로 안정적이라기보다는 "지금 확보한 표본 안에서의 경향"에 가깝습니다.</li>
+        <li>한국어 형태소 분석기 없이 정규식으로 토큰을 뽑아서, 조사가 안 떨어져 나가는 등 키워드 추출이 완벽하지 않습니다.</li>
+        <li>CRM분석은 공공기관 채용공고 안에서 데이터를 거의 찾지 못했습니다. "CRM"이라는 표현 자체가 이 데이터 소스에 잘 안 쓰이는 것으로 보입니다.</li>
+        <li>지금은 카테고리(5개) 단위로만 유사도를 계산합니다. 역할(15개) 단위로 계산하면 "이 공고와 저 공고가 왜 가까운지"까지 더 세밀하게 보여줄 수 있습니다.</li>
+      </ul>
+      <p style="color:var(--text-muted); font-size:12.5px;">전체 코드와 원본 데이터는 프로젝트 폴더의 <code>src/</code>, <code>output/job_roles_final.json</code>, <code>output/job_map_data.json</code>에 있습니다. 자세한 실행 방법은 <code>README.md</code>를 참고하세요.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const JOB_MAP_DATA = {"nodes": [{"id": "데이터분석", "role_count": 2, "top_terms": ["데이터", "AI", "관광", "빅데이터", "개선", "활용한", "시각화", "보고서"], "roles": [{"org": "한국공항공사", "title": "한국공항공사 공무직(AI·데이터분석) 공개채용", "role_name": "AI·데이터분석", "duties": "공항 운영, 시설, 안전, 고객서비스, 경영관리 등 조직의 다양한 분야의 데이터를 수집·정제·분석하여 이를 활용하여 AI정책 기획 및 공항운영업무 개선 실행 등-AI를 활용한 정보분석·자동화 등 업무 효율화 향상을 위한 AX 기획 업무-데이터분석 및 AI모델 설계, 분석 결과 도출-AI를 활용한 공항서비스 개발 및 운영 개선-분석 결과 시각화 및 보고서 작성-분석결과를 활용한 정책·업무 개선 방안 제시-데이터 품질 관리 및 분석 환경 개선 지원-유관부서와의 협업을 통한 데이터 기반 의사결정 지원", "knowledge": "-인공지능 모델 최적화를 위한 탐색 및 데이터 분석방법론(기술통계,회귀분석,분류·군집 등)-DB(SQL) 및 데이터 구조 이해, 데이터 시각화 기법, 머신러닝·AI 기초이론-데이터품질 관리 및 거버넌스 개념, 데이터관련 법·제도 이해", "skills": "-인 공 지 능 모 델 최 적 화 및 IoT·자 연 어 처 리 기 술, 데 이 터 분 석 도 구 활 용 능 력(Python, R, SAS 등)-SQL을 활용한 데이터 추출 및 가공 능력, 분석결과 시각화 및 보고서 작성 능력-유관 부서와의 협업 및 의사소통 능력"}, {"org": "한국관광공사", "title": "2026~2027 관광데이터서비스팀 기간제 근로자(전문계약직) 채용 공고", "role_name": "관광데이터서비스팀 (기간제 전문계약직)", "duties": "국내외 공공/민간 데이터 수집 및 처리, 관광 데이터 결합 분석 및 해석. 정형 데이터(통신, 카드 등) 및 비정형 데이터(SNS, 검색 등) 활용, 관광 결합 빅데이터 융복합 분석. 최신 빅데이터 분석 기법(AI, 딥러닝, 앙상블 등) 활용 한국관광 예측 고도화. 해외 성수기 인바운드 수요 예측. 관광 시장연구조사 보고서 내 데이터 분석 및 통계학적 자문 제공.", "knowledge": "최신 빅데이터 분석 기법(AI, 딥러닝, 앙상블 등)에 관한 지식. 엑셀, R, Python, SAS 및 SPSS 등 통계 언어에 관한 이해. 관광통계 주체·객체에 대한 이해. 연구설계 및 사업타당성 분석에 대한 이해.", "skills": "빅데이터 및 OA 활용 능력. 데이터 구조화를 위한 연구관리·기획 능력. 조사설계, 연구방법 등을 통한 통계 분석 및 해석 능력. 관광 연구·컨설팅 관련 경험 및 지식."}]}, {"id": "BI", "role_count": 1, "top_terms": ["제작", "콘텐츠", "대시보드", "활용한", "Tableau", "헬스맵", "HTML", "CSS"], "roles": [{"org": "국립중앙의료원", "title": "계약직 연구원(데이터기반정책연구팀) 채용 공고", "role_name": "데이터기반정책연구팀 (계약직 연구원)", "duties": "Tableau를 활용한 의료취약지 관련 통계·지표 대시보드 제작 및 헬스맵 연동 게시. HTML·CSS 등을 활용한 웹 콘텐츠 제작 및 페이지 업데이트. 신규 연구결과의 시스템 반영 계획 수립 및 콘텐츠 업데이트 관리. 헬스맵(HealthMap) 웹사이트 운영 현황 모니터링 및 유지보수 사업 관련 요구사항 정의, 검수, 업체 커뮤니케이션.", "knowledge": "보건의료 통계지표에 대한 기초적 이해. 데이터 시각화 개념 및 대시보드 설계 방법론. 웹 시스템 운영 및 정보시스템 유지보수 관련 기초 지식. 공공기관 IT 사업관리(발주·검수) 관련 기초 지식.", "skills": "Tableau를 활용한 대시보드 제작 능력. HTML·CSS를 활용한 웹 콘텐츠 제작 능력. 웹사이트 운영 및 콘텐츠 관리 능력. MS Office(Excel, Word, PowerPoint) 활용 능력."}]}, {"id": "CRM분석", "role_count": 0, "top_terms": [], "roles": []}, {"id": "마케팅분석", "role_count": 4, "top_terms": ["마케팅", "전략", "운영", "디지털", "채널", "퇴직연금", "활용", "수립"], "roles": [{"org": "IBK기업은행", "title": "IBK기업은행 전문계약직(카드디지털마케팅) 채용공고", "role_name": "전문계약직 (카드디지털마케팅)", "duties": "디지털마케팅 기획·실행·관리. 브랜드 마케팅(영상, 인쇄물 제작 등). 데이터 기반 퍼포먼스 마케팅 수행 및 성과 분석. 바이럴 마케팅 운영 전략 수립 및 실행(타겟 고객 선정, 채널 활용 등). 디지털 콘텐츠 제작 및 운영. 신규 제휴처 발굴, 신사업 런칭 전략 및 운영.", "knowledge": "디지털 고객에 대한 높은 이해도. 차별화된 브랜딩 전략 수립 및 수행 능력. 디지털 퍼포먼스 마케팅 전략도출 및 성과측정 능력. 바이럴 마케팅에 대한 높은 이해도 및 채널 활용 능력.", "skills": "디지털 마케팅 기획을 위한 유연한 사고, 차별화된 아이디어. 마케팅 성과분석도구 활용 능력. 시장 조사, 설문/인터뷰 설계능력."}, {"org": "IBK기업은행", "title": "IBK기업은행 전문계약직(퇴직연금 마케팅(영업)) 채용공고", "role_name": "전문계약직 (퇴직연금 마케팅(영업))", "duties": "퇴직연금 기업 및 개인 다이렉트 마케팅. 기업 및 개인 대상 퇴직연금 제도컨설팅 및 RM역할 수행. 영업점 마케팅 지원 및 교육 진행(DB, DC, IRP). 시장/업체 동향 파악 및 분석.", "knowledge": "근로자퇴직급여보장법 등 법령, 세무, 노무 등 퇴직연금 관련 업무지식 및 퇴직연금 운용상품 구조에 대한 이해. 커뮤니케이션, 문제 해결, 프로젝트 관리, 데이터 수집 및 분석.", "skills": "PPT/엑셀/한글 등 중급 이상의 문서작성 및 PC활용, 프레젠테이션 도구 활용."}, {"org": "IBK기업은행", "title": "IBK기업은행 전문계약직(나라사랑카드 온·오프라인 통합마케팅) 채용공고", "role_name": "전문계약직 (나라사랑카드 통합마케팅)", "duties": "나라사랑카드 마케팅 전략 수립 및 기획·운영·관리. 나라사랑카드로 유입된 고객의 주거래 전환 마케팅 전략 수립 및 기획·운영·관리. 제휴사 협업 프로젝트 기획·운영·관리. 마케팅 성과 지표 수립 및 고도화, 사업 성과 분석.", "knowledge": "마케팅 계량 지표의 이해, 코호트 분석법, 카드 상품 손익 구조, 분석 Tool 운용 지식, 금융소비자보호법, 개인정보보호법.", "skills": "데이터 분석 도구 활용 능력, 데이터 추출 및 가공 능력, A/B 테스트 설계 능력, 전략 로드맵 기획 능력, 시장 및 경쟁사 분석 능력, 데이터 기반의 논리적 설득 능력."}, {"org": "한국개발연구원(KDI)", "title": "2026년 2분기 4차 위촉(연구직) 채용 세부전형-마케팅", "role_name": "대외협력실 성과확산팀 (위촉연구원, 디지털마케팅)", "duties": "한국개발연구원의 연구성과 확산 관련 온·오프라인 채널 운영 및 콘텐츠 기획, 홍보 콘텐츠 제작 및 성과 분석 등 디지털마케팅 업무.", "knowledge": "일부 자체개발 분류체계(경영·회계·사무 - 기획사무 - 광고·홍보 - PR) 기준 디지털마케팅 관련 지식.", "skills": "디지털 채널 운영 및 콘텐츠 기획·제작 관련 기술 (PDF 텍스트 추출 상태가 불완전하여 상세 항목은 원문 재확인 필요)."}]}, {"id": "AI·ML", "role_count": 8, "top_terms": ["AI", "개인정보보호", "기술", "인공지능서비스", "인공지능", "위한", "개인정보", "플랫폼"], "roles": [{"org": "한국중부발전(주)", "title": "2026년도 AI·개인정보전문가 및 기간제근로자 채용 공고", "role_name": "AI전문가①", "duties": "○ AI를 활용한 정보분석·자동화 등 업무 효율화 향상을 위한 AX 기획 업무○ 전사적 AI 활용 확대 및 AX 전환 공감대 형성을 위한 다양한 변화 관리 업무○ 효과적인 투자 및 AI 서비스를 위한 AI 인프라 기획 및 운영○ 다양한 분야에 AI 응용범위 확대를 위한 AI 융합 업무○ 급속한 AI 확산으로 각종 위험 노출 방지를 위한 AI 정보보안 관리 업무 등", "knowledge": "○ 관련된 법·윤리 파악을 위한 기법, 내부 환경분석 방법, 문제 구조화 방법론, 벤치마킹 방법론, 선정된 인공지능 기술 트렌드, 외부 환경분석 방법론, 인공지능 관련 법·제도·규제 관련 지식 및 정비 로드맵, 인공지능 서비스 사례·트렌드, 인공지능 서비스에 대한 성능 평가 지표, 인공지능 모델링 지식, 인공지능 서비스 모델 적정성 평가 지식, 인공지능 알고리즘 지식, HCI 및 MLOps 관련 지식, 위험 관리 기법, IT 투자 성과평가 향상방안 등 ○ 인공지능 모델 최적화를 위한 탐색 방법론, 자연어 처리 이론, 학습 이론, 데이터 수집 방법, 생성 AI 활용 방법론, 표본 추출 방법, 인공지능 윤리 가이드북, 데이터 품질 평가 방법론 등", "skills": "○ 대외 환경변화 포착 능력, 문헌 조사 능력, 논리적 분석 능력, 목표 영향도 시뮬레이션 기술, 데이터 분석 및 수집 능력, 중요도에 따른 우선순위 파악 능력, 모델 요소 상관관계 분석에 따른 개선모델 도출 능력, 인공지능 서비스 결과 예측 능력, UI/UZ 도구 활용 능력, 인공지능서비스 개발 프로세스 이해 능력, 인공지능서비스 결과 예측 능력, 인공지능서비스 모델 프로세스 도식화 능력, 네트워크 인프라 분석 능력, 정량적 업무규모 산정 능력 등○ 인공지능 모델 최적화 기술, 요구사항 중요도 분석 능력, IoT 기술, 기계번역 기술, 자연어 처리 기술, 인공지능 학습데이터 구축 프로세스 파악 능력, AI 기반 사이버 보안 적용 능력 등"}, {"org": "한국중부발전(주)", "title": "2026년도 AI·개인정보전문가 및 기간제근로자 채용 공고", "role_name": "AI전문가②", "duties": "○ AI 에이전트 플랫폼을 활용한 AI 에이전트 개발 및 운용업무○ 안정적이고 뛰어난 성능의 AI 모델 서비스를 위한 LLMOps 운용 업무○ AI 학습 데이터 확대를 위한 데이터 정제·전처리·학습 업무○ 신속한 AI 서비스 확대를 위한 워크플로우 및 API개발 업무○ 행동형 AI 대폭 확대를 위한 MCP(Model Context Protocol) 개발○ 기존 AI 서비스 만족도 조사 및 고도화 방향 설정 등 서비스 품질 향상 업무 등", "knowledge": "○ ISO/IEC 20000 국제표준, ISO/IEC 38500 국제표준, 인공지능 기술 동향, 인공지능서비스 운영체계, 요구사항 도출 기법, 수집된 이슈에 대한 대응프로세스 방법, 머신러닝·딥러닝·자연어처리·컴퓨터 비전, 인공지능서비스 기술 종류, 인공지능서비스 아키텍처, 품질 진단방법, 장애모드 영향분석, 장애처리 매뉴얼, 인공지능 플랫폼 개념, 보고서 작성방법 등○ 데이터 전처리, 머신러닝 및 딥러닝 알고리즘의 특징과 원리, 소프트웨어 플랫폼 종류와 원리, 자연어 처리 최신 기술 동향, 데이터 저장과 관리, 인공지능 모델·데이터, HCI·HMI·MMI, 인공지능서비스 사용자 인터페이스, 인공지능서비스 성능테스트 도구 사용법 등", "skills": "○ 개선상황보고서 작성 능력, 개선사항 검증 능력, 서비스 운영관리 기술, 서비스설계 능력, 요구사항 도출 기술, 데이터 수집 및 분석 기술, 인공지능서비스 네트워크 점검 기술, 인공지능서비스 보안환경 점검 기술, 인공지능서비스 점검사항 분석 기술, 의사소통 및 협의 능력 등○ 사용자 인터페이스 개선·분석 능력, 인공지능 데이터수집 능력, 인공지능서비스 플랫폼 연동 능력, HCI·HMI·MMI 활용 개발 능력, 인공지능서비스 신뢰성테스트 실행 및 결과분석 능력, 인공지능서비스 이행 능력 등"}, {"org": "한국중부발전(주)", "title": "2026년도 AI·개인정보전문가 및 기간제근로자 채용 공고", "role_name": "개인정보전문가", "duties": "○ 개인정보보호 관리체계 수립 및 운영, 개인정보보호위원회 개인정보 보호수준 평가 준비, 정보보안 및 개인정보보호 관리체계 인증 대응 및 관리업무(ISMS-P, ISO27701 인증심사 총괄), 개인정보 관리시스템 운영 및 현황 관리, 수탁사 관리 및 개인정보보호 교육·인식 제고 활동 기획 시행 등", "knowledge": "○ 개인정보 영향평가(PIA), 개인정보보호 관련 국내외 법령, 개인정보보호 관련 정책·표준·지침·절차, 정보보호 및 개인정보 관리체계(ISMS-P), 개인정보 내부관리계획 작성 가이드, 개인정보보호 생명주기, 개인정보보호 자산의 개념, 분야별 개인정보 처리방침 작성지침, 개인정보 위험분석 방법론, 개인정보보호 경영시스템(ISO27701), 개인정보보호 관련 위협 식별 및 평가기준, 개인정보보호 관련 취약점 분류 및 평가기준, 개인정보보호 비용 편익 분석 프로세스, 다양하고 구체적인 위험처리 접근법, 개인정보보호 최신 동향 및 주요 해외 위험관리 모델 등", "skills": "○ 개인정보보호 관련 법·제도 동향 파악 능력, 개인정보보호 관련 법·제도 정보 검색 기술, 개인정보보호 관련 법령·규정·정책의 검토 능력, 개인정보보호 자산 분석결과 검증 능력, 개인정보보호 자산 식별 능력, 내부관리 문서 작성 및 공표·시행 능력, 개인정보 흐름 파악 능력, 개인정보보호 관련 잔존 위험관리 기술, 개인정보 관리체계(ISMS-P) 및 개인정보보호 경영시스템(ISO27701) 인증기준 파악 능력, 개인정보보호 위험 수준 의사결정 능력, 개인정보보대책 우선순위 설정 기술, 시스템 로그 분석 능력, 시스템 운영 능력, 온라인 교육 및 홍보 플랫폼 활용 능력, 개인정보보호 아키텍처 수립 기술 등"}, {"org": "정보통신정책연구원", "title": "정보통신정책연구원 정규직 직원(연구책임자 및 연구원) 채용공고", "role_name": "연구책임자Ⅱ (AI/플랫폼정책연구)", "duties": "AI/플랫폼 산업의 시장구조, 경쟁환경, 이용행태 및 시장성과 분석. AI/플랫폼 기업의 경영전략, 산업구조 변화, 기술혁신 및 파급효과 분석. AI/플랫폼 생태계의 혁신과 공정경쟁을 위한 정책 영향평가 및 개선방안 도출.", "knowledge": "해당 연구 분야의 기존 연구 및 국내외 연구동향에 대한 지식. 연구이론 및 방법에 관한 지식. SAS/STATA/R/Python 등 데이터 분석 방법론에 관한 지식.", "skills": "AI/플랫폼 정책에 대한 정량적/정성적 평가 능력. 통계 데이터 분석 등을 통해 정책적 함의를 도출할 수 있는 능력. 기존 연구 성과에 대한 분석 및 정리 기술 능력."}, {"org": "정보통신정책연구원", "title": "정보통신정책연구원 정규직 직원(연구책임자 및 연구원) 채용공고", "role_name": "연구원Ⅰ (AI·디지털·통신전파정책연구)", "duties": "AI·디지털·통신전파정책 관련 규제 개선 업무 지원. AI·디지털·통신전파정책 관련 주요 통계 분석 업무. AI·디지털·통신전파정책 관련 국내외 법·제도 개선 방안 연구. 관련 동향 조사·분석, 국내외 사례 연구 및 비교 분석.", "knowledge": "통계 지표 및 계량 분석에 관한 지식. 연구이론 및 방법에 관한 지식. 연구과정에서 수집된 자료에 대한 분류지식.", "skills": "연구에 활용할 수 있는 자료를 생성하기 위한 조사기획 능력. 수집한 자료를 체계적이고 심층적으로 분석 및 정리하는 능력."}, {"org": "동남권원자력의학원", "title": "동남권원자력의학원 박사후 연수연구원(첨단방사선AI융합연구팀) 공개 채용", "role_name": "연수연구원 (첨단방사선AI융합연구팀)", "duties": "방사선 시뮬레이션 기반 정밀 타겟팅 광대역 선량률 조사장치 개발. 방사선 병용효능 검증을 위한 빔 특성 분석 및 예비연구 수행. AI 기반 CBCT 영상 향상 및 정합 정확도 개선 연구.", "knowledge": "전략연구개발사업 수행을 위한 의학물리, 방사선수송 시뮬레이션, 영상처리, AI 알고리즘 개발 역량.", "skills": "전문적인 연구기획능력. 독립적 실험방법 설계 및 수행능력. 고도의 자료 분석, 해석 및 발표 능력."}, {"org": "국립광주과학관", "title": "국립광주과학관 2026년도 AI라운지 사업 프로젝트 계약직 공개경쟁 채용", "role_name": "계약제 직원 (AI라운지 사업운영 및 행정지원)", "duties": "전라·제주권 AI 라운지 조성 및 운영. AI 관련 프로그램(전국민 AI교실, 해커톤 대회, 마이AI랩 등) 운영 지원. AI 셰르파(전문가) 기반 멘토링 및 기술 지원 프로세스 행정 관리. 계약, 정산, 지출 등 연구과제 행정업무.", "knowledge": "연구과제(AI라운지) 및 공공사업 관리 절차에 대한 기본 이해. AI 교육 프로그램, 해커톤, 경진대회 등 행사 운영 및 일정 관리에 대한 이해.", "skills": "사업·연구과제 일정관리 및 수행현황(성과·지표 등) 관리 능력. AI 라운지 공간 관리, 교육·프로그램·행사 운영 지원 및 현장 대응 능력."}, {"org": "기초과학연구원(IBS)", "title": "제2026-2회 IBS 인공지능 및 로봇 기반 합성 연구단 연구직 채용공고", "role_name": "박사후연구원/연구원 (Algorithmic and Robotized Synthesis)", "duties": "Research on Algorithmic and Robotized Synthesis. AI-assisted Biochemical Synthesis: synthesis robotic system prototype 개발 및 운영, 화합물 물성·생물활성 검증을 위한 로봇 실험 설계, 고급 통계·계산 도구를 활용한 실험 데이터 해석.", "knowledge": "Computerized synthesis and Artificial intelligence AI applied to organic chemistry, Complex chemical networks and catalytic systems, Nanomaterials for catalysis.", "skills": "Multistep synthesis and synthesis design, Automation/Fluidics, Physical analysis of mechanical/robotic/fluidic systems."}]}], "edges": [{"source": "데이터분석", "target": "AI·ML", "similarity": 0.3732}, {"source": "BI", "target": "마케팅분석", "similarity": 0.168}, {"source": "데이터분석", "target": "마케팅분석", "similarity": 0.1132}, {"source": "데이터분석", "target": "BI", "similarity": 0.1048}, {"source": "마케팅분석", "target": "AI·ML", "similarity": 0.0995}, {"source": "BI", "target": "AI·ML", "similarity": 0.0644}]};
+
+const CATEGORY_COLOR = {
+  "데이터분석": "var(--cat-data)",
+  "BI": "var(--cat-bi)",
+  "마케팅분석": "var(--cat-marketing)",
+  "AI·ML": "var(--cat-ai)",
+  "CRM분석": "var(--cat-empty)"
+};
+
+// 카드 탭용 메타 정보. duties/knowledge/skills는 JOB_MAP_DATA의 같은 role_name에서 그대로 가져와 쓴다
+// (중복 저장하지 않기 위함). 회사소개·접수정보는 원문 공고(알리오 상세페이지 + 첨부 직무기술서)에서
+// 확인한 내용만 담았다.
+const CARD_META = {
+  "AI·데이터분석": {
+    org: "한국공항공사", companyIntro: "한국공항공사(KAC)는 전국 14개 지방공항을 운영·관리하는 국토교통부 산하 공기업입니다.",
+    summary: "공항 운영·시설·고객서비스 데이터를 분석해 AI 기반 업무 개선안을 만드는 직무예요",
+    apply: { period: "2026.04.14 ~ 04.28", method: "채용 홈페이지 온라인 접수", homepage: "https://kac.careerlink.kr/", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=299295" }
+  },
+  "관광데이터서비스팀 (기간제 전문계약직)": {
+    org: "한국관광공사", companyIntro: "한국관광공사는 국내 관광산업을 진흥하고 해외 관광객 유치를 지원하는 문화체육관광부 산하 공기업입니다.",
+    summary: "국내외 여행 데이터를 결합 분석해 한국 관광 수요를 예측하고 전략을 제안하는 직무예요",
+    apply: { period: "2026.07.30 ~ 08.14", method: "채용 홈페이지 온라인 접수", homepage: "https://knto.or.kr/recruitInfo", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=303265" }
+  },
+  "데이터기반정책연구팀 (계약직 연구원)": {
+    org: "국립중앙의료원", companyIntro: "국립중앙의료원은 공공의료의 중심 기관으로, 의료취약지 지원 등 공공보건의료 정책을 수행합니다.",
+    summary: "의료 통계를 Tableau 대시보드로 만들어 의료취약지 정책을 쉽게 보여주는 직무예요",
+    apply: { period: "2026.05.29 ~ 06.15", method: "온라인 지원 (nmc.recruiter.co.kr)", homepage: "https://nmc.recruiter.co.kr/app/jobnotice/view?systemKindCode=MRS2&jobnoticeSn=255344", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=301178" }
+  },
+  "연구책임자Ⅱ (AI/플랫폼정책연구)": {
+    org: "정보통신정책연구원(KISDI)", companyIntro: "정보통신정책연구원(KISDI)은 정보통신·AI·플랫폼 정책을 연구하는 국책연구기관입니다.",
+    summary: "AI·플랫폼 산업의 시장구조와 경쟁환경을 분석해 정책 방향을 제안하는 연구직이에요",
+    apply: { period: "2026.06.18 ~ 07.03", method: "채용 홈페이지 참고", homepage: "https://www.kisdi.re.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=301844" }
+  },
+  "연구원Ⅰ (AI·디지털·통신전파정책연구)": {
+    org: "정보통신정책연구원(KISDI)", companyIntro: "정보통신정책연구원(KISDI)은 정보통신·AI·플랫폼 정책을 연구하는 국책연구기관입니다.",
+    summary: "AI·디지털·통신전파 정책의 국내외 사례를 조사하고 통계로 분석하는 연구직이에요",
+    apply: { period: "2026.06.18 ~ 07.03", method: "채용 홈페이지 참고", homepage: "https://www.kisdi.re.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=301844" }
+  },
+  "전문계약직 (카드디지털마케팅)": {
+    org: "IBK기업은행", companyIntro: "IBK기업은행은 중소기업의 경제활동을 지원하기 위해 1961년에 설립된 국책은행입니다. '최고의 서비스를 혁신적으로 제공하는 글로벌 초일류 금융그룹'을 비전으로 다양한 금융 사업을 수행합니다.",
+    summary: "카드 상품의 디지털 마케팅을 기획하고 성과를 분석해 신사업까지 이어가는 직무예요",
+    apply: { period: "2026.04.17 ~ 05.04", method: "채용 전용 홈페이지 (ibk.incruit.com)", contact: "인사부 채용담당 02-2031-5416", homepage: "https://www.ibk.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=301116" }
+  },
+  "전문계약직 (퇴직연금 마케팅(영업))": {
+    org: "IBK기업은행", companyIntro: "IBK기업은행은 중소기업의 경제활동을 지원하기 위해 1961년에 설립된 국책은행입니다. '최고의 서비스를 혁신적으로 제공하는 글로벌 초일류 금융그룹'을 비전으로 다양한 금융 사업을 수행합니다.",
+    summary: "기업과 개인의 퇴직연금을 직접 마케팅하고 컨설팅하는 직무예요",
+    apply: { period: "2026.04.17 ~ 05.04", method: "채용 전용 홈페이지 (ibk.incruit.com)", contact: "인사부 채용담당 02-2031-5416", homepage: "https://www.ibk.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=299293" }
+  },
+  "전문계약직 (나라사랑카드 통합마케팅)": {
+    org: "IBK기업은행", companyIntro: "IBK기업은행은 중소기업의 경제활동을 지원하기 위해 1961년에 설립된 국책은행입니다. '최고의 서비스를 혁신적으로 제공하는 글로벌 초일류 금융그룹'을 비전으로 다양한 금융 사업을 수행합니다.",
+    summary: "나라사랑카드의 온·오프라인 마케팅 전략을 총괄하고 성과를 분석하는 직무예요",
+    apply: { period: "2026.04.17 ~ 05.04", method: "채용 전용 홈페이지 (ibk.incruit.com)", contact: "인사부 채용담당 02-2031-5416", homepage: "https://www.ibk.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=299286" }
+  },
+  "연수연구원 (첨단방사선AI융합연구팀)": {
+    org: "동남권원자력의학원", companyIntro: "동남권원자력의학원은 과학기술특성화병원으로, 방사선의 의학적 이용·연구개발과 국가방사선비상 진료·교육 등을 수행합니다.",
+    summary: "방사선 치료 장비를 개발하고 AI로 의료 영상을 개선하는 연구직이에요",
+    apply: { period: "2026.07.28 ~ 08.26", method: "온라인 지원", homepage: "https://diramsjob.recruiter.co.kr/career/home", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=303851" }
+  },
+  "계약제 직원 (AI라운지 사업운영 및 행정지원)": {
+    org: "국립광주과학관", companyIntro: "국립광주과학관은 과학기술자료의 수집·전시와 과학기술교육 프로그램을 운영하는 국립 과학관입니다.",
+    summary: "AI 교육 프로그램과 해커톤 같은 행사를 기획·운영하는 행정지원 직무예요",
+    apply: { period: "2026.06.24 ~ 07.10", method: "온라인 지원", homepage: "https://sciencecenter.recruiter.co.kr/career/job", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=302020" }
+  },
+  "박사후연구원/연구원 (Algorithmic and Robotized Synthesis)": {
+    org: "기초과학연구원(IBS)", companyIntro: "기초과학연구원(IBS)은 국제과학비즈니스벨트 특별법에 따라 설립된 국가기초과학 연구기관으로, 차세대 과학자 양성도 함께 수행합니다.",
+    summary: "로봇과 AI로 화학 합성을 자동화하는 연구를 수행하는 직무예요",
+    apply: { period: "2026.05.14 ~ 06.01", method: "온라인 지원", homepage: "https://ibs.re.kr/prog/recruit/kor/sub04_01/list.do", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=300490" }
+  },
+  "AI전문가①": {
+    org: "한국중부발전(주)", companyIntro: "한국중부발전은 화력발전 등 전력을 생산하는 한국전력공사 산하 발전 공기업입니다.",
+    summary: "AI 활용 확대를 위한 기획과 AI 인프라 운영을 총괄하는 직무예요",
+    apply: { period: "2026.05.26 ~ 06.10", method: "온라인 지원", homepage: "http://www.komipo.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=300880" }
+  },
+  "AI전문가②": {
+    org: "한국중부발전(주)", companyIntro: "한국중부발전은 화력발전 등 전력을 생산하는 한국전력공사 산하 발전 공기업입니다.",
+    summary: "AI 에이전트와 생성형 AI 서비스를 직접 개발·운영하는 직무예요",
+    apply: { period: "2026.05.26 ~ 06.10", method: "온라인 지원", homepage: "http://www.komipo.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=300880" }
+  },
+  "개인정보전문가": {
+    org: "한국중부발전(주)", companyIntro: "한국중부발전은 화력발전 등 전력을 생산하는 한국전력공사 산하 발전 공기업입니다.",
+    summary: "개인정보보호 관리체계를 수립하고 ISMS-P 인증을 관리하는 직무예요",
+    apply: { period: "2026.05.26 ~ 06.10", method: "온라인 지원", homepage: "http://www.komipo.co.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=300880" }
+  },
+  "대외협력실 성과확산팀 (위촉연구원, 디지털마케팅)": {
+    org: "한국개발연구원(KDI)", companyIntro: "한국개발연구원(KDI)은 국내외 경제사회 현상을 연구하고 공공정책 분야 전문 인력을 양성하는 국책연구기관입니다.",
+    summary: "연구 성과를 온·오프라인 채널로 확산시키는 디지털마케팅 업무예요",
+    apply: { period: "2026.04.15 ~ 04.29", method: "온라인 지원", homepage: "https://www.kdi.re.kr", source: "https://job.alio.go.kr/mobile2021/recruit/recruitView.do?idx=299356" }
+  }
+};
+
+// role_name -> {category, org, title, duties, knowledge, skills} 조회용 인덱스
+const ROLE_INDEX = {};
+JOB_MAP_DATA.nodes.forEach(node => {
+  node.roles.forEach(role => {
+    ROLE_INDEX[role.role_name] = { ...role, category: node.id };
+  });
+});
+
+const W = 640, H = 520, CX = 320, CY = 250, R = 175;
+const svg = document.getElementById("mapSvg");
+const panel = document.getElementById("panel");
+const legend = document.getElementById("legend");
+
+const nodesById = {};
+JOB_MAP_DATA.nodes.forEach((n, i) => {
+  const angle = -Math.PI / 2 + (i * 2 * Math.PI) / JOB_MAP_DATA.nodes.length;
+  nodesById[n.id] = {
+    ...n,
+    x: CX + R * Math.cos(angle),
+    y: CY + R * Math.sin(angle)
+  };
+});
+
+function radiusFor(count) {
+  if (count === 0) return 26;
+  return 30 + Math.min(count, 8) * 6;
+}
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+
+// 엣지 (뒤에 그려서 노드 아래로)
+const maxSim = Math.max(...JOB_MAP_DATA.edges.map(e => e.similarity), 0.001);
+JOB_MAP_DATA.edges.forEach(e => {
+  const a = nodesById[e.source], b = nodesById[e.target];
+  const t = e.similarity / maxSim;
+  const width = 1.5 + t * 7;
+  const opacity = 0.18 + t * 0.55;
+  const line = svgEl("line", {
+    class: "edge",
+    x1: a.x, y1: a.y, x2: b.x, y2: b.y,
+    "stroke-width": width.toFixed(1),
+    opacity: opacity.toFixed(2),
+    "data-source": e.source, "data-target": e.target
+  });
+  svg.appendChild(line);
+
+  const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+  const label = svgEl("text", { class: "edge-label", x: mx, y: my - 4 });
+  label.textContent = Math.round(e.similarity * 100) + "%";
+  svg.appendChild(label);
+});
+
+// 노드
+JOB_MAP_DATA.nodes.forEach(n => {
+  const node = nodesById[n.id];
+  const r = radiusFor(n.role_count);
+  const g = svgEl("g", { class: "node-group", "data-id": n.id });
+
+  const circle = svgEl("circle", {
+    class: "node-circle" + (n.role_count === 0 ? " empty" : ""),
+    cx: node.x, cy: node.y, r: r,
+    fill: n.role_count === 0 ? "none" : CATEGORY_COLOR[n.id]
+  });
+  g.appendChild(circle);
+
+  const label = svgEl("text", { class: "node-label", x: node.x, y: node.y - r - 12 });
+  label.textContent = n.id;
+  g.appendChild(label);
+
+  const sub = svgEl("text", { class: "node-sublabel", x: node.x, y: node.y - r - 1 });
+  sub.textContent = n.role_count === 0 ? "데이터 없음" : n.role_count + "개 역할";
+  g.appendChild(sub);
+
+  g.addEventListener("click", () => selectNode(n.id));
+  svg.appendChild(g);
+});
+
+function selectNode(id) {
+  document.querySelectorAll(".node-group").forEach(g =>
+    g.classList.toggle("selected", g.dataset.id === id)
+  );
+  document.querySelectorAll(".edge").forEach(e => {
+    const related = e.dataset.source === id || e.dataset.target === id;
+    e.style.opacity = related ? Math.min(1, parseFloat(e.getAttribute("opacity")) + 0.3) : 0.08;
+  });
+
+  const node = JOB_MAP_DATA.nodes.find(n => n.id === id);
+  renderPanel(node);
+}
+
+function renderPanel(node) {
+  let html = `<h2>${node.id}</h2>`;
+
+  if (node.role_count === 0) {
+    html += `<p class="panel-hint">이번 수집 범위(알리오 공개 채용공고)에서는 이 직무에 해당하는 공고를 찾지 못했습니다. 데이터 소스를 넓히면 채워질 수 있는 자리입니다.</p>`;
+    panel.innerHTML = html;
+    return;
+  }
+
+  html += `<div class="chip-row">${node.top_terms.map(t => `<span class="chip">${t}</span>`).join("")}</div>`;
+
+  node.roles.forEach(role => {
+    html += `
+      <div class="role-card">
+        <div class="role-org">${role.org}</div>
+        <div class="role-name">${role.role_name}</div>
+        <div class="role-field"><b>하는 일</b>${role.duties || "-"}</div>
+        <div class="role-field"><b>필요 지식</b>${role.knowledge || "-"}</div>
+        <div class="role-field"><b>필요 기술</b>${role.skills || "-"}</div>
+      </div>`;
+  });
+
+  panel.innerHTML = html;
+}
+
+// 범례
+legend.innerHTML = JOB_MAP_DATA.nodes.map(n =>
+  `<span><i style="background:${n.role_count === 0 ? 'transparent' : ''};border:${n.role_count === 0 ? '1.5px dashed var(--cat-empty)' : 'none'};background-color:${n.role_count === 0 ? 'transparent' : CATEGORY_COLOR[n.id]}"></i>${n.id}</span>`
+).join("");
+
+// ── 공고 카드 탭 ──────────────────────────────────────
+const cardList = document.getElementById("cardList");
+const cardDetail = document.getElementById("cardDetail");
+const CARD_ROLE_NAMES = Object.keys(CARD_META);
+
+function renderCardList(selectedName) {
+  cardList.innerHTML = CARD_ROLE_NAMES.map(name => {
+    const role = ROLE_INDEX[name];
+    const meta = CARD_META[name];
+    const selected = name === selectedName ? " selected" : "";
+    return `
+      <div class="card-list-item${selected}" data-role="${encodeURIComponent(name)}">
+        <span class="dot" style="background:${CATEGORY_COLOR[role.category]}"></span>
+        <div class="titles">
+          <div class="role-name-sm">${name}</div>
+          <div class="org-sm">${meta.org} · ${role.category}</div>
+        </div>
+      </div>`;
+  }).join("");
+
+  cardList.querySelectorAll(".card-list-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const name = decodeURIComponent(item.dataset.role);
+      renderCardList(name);
+      renderCardDetail(name);
+    });
+  });
+}
+
+function renderCardDetail(name) {
+  const role = ROLE_INDEX[name];
+  const meta = CARD_META[name];
+  const color = CATEGORY_COLOR[role.category];
+
+  cardDetail.innerHTML = `
+    <div class="job-card">
+      <div class="job-card-top" style="background:${color};">
+        <div class="job-card-brand">${meta.org.toUpperCase()} · ${role.category}</div>
+        <div class="job-card-title">${name}</div>
+        <div class="job-card-summary">${meta.summary}</div>
+      </div>
+      <div class="job-card-body">
+        <div class="job-card-section">
+          <h4>하는 일</h4>
+          <p>${role.duties || "-"}</p>
+        </div>
+        <div class="job-card-section">
+          <h4>필요 역량</h4>
+          <p>${[role.knowledge, role.skills].filter(Boolean).join(" ") || "-"}</p>
+        </div>
+        <div class="job-card-section">
+          <h4>회사소개</h4>
+          <p>${meta.companyIntro}</p>
+        </div>
+      </div>
+      <div class="job-card-footer">
+        <div>
+          <div class="k">접수기간</div>
+          <div class="v">${meta.apply.period}</div>
+        </div>
+        <div>
+          <div class="k">접수방법</div>
+          <div class="v">${meta.apply.method}${meta.apply.contact ? "<br>" + meta.apply.contact : ""}</div>
+        </div>
+        <div>
+          <div class="k">출처</div>
+          <div class="v"><a href="${meta.apply.source}" target="_blank" rel="noopener">원문 공고</a> · <a href="${meta.apply.homepage}" target="_blank" rel="noopener">기관 홈페이지</a></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+renderCardList(CARD_ROLE_NAMES[0]);
+renderCardDetail(CARD_ROLE_NAMES[0]);
+
+// 탭 전환
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".tab-panel").forEach(p =>
+      p.classList.toggle("active", p.id === "tab-" + btn.dataset.tab)
+    );
+  });
+});
+</script>
+</body>
+</html>

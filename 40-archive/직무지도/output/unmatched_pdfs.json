@@ -1,0 +1,72 @@
+[
+  {
+    "file_no": "3052766",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3052766",
+    "name": "IBK기업은행 전문계약직(카드디지털마케팅)직무기술서.pdf",
+    "source_idx": "301116",
+    "source_category": "마케팅분석",
+    "source_title": "(수정) IBK기업은행 전문계약직(카드디지털마케팅) 채용공고",
+    "source_org": "중소기업은행",
+    "pdf_path": "input\\job_description_pdfs\\3052766.pdf"
+  },
+  {
+    "file_no": "3043022",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3043022",
+    "name": "IBK기업은행 전문계약직(퇴직연금 마케팅(영업)) 직무기술서.pdf",
+    "source_idx": "299293",
+    "source_category": "마케팅분석",
+    "source_title": "IBK기업은행 전문계약직(퇴직연금 마케팅(영업)) 채용공고",
+    "source_org": "중소기업은행",
+    "pdf_path": "input\\job_description_pdfs\\3043022.pdf"
+  },
+  {
+    "file_no": "3042983",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3042983",
+    "name": "IBK기업은행 전문계약직(나라사랑카드 온오프라인 통합마케팅)직무기술서.pdf",
+    "source_idx": "299286",
+    "source_category": "마케팅분석",
+    "source_title": "IBK기업은행 전문계약직(나라사랑카드 온·오프라인 통합마케팅) 채용공고",
+    "source_org": "중소기업은행",
+    "pdf_path": "input\\job_description_pdfs\\3042983.pdf"
+  },
+  {
+    "file_no": "3068808",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3068808",
+    "name": "[붙임7] 직무기술서(연수연구원(첨단방사선AI융합연구팀)).pdf",
+    "source_idx": "303851",
+    "source_category": "AI·ML",
+    "source_title": "(수정) [직원채용] 동남권원자력의학원 박사후 연수연구원(첨단방사선AI융합연구팀) 공개 채용",
+    "source_org": "동남권원자력의학원",
+    "pdf_path": "input\\job_description_pdfs\\3068808.pdf"
+  },
+  {
+    "file_no": "3057912",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3057912",
+    "name": "직무기술서.pdf",
+    "source_idx": "302020",
+    "source_category": "AI·ML",
+    "source_title": "국립광주과학관 2026년도 AI라운지 사업 프로젝트 계약직 공개경쟁 채용",
+    "source_org": "국립광주과학관",
+    "pdf_path": "input\\job_description_pdfs\\3057912.pdf"
+  },
+  {
+    "file_no": "3060561",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3060561",
+    "name": "[붙임7] 직무기술서(연수연구원(첨단방사선AI융합연구팀)).pdf",
+    "source_idx": "302465",
+    "source_category": "AI·ML",
+    "source_title": "(수정) [직원채용] 동남권원자력의학원 박사후 연수연구원(첨단방사선AI융합연구팀) 공개 채용",
+    "source_org": "동남권원자력의학원",
+    "pdf_path": "input\\job_description_pdfs\\3060561.pdf"
+  },
+  {
+    "file_no": "3049230",
+    "url": "https://www.alio.go.kr/download/download.json?fileNo=3049230",
+    "name": "3. 직무기술서.pdf",
+    "source_idx": "300490",
+    "source_category": "AI·ML",
+    "source_title": "제2026-2회 IBS 인공지능 및 로봇 기반 합성 연구단  연구직 채용공고",
+    "source_org": "기초과학연구원",
+    "pdf_path": "input\\job_description_pdfs\\3049230.pdf"
+  }
+]

@@ -1,0 +1,6 @@
+# .codex/config.toml — Codex MCP 서버 설정
+# 이 파일은 Codex 전용 MCP 서버 등록 파일입니다.
+
+[mcp_servers.fetch]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-fetch"]

@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>바이럴 신호 보고서 — 피젯·굿즈·데스크 악세서리 2026.07.02</title>
+  <style>
+    :root {
+      --bg: #f4f2ed;
+      --ink: #1e2022;
+      --muted: #68707a;
+      --line: #d6d0c6;
+      --bar: #7db0c4;
+      --peak: #d95e3a;
+      --today: #c48a1a;
+      --panel: #ffffff;
+      --shadow: 0 16px 40px rgba(30,32,34,0.11);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI","Pretendard","Apple SD Gothic Neo",Arial,sans-serif;
+      line-height: 1.55;
+    }
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
+
+    .report-tag {
+      display: inline-flex; align-items: center;
+      background: var(--ink); color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+      padding: 4px 11px; border-radius: 4px; margin-bottom: 14px;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(24px,4vw,42px); line-height: 1.1; }
+    .subtitle { max-width: 860px; color: var(--muted); font-size: 15px; margin: 0 0 10px; }
+    .cat-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .cat-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    }
+    .cc-fidget  { background:#e8f4fb; color:#1a5d80; border:1px solid #b8dced; }
+    .cc-goods   { background:#fef0e6; color:#90400a; border:1px solid #f5c89a; }
+    .cc-desk    { background:#eef3e8; color:#2d5a1a; border:1px solid #c0d9a8; }
+    .cc-phone   { background:#f3eef8; color:#5a1a80; border:1px solid #cdb8e8; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px 18px;
+      align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 24px;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .sw  { width: 20px; height: 10px; border-radius: 999px; display: inline-block; }
+    .swv { width: 3px; height: 18px; border-radius: 2px; display: inline-block; }
+
+    .panel {
+      background: var(--panel); border: 1px solid rgba(30,32,34,0.08);
+      border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 32px;
+    }
+    .chart-wrap { overflow-x: auto; padding: 20px 20px 12px; }
+    svg { display: block; min-width: 1040px; width: 100%; height: auto; }
+
+    .section-title { font-size: 21px; margin: 0 0 16px; }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(355px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .card {
+      background: var(--panel); border: 1px solid rgba(30,32,34,0.09);
+      border-radius: 10px; padding: 18px 20px 16px;
+      box-shadow: 0 8px 24px rgba(30,32,34,0.07);
+    }
+    .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+    .card-name { font-size: 16px; font-weight: 700; margin: 0; }
+    .sbadge {
+      display: inline-flex; align-items: center;
+      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+    }
+    .s-sat   { background:#f3eef8; color:#6e3db5; border:1px solid #d4c0f0; }
+    .s-peak  { background:#fdf1ee; color:#c0391e; border:1px solid #f5c0b5; }
+    .s-rise  { background:#eaf6f0; color:#1e7a4c; border:1px solid #b2dfc5; }
+    .s-early { background:#eef2fb; color:#3d5fa0; border:1px solid #c8d4ee; }
+    .card-sub { font-size: 12px; color: var(--muted); margin: 0 0 12px; display: flex; gap: 6px; align-items: center; }
+
+    .meter-wrap { margin-bottom: 12px; }
+    .meter-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .meter-track { height: 6px; background: #e6e0d8; border-radius: 999px; overflow: hidden; }
+    .meter-fill  { height: 100%; border-radius: 999px; }
+
+    .plt-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .pb {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    }
+    .p-insta    { background:#fce4ee; color:#b5004b; }
+    .p-tiktok   { background:#e0f7f0; color:#006d50; }
+    .p-blog     { background:#e8f6e9; color:#1a6030; }
+    .p-theqoo   { background:#f3eada; color:#6b3d00; }
+    .p-offln    { background:#eceaf6; color:#3a2a80; }
+    .p-youtube  { background:#feecec; color:#a50000; }
+    .p-amazon   { background:#fff3e0; color:#a34b00; }
+    .p-daiso    { background:#fde8fa; color:#7a007a; }
+    .p-coupang  { background:#fff0e6; color:#c04a00; }
+
+    .drow { font-size: 13px; margin-bottom: 8px; }
+    .dlabel { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+    .devidence { color: var(--muted); font-size: 12px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid rgba(30,32,34,0.08); border-radius: 10px; overflow: hidden; box-shadow: 0 12px 28px rgba(30,32,34,0.08); }
+    th,td { padding: 11px 13px; border-bottom: 1px solid #e6e0d8; vertical-align: top; text-align: left; font-size: 13px; }
+    th { background: #e8e3d8; color: #2a2d30; font-size: 12px; white-space: nowrap; }
+    tr:last-child td { border-bottom: 0; }
+    .pbar  { display: inline-flex; align-items: center; gap: 6px; }
+    .ptrack { width: 56px; height: 5px; background: #e6e0d8; border-radius: 999px; overflow: hidden; display: inline-block; }
+    .pfill  { height: 100%; border-radius: 999px; }
+
+    .notes { margin-top: 22px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+
+    @media(max-width:680px){
+      .cards-grid { grid-template-columns: 1fr; }
+      th,td { font-size: 12px; padding: 9px 8px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="report-tag">2026.07.02 조사 &nbsp;|&nbsp; 피젯·굿즈·데스크·폰 악세서리 특화</div>
+    <h1>바이럴 신호 보고서<br><span style="font-size:0.55em;font-weight:400;color:var(--muted)">전자제품·피젯·캐릭터 굿즈·데스크 소품·폰 악세서리</span></h1>
+    <p class="subtitle">
+      6.25~7.2 한 주간 인스타그램·틱톡·X·네이버 블로그·더쿠·오프라인 완구거리 등에서 신호가 포착된 아이템 8선.
+      의류·실용품·화장품 제외, 아래 카테고리에 집중합니다.
+    </p>
+    <div class="cat-chips">
+      <span class="cat-chip cc-fidget">촉감 피젯</span>
+      <span class="cat-chip cc-goods">캐릭터 굿즈</span>
+      <span class="cat-chip cc-desk">데스크 악세서리</span>
+      <span class="cat-chip cc-phone">폰 악세서리</span>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><i class="sw" style="background:#7db0c4"></i>예상 유행 기간</span>
+      <span class="legend-item"><i class="sw" style="background:#d95e3a"></i>피크 구간</span>
+      <span class="legend-item"><i class="swv" style="background:#1e2022"></i>포화 예상 시점</span>
+      <span class="legend-item"><i class="swv" style="background:#c48a1a"></i>TODAY (7.2)</span>
+      <span class="legend-item" style="margin-left:8px">우측 % = 유행 가능성</span>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="chart-wrap">
+      <svg id="timeline" role="img" aria-label="피젯·굿즈·데스크 아이템 바이럴 신호 타임라인"></svg>
+    </div>
+  </section>
+
+  <h2 class="section-title">아이템별 상세 분석</h2>
+  <div class="cards-grid" id="cards"></div>
+
+  <section>
+    <h2 class="section-title">요약 표</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>아이템</th>
+            <th>카테고리</th>
+            <th>현재 단계</th>
+            <th>유행 가능성</th>
+            <th>발견 플랫폼</th>
+            <th>시발점 추정</th>
+            <th>핵심 근거</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="notes">
+    <strong>조사 방법:</strong> 네이버 블로그 키워드별 최신순 포스팅 수·내용 분석, 네이버 뉴스, TikTok 공개 데이터,
+    Google 검색 트렌드, 해외 피젯·장난감 전문 미디어 (needoh.fun, tosy.com, sourcinbox.com 등) 참고.<br>
+    <strong>유행 가능성(%):</strong> 신호 강도(포스팅 수·속도) × 발견 채널 수 × 한국 20대 여성 적합도 종합 추정.<br>
+    <strong>한국 오프라인 신호:</strong> 동묘·동대문·창신동·천호·일산·수원 등 전국 완구거리 방문기가 중요한 선행 지표였음.
+  </p>
+</main>
+
+<script>
+/* ───────── 데이터 ───────── */
+const items = [
+  {
+    name: "크런치 슬랑이 (슬랑이 신품종)",
+    cat: "촉감 피젯",
+    catClass: "cc-fidget",
+    start:"2026-04", end:"2026-09",
+    peakStart:"2026-05", peakEnd:"2026-07",
+    satStart:"2026-07",
+    likelihood: 93,
+    stageLabel: "피크 / 포화 진입",
+    stageClass: "s-sat",
+    platforms:[
+      {label:"인스타그램 릴스", cls:"p-insta"},
+      {label:"오프라인 완구거리", cls:"p-offln"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "인스타 릴스 ASMR 영상 → 전국 완구거리 오프라인 방문 열풍. 왁뿌볼 인기가 식으며 '크런치 슬랑이·샤베트 슬랑이' 신품종이 다음 주자로 부상",
+    trigger: "손으로 만졌을 때 크런치(바삭바삭) 촉감 + 비주얼 만족감 + 가격 저렴 (3,000~6,000원) + 동묘·동대문 성지 방문 문화와 교차",
+    evidence: "7.2 당일에만 완구거리 방문기 6건 이상 네이버 블로그 게재. '크런치 슬랑이·샤베트 슬랑이'로 왁뿌볼 대체 진행 중. 교보문고 강남점까지 슬랑이 존 입점."
+  },
+  {
+    name: "치이카와(먼작귀) 굿즈·키링",
+    cat: "캐릭터 굿즈",
+    catClass: "cc-goods",
+    start:"2026-03", end:"2026-10",
+    peakStart:"2026-06", peakEnd:"2026-08",
+    satStart:"2026-09",
+    likelihood: 87,
+    stageLabel: "피크 (극장판 7.24 개봉)",
+    stageClass: "s-peak",
+    platforms:[
+      {label:"인스타그램", cls:"p-insta"},
+      {label:"오프라인 팝업", cls:"p-offln"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "일본 X·인스타 SNS 캐릭터 → 한국 팝업스토어·굿즈샵 확산 → 극장판 개봉(7.24) 이벤트 효과 중첩",
+    trigger: "전 세대 어필(유아~성인 MZ) + 아기자기한 비주얼 + CU·더현대 등 유통망 연계 굿즈 출시 + 극장판 개봉 기대감",
+    evidence: "7.2 오사카 치이카와랜드·국내 팝업 방문기 복수. '극장판 치이카와: 인어 섬의 비밀' 7.24 개봉 예정. 더현대 대구·성수 팝업스토어 동시 운영 확인."
+  },
+  {
+    name: "키캡 키링",
+    cat: "데스크 악세서리",
+    catClass: "cc-desk",
+    start:"2025-11", end:"2026-12",
+    peakStart:"2026-04", peakEnd:"2026-08",
+    satStart:"2026-09",
+    likelihood: 83,
+    stageLabel: "피크",
+    stageClass: "s-peak",
+    platforms:[
+      {label:"인스타그램", cls:"p-insta"},
+      {label:"오프라인 완구거리", cls:"p-offln"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "커스텀 키보드·데스크테리어 문화 → 키캡 모양 키링으로 파생 → 소품박람회·완구거리 핵심 아이템으로 안착",
+    trigger: "데스크테리어 '책상 위 1㎡의 취향' 트렌드 + 가성비 (1~3만원) + 커스텀 키보드 없어도 소장 가능한 소품화",
+    evidence: "고양시 청년공간 이벤트 경품으로 '요즘 핫템 키캡 키링' 직접 명시. 동대문 완구거리 '키캡 천국'으로 블로그 표현. 9월 비마이오브젝트 소품박람회 데스크테리어 기획전 핵심 품목."
+  },
+  {
+    name: "젤리 먼지 클리너 (슬라임 클리너)",
+    cat: "데스크 악세서리 / 스트레스 해소",
+    catClass: "cc-desk",
+    start:"2026-03", end:"2026-12",
+    peakStart:"2026-07", peakEnd:"2026-10",
+    satStart:"2026-11",
+    likelihood: 78,
+    stageLabel: "상승 중",
+    stageClass: "s-rise",
+    platforms:[
+      {label:"틱톡 (글로벌)", cls:"p-tiktok"},
+      {label:"다이소", cls:"p-daiso"},
+      {label:"쿠팡", cls:"p-coupang"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "TikTok 청소 ASMR·먼지 제거 영상 글로벌 바이럴 → 국내 다이소 '먼지톡톡 젤리클리너' 인지도 급상승",
+    trigger: "청소 ASMR 만족감 + 스트레스 해소 기능 겸비 + 다이소 저가 접근성 + 키보드·스마트폰 틈새 청소 수요 증가",
+    evidence: "6.28~7.2 블로그 리뷰 8건 이상. 네이버 쇼핑 '젤리 키보드 클리너' 카테고리 1위 '포더원 매직젤'. TikTok 글로벌에서 'Magic Dust Cleaner' 이름으로 이미 메가 바이럴."
+  },
+  {
+    name: "워리스톤 / 클릭스톤",
+    cat: "촉감 피젯 / 스트레스 해소",
+    catClass: "cc-fidget",
+    start:"2026-03", end:"2026-12",
+    peakStart:"2026-06", peakEnd:"2026-09",
+    satStart:"2026-10",
+    likelihood: 76,
+    stageLabel: "상승 중",
+    stageClass: "s-rise",
+    platforms:[
+      {label:"네이버 블로그", cls:"p-blog"},
+      {label:"더쿠", cls:"p-theqoo"},
+      {label:"유튜브", cls:"p-youtube"}
+    ],
+    origin: "2030 번아웃·SNS 피로·불안 증가 → 손에 쥐는 감각 조절 도구 수요 → 스트레스볼·피젯 스피너 계보를 잇는 신제품",
+    trigger: "비디오 없는 아날로그 감각 + 정신건강 키워드 확산 + 가성비 (5,000~15,000원) + 전문의 언급 미디어 보도",
+    evidence: "6.21~6.30 분석 블로그 4건. '청년들 손에 쥐어진 작은 돌멩이' 뉴스 보도. 국제학술지 '슬라임 촉각 도구 스트레스 완화 효능' 논문 인용(2026)."
+  },
+  {
+    name: "캐릭터 소프트 폰케이스",
+    cat: "폰 악세서리",
+    catClass: "cc-phone",
+    start:"2026-04", end:"2026-12",
+    peakStart:"2026-07", peakEnd:"2026-09",
+    satStart:"2026-10",
+    likelihood: 73,
+    stageLabel: "상승 중",
+    stageClass: "s-rise",
+    platforms:[
+      {label:"인스타그램", cls:"p-insta"},
+      {label:"오프라인 팝업", cls:"p-offln"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "뚱랑이(무직타이거)·치이카와·산리오 캐릭터 팝업스토어 → 소프트 재질 캐릭터 케이스 수요 급증",
+    trigger: "딱딱한 하드케이스 대비 '부드럽고 말랑한 재질' 선호 + 캐릭터 IP 팝업과 연동 + SNS 인증샷 욕구",
+    evidence: "7.1 무직타이거 성수 팝업 방문기에서 '뚱랑이 폰케이스 특히 인기, 부드러운 재질이라 기스 걱정 없다' 직접 언급. 치이카와 팝업 연계 케이스 출시 다수."
+  },
+  {
+    name: "산리오 / 포켓몬 캐릭터 키링",
+    cat: "캐릭터 굿즈 / 키링",
+    catClass: "cc-goods",
+    start:"2025-11", end:"2026-12",
+    peakStart:"2026-04", peakEnd:"2026-08",
+    satStart:"2026-09",
+    likelihood: 70,
+    stageLabel: "상승 중",
+    stageClass: "s-rise",
+    platforms:[
+      {label:"인스타그램", cls:"p-insta"},
+      {label:"오프라인 완구거리", cls:"p-offln"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "키덜트·캐릭터 굿즈 수집 문화 + 동대문 완구거리 정착 아이템 + CU·GS25 등 편의점 콜라보 굿즈 출시 가속화",
+    trigger: "가성비 (2,000~8,000원) + 가방·책상 인테리어 연결 + 캐릭터 IP 팬덤 + 편의점 위클리팝업 굿즈 문화",
+    evidence: "동대문 완구거리 취급 품목 1위 '산리오 키링·포켓몬스터' 블로그 반복 언급. CU '토이스토리×K리그 키링' 위클리팝업 출시. 요즘 키링이 대세 표현 다수."
+  },
+  {
+    name: "NeeDoh·슬로우 리스 피젯 큐브",
+    cat: "촉감 피젯 (글로벌→국내)",
+    catClass: "cc-fidget",
+    start:"2025-11", end:"2026-09",
+    peakStart:"2026-06", peakEnd:"2026-08",
+    satStart:"2026-08",
+    likelihood: 66,
+    stageLabel: "국내 유입 중",
+    stageClass: "s-rise",
+    platforms:[
+      {label:"틱톡 (글로벌)", cls:"p-tiktok"},
+      {label:"아마존", cls:"p-amazon"},
+      {label:"네이버 블로그", cls:"p-blog"}
+    ],
+    origin: "TikTok 슬로우 리스 영상 포맷 글로벌 메가 바이럴(2025 말~2026) → 한국 '말랑이' 카테고리와 교차 유입 진행 중",
+    trigger: "슬로우 리스 변형 영상 루프 포맷이 TikTok 알고리즘과 완벽 호환 + 스트레스 해소 + 다양한 변형 출시(Nice Cube, Dream Drop 등)",
+    evidence: "TikTok 2025년 말부터 1년 이상 바이럴 유지 (피젯 카테고리 역대 최장 사이클). 국내는 '나이두' 검색량 증가 초기. 한국 말랑이 커뮤니티에서 NeeDoh 비교 글 증가."
+  }
+];
+
+/* ──── 유틸 ──── */
+function pColor(v) {
+  if (v >= 88) return "#d95e3a";
+  if (v >= 78) return "#c48a1a";
+  if (v >= 66) return "#3a7dbf";
+  return "#8a5abf";
+}
+function platHtml(arr, small) {
+  const s = small ? "font-size:10px;padding:1px 6px" : "padding:2px 8px";
+  return arr.map(p => `<span class="pb ${p.cls}" style="${s}">${p.label}</span>`).join("");
+}
+
+/* ──── SVG 타임라인 ──── */
+const CSTART = "2025-11", CEND = "2026-12", TODAY = "2026-07";
+const pM    = v => { const [y,m] = v.split("-").map(Number); return y*12+m-1; };
+const sM    = pM(CSTART);
+const totM  = pM(CEND) - sM + 1; // 14
+
+const svg   = document.getElementById("timeline");
+const ML=196, MR=90, MT=40, MB=56, RH=46, SW=1120;
+const pW    = SW - ML - MR;
+const svgH  = MT + MB + items.length * RH;
+svg.setAttribute("viewBox", `0 0 ${SW} ${svgH}`);
+
+const xOf  = v => ML + ((pM(v) - sM) / (totM - 1)) * pW;
+const bw   = (s, e) => { const f=pM(s)-sM, l=pM(e)-sM+1; return ((l-f)/totM)*pW; };
+const el   = (tag, a={}, txt="") => {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  Object.entries(a).forEach(([k,v]) => n.setAttribute(k,v));
+  if (txt) n.textContent = txt;
+  svg.appendChild(n); return n;
+};
+
+/* grid per month */
+for (let i = 0; i < totM; i++) {
+  const xp = ML + (i / (totM - 1)) * pW;
+  el("line",{x1:xp,y1:MT-8,x2:xp,y2:svgH-MB+6,stroke:"#e0dbd2","stroke-width":"0.8"});
+}
+
+/* year separator 2026 */
+const x26 = xOf("2026-01");
+el("line",{x1:x26,y1:MT-18,x2:x26,y2:svgH-MB+22,stroke:"#c4bdb0","stroke-width":"1.5","stroke-dasharray":"4 4"});
+el("text",{x:x26+4,y:svgH-MB+36,"font-size":"11",fill:"#68707a","font-weight":"600"},"2026년");
+el("text",{x:ML+2,y:svgH-MB+36,"font-size":"11",fill:"#a8a098"},"2025년");
+
+/* month labels */
+const MON = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+for (let i = 0; i < totM; i += 2) {
+  const absM = sM + i;
+  const yr   = Math.floor(absM / 12);
+  const mn   = absM - yr*12 + 1;
+  const xp   = xOf(`${yr}-${String(mn).padStart(2,"0")}`);
+  el("text",{x:xp,y:svgH-MB+18,"font-size":"9.5",fill:"#b0a898","text-anchor":"middle"},MON[mn-1]+"월");
+}
+
+/* TODAY */
+const todayX = xOf(TODAY) + (pW/totM)*0.5;
+el("line",{x1:todayX,y1:MT-24,x2:todayX,y2:svgH-MB+24,stroke:"#c48a1a","stroke-width":"2","stroke-dasharray":"5 4"});
+el("text",{x:todayX+5,y:MT-9,"font-size":"10.5",fill:"#c48a1a","font-weight":"700"},"TODAY 7.2");
+
+el("text",{x:ML,y:18,"font-size":"11",fill:"#a8a098"},"2025.11 ~ 2026.12 예상 유행 흐름  (우측 숫자 = 유행 가능성)");
+
+/* rows */
+items.forEach((item, i) => {
+  const y   = MT + i * RH;
+  const col = pColor(item.likelihood);
+  el("rect",{x:ML,y:y+10,width:pW,height:22,rx:11,fill:"#f0ede6"});
+  el("text",{x:8,y:y+25,"font-size":"12",fill:"#1e2022","font-weight":"650"},item.name);
+  el("rect",{x:xOf(item.start),y:y+12,width:bw(item.start,item.end),height:18,rx:9,fill:"#7db0c4",opacity:"0.84"});
+  el("rect",{x:xOf(item.peakStart),y:y+16,width:bw(item.peakStart,item.peakEnd),height:10,rx:5,fill:"#d95e3a"});
+  const sx = xOf(item.satStart);
+  el("line",{x1:sx,y1:y+8,x2:sx,y2:y+34,stroke:"#1e2022","stroke-width":"2.5","stroke-linecap":"round"});
+  el("circle",{cx:sx,cy:y+21,r:4,fill:"#1e2022",stroke:"#fff","stroke-width":"2"});
+  el("text",{x:SW-MR+10,y:y+25,"font-size":"12.5",fill:col,"font-weight":"700"},item.likelihood+"%");
+});
+
+/* ──── Cards ──── */
+const cardsEl = document.getElementById("cards");
+items.forEach(item => {
+  const col = pColor(item.likelihood);
+  const d   = document.createElement("div");
+  d.className = "card";
+  d.innerHTML = `
+    <div class="card-head">
+      <p class="card-name">${item.name}</p>
+      <span class="sbadge ${item.stageClass}">${item.stageLabel}</span>
+    </div>
+    <p class="card-sub">
+      <span class="cat-chip ${item.catClass}" style="font-size:11px;padding:2px 8px">${item.cat}</span>
+    </p>
+    <div class="meter-wrap">
+      <div class="meter-label"><span>유행 가능성</span><span style="font-weight:700;color:${col}">${item.likelihood}%</span></div>
+      <div class="meter-track"><div class="meter-fill" style="width:${item.likelihood}%;background:${col}"></div></div>
+    </div>
+    <div class="plt-row">${platHtml(item.platforms, false)}</div>
+    <div class="drow"><span class="dlabel">유행 시발점 (추정)</span>${item.origin}</div>
+    <div class="drow"><span class="dlabel">트리거</span>${item.trigger}</div>
+    <div class="drow"><span class="dlabel">핵심 근거</span><span class="devidence">${item.evidence}</span></div>
+  `;
+  cardsEl.appendChild(d);
+});
+
+/* ──── Table ──── */
+const tbody = document.getElementById("tbody");
+items.forEach(item => {
+  const col = pColor(item.likelihood);
+  const tr  = document.createElement("tr");
+  tr.innerHTML = `
+    <td><strong>${item.name}</strong></td>
+    <td><span class="cat-chip ${item.catClass}" style="font-size:10px;padding:2px 7px">${item.cat}</span></td>
+    <td><span class="sbadge ${item.stageClass}" style="font-size:10px">${item.stageLabel}</span></td>
+    <td>
+      <div class="pbar">
+        <div class="ptrack"><div class="pfill" style="width:${item.likelihood}%;background:${col}"></div></div>
+        <strong style="color:${col}">${item.likelihood}%</strong>
+      </div>
+    </td>
+    <td style="font-size:11px">${platHtml(item.platforms, true)}</td>
+    <td style="font-size:12px;max-width:200px">${item.origin.substring(0,70)}…</td>
+    <td style="font-size:11px;color:#68707a;max-width:200px">${item.evidence.substring(0,80)}…</td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>

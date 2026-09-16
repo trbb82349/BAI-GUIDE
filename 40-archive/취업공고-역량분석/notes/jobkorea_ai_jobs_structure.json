@@ -1,0 +1,201 @@
+{
+  "url": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+  "timestamp": "2026-08-01T18:31:50.931036",
+  "status": "success",
+  "analysis_method": "static_html",
+  "page_info": {
+    "title": "AI잡스 - 인공 지능 산업 직무 커리어 동향, 취업 및 채용 정보",
+    "url": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+    "has_changed_url": false
+  },
+  "selectors": {
+    "tabs": [],
+    "cards": [
+      {
+        "selector": "[class*='card']",
+        "count": 9,
+        "sample_text": "인사이트 개발자 취업 현황 리포트 미들급 편 자세히보기",
+        "has_link": true,
+        "has_image": false,
+        "data_attributes": []
+      }
+    ],
+    "links": [
+      {
+        "pattern": "https://www.jobkorea.co.kr/",
+        "sample_href": "https://www.jobkorea.co.kr/",
+        "sample_text": ""
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+        "sample_href": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+        "sample_text": "AI잡스"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/recruit/careers/articles/*",
+        "sample_href": "https://www.jobkorea.co.kr/recruit/careers/articles/midlevel-developer",
+        "sample_text": "인사이트 개발자 취업 현황 리포트 미들급 편 자세히보기"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/recruit/careers/articles/behind",
+        "sample_href": "https://www.jobkorea.co.kr/recruit/careers/articles/behind",
+        "sample_text": "인사이트 인터뷰 제작 비하인드 공개 현직자 인터뷰를 만"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/help/notice",
+        "sample_href": "https://www.jobkorea.co.kr/help/notice",
+        "sample_text": "공지사항"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/help/notice/view?no=15079",
+        "sample_href": "https://www.jobkorea.co.kr/help/notice/view?no=15079",
+        "sample_text": "[당첨자 발표] 개발자 취업 현황 알려주시면 네이버페이"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/theme/main",
+        "sample_href": "https://www.jobkorea.co.kr/theme/main",
+        "sample_text": "전문채용관"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/super/main",
+        "sample_href": "https://www.jobkorea.co.kr/super/main",
+        "sample_text": "슈퍼기업관"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/corp/offer/list",
+        "sample_href": "https://www.jobkorea.co.kr/corp/offer/list",
+        "sample_text": "헤드헌팅 의뢰"
+      },
+      {
+        "pattern": "https://www.jobkorea.co.kr/service/company/learning",
+        "sample_href": "https://www.jobkorea.co.kr/service/company/learning",
+        "sample_text": "기업러닝"
+      }
+    ],
+    "buttons": [
+      {
+        "text": "로그인/회원가입",
+        "tag": "button",
+        "classes": "auth-item login-signup dev-login"
+      },
+      {
+        "text": "스킬",
+        "tag": "button",
+        "classes": "filter-button dev-skill-filter-toggle dev-item-toggle"
+      },
+      {
+        "text": "Tensorflow",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Pytorch",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Scikit-Learn",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Keras",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Docker",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "kubernetes",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "MLOps",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "DevOps",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Jenkins",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "GitLab",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "AWS",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "GCP",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "Azure",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "모델 평가",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      },
+      {
+        "text": "하이퍼 파라미터 튜닝",
+        "tag": "button",
+        "classes": "dev-button-item dev-skill-item"
+      }
+    ],
+    "forms": [],
+    "tables": [],
+    "lists": [],
+    "images": [],
+    "pagination": []
+  },
+  "dynamic_features": {
+    "has_infinite_scroll": false,
+    "has_lazy_loading": false,
+    "has_modals": false,
+    "has_tabs": false,
+    "is_spa": false,
+    "spa_framework": {
+      "hasReact": false,
+      "hasVue": false,
+      "hasAngular": false
+    }
+  },
+  "recommended_selectors": [],
+  "errors": [],
+  "robots": {
+    "robots_url": "https://www.jobkorea.co.kr/robots.txt",
+    "can_fetch": true,
+    "checked": true,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "error": ""
+  },
+  "discovered_feeds": [],
+  "http": {
+    "final_url": "https://www.jobkorea.co.kr/recruit/ai-jobs",
+    "status_code": 200,
+    "content_type": "text/html; charset=utf-8"
+  },
+  "static_probe": {
+    "text_length": 2200,
+    "script_count": 26,
+    "needs_playwright": false,
+    "reason": ""
+  }
+}

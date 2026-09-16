@@ -1,0 +1,1684 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>조사3 자료 딥다이브 통합본 — 그룹 A·B·C·D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --surface: #FFFFFF;
+    --ink: #191C22;
+    --muted: #5C626E;
+    --faint: #8A909C;
+    --rule: #E3E6EB;
+    --rule-strong: #C9CEd6;
+    --accent: #2E5D62;
+    --accent-soft: #E4EDEC;
+    --flag: #8C5312;
+    --flag-soft: #F6ECDF;
+
+    --teal: #1F6A6E;      --teal-soft: #DCEDEC;
+    --indigo: #3D4E9E;    --indigo-soft: #E3E7F7;
+    --plum: #7A3F73;      --plum-soft: #F1E4EF;
+    --moss: #4A6B2A;      --moss-soft: #E6EEDC;
+    --clay: #9A4B2C;      --clay-soft: #F7E6DE;
+    --shadow: 0 1px 2px rgba(25, 28, 34, .05), 0 8px 24px -16px rgba(25, 28, 34, .25);
+
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+      --rule: #282C34; --rule-strong: #3A404A;
+      --accent: #83B7B2; --accent-soft: #1E2A2B;
+      --flag: #D6A354; --flag-soft: #2A2318;
+      --teal: #7FBDB9; --teal-soft: #16292A;
+      --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+      --plum: #D19BC9; --plum-soft: #2B1E29;
+      --moss: #A8C482; --moss-soft: #1E2618;
+      --clay: #E0997A; --clay-soft: #2E1D16;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131519; --surface: #1A1D23; --ink: #E7E9ED; --muted: #9BA2AD; --faint: #767D89;
+    --rule: #282C34; --rule-strong: #3A404A;
+    --accent: #83B7B2; --accent-soft: #1E2A2B;
+    --flag: #D6A354; --flag-soft: #2A2318;
+    --teal: #7FBDB9; --teal-soft: #16292A;
+    --indigo: #9AA9EE; --indigo-soft: #1B1F33;
+    --plum: #D19BC9; --plum-soft: #2B1E29;
+    --moss: #A8C482; --moss-soft: #1E2618;
+    --clay: #E0997A; --clay-soft: #2E1D16;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.72; letter-spacing: -.011em;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 50rem; margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.1rem, 4vw, 2.5rem) 6rem;
+    display: flex; flex-direction: column; gap: 3.25rem;
+  }
+
+  .masthead { display: flex; flex-direction: column; gap: 1.1rem; }
+  .kicker { font-family: var(--mono); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+  .masthead::after {
+    content: ""; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal) 0 20%, var(--indigo) 20% 40%, var(--plum) 40% 60%, var(--moss) 60% 80%, var(--clay) 80% 100%);
+  }
+  h1 { font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.15; font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -.035em; }
+  .standfirst { margin: 0; color: var(--muted); font-size: 1.02rem; max-width: 38rem; }
+  .roster { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding-top: .3rem; }
+  .roster .roster-label { border: none; background: none; padding: 0 .25rem 0 0; font-weight: 600; font-size: .78rem; color: var(--ink); }
+  .roster span {
+    font-weight: 500; font-size: .8rem; font-family: var(--mono); padding: .2rem .55rem;
+    border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); background: var(--surface);
+  }
+
+  /* 탭 내비게이션 */
+  .tabnav { display: flex; gap: .3rem; border-bottom: 2px solid var(--rule); flex-wrap: wrap; margin-top: -1.2rem; }
+  .tab-btn {
+    font-family: var(--sans); font-weight: 700; font-size: 1rem; letter-spacing: -.015em;
+    padding: .8rem 1.3rem; border: none; background: transparent; color: var(--faint); cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 120ms ease, border-color 120ms ease;
+  }
+  .tab-btn .sub { display: block; font-family: var(--mono); font-weight: 500; font-size: .7rem; letter-spacing: .04em; margin-top: .15rem; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-btn.active[data-tab="onet"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab-btn.active[data-tab="esco"] { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-btn.active[data-tab="know"] { color: var(--clay); border-bottom-color: var(--clay); }
+  .tab-btn.active[data-tab="kr"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab-btn.active[data-tab="sd"] { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-btn.active[data-tab="arxiv"] { color: var(--moss); border-bottom-color: var(--moss); }
+  .tab-btn.active[data-tab="linkedin"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tab-btn.active[data-tab="explain"] { color: var(--clay); border-bottom-color: var(--clay); }
+  .tab-btn.active[data-tab="semantic"] { color: var(--indigo); border-bottom-color: var(--indigo); }
+  .tab-panel[hidden] { display: none; }
+  .tab-panel { display: flex; flex-direction: column; gap: 3.25rem; }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; --hue: var(--teal); --hue-soft: var(--teal-soft); }
+  section.s-indigo { --hue: var(--indigo); --hue-soft: var(--indigo-soft); }
+  section.s-plum   { --hue: var(--plum);   --hue-soft: var(--plum-soft); }
+  section.s-moss   { --hue: var(--moss);   --hue-soft: var(--moss-soft); }
+  section.s-clay   { --hue: var(--clay);   --hue-soft: var(--clay-soft); }
+  section + section { margin-top: 2rem; }
+
+  h2 {
+    font-size: 1.32rem; letter-spacing: -.025em; font-weight: 700; margin: 0;
+    padding-bottom: .75rem; border-bottom: 2px solid var(--hue);
+    display: flex; align-items: center; gap: .65rem;
+  }
+  h2 .num {
+    font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em;
+    color: var(--surface); background: var(--hue); border-radius: 3px; padding: .22rem .45rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: .5rem; }
+  ul ul { margin-top: .5rem; padding-left: 1.1rem; }
+  li::marker { color: var(--faint); }
+  strong { font-weight: 600; }
+  p { margin: 0; }
+
+  .lede {
+    background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--hue);
+    border-radius: 3px; padding: 1.4rem 1.6rem; box-shadow: var(--shadow);
+  }
+
+  h4 { margin: 1.1rem 0 0; font-size: .95rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h4:first-child { margin-top: 0; }
+
+  .analogy { background: var(--hue-soft); border-radius: 3px; padding: 1rem 1.2rem; font-size: .95rem; color: var(--ink); }
+  .analogy b { color: var(--hue); }
+
+  .terms { display: flex; flex-direction: column; gap: .7rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.1rem 1.3rem; box-shadow: var(--shadow); }
+  .term dt { font-weight: 700; color: var(--hue); font-size: .92rem; }
+  .term dd { margin: .2rem 0 0; color: var(--muted); font-size: .92rem; }
+
+  .source-card { border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); padding: 1.1rem 1.3rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: .55rem; }
+  .source-card h3 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: -.015em; }
+  .source-card p { color: var(--ink); font-size: .95rem; }
+  .src {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: .3rem;
+    font-family: var(--mono); font-size: .72rem; color: var(--hue); background: var(--hue-soft);
+    border-radius: 3px; padding: .2rem .55rem; text-decoration: none; white-space: nowrap;
+  }
+  .src::before { content: "↗"; }
+  .src:hover { text-decoration: underline; }
+
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead { background: var(--hue-soft); }
+  thead th { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); font-weight: 500; border-bottom: 1px solid var(--rule-strong); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.who { white-space: nowrap; font-weight: 700; color: var(--hue); }
+  td.what { color: var(--muted); line-height: 1.6; }
+  td.n { font-family: var(--mono); color: var(--faint); font-variant-numeric: tabular-nums; width: 2.2rem; }
+
+  .notice { background: var(--hue-soft); border-left: 4px solid var(--hue); border-radius: 3px; padding: .9rem 1.1rem; font-size: .93rem; color: var(--ink); }
+
+  .open { list-style: none; padding: 0; gap: 0; }
+  .open li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .open li:first-child { border-top: 1px solid var(--rule); }
+  .open .idx { font-family: var(--mono); font-size: .75rem; font-weight: 600; color: var(--hue); font-variant-numeric: tabular-nums; }
+  .open .note { display: block; color: var(--muted); font-size: .9rem; margin-top: .15rem; }
+
+  /* 태그 묶음 나열 (분류 목록용) */
+  .pill-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .pill-grid span {
+    font-size: .86rem; font-weight: 600; padding: .35rem .7rem; border-radius: 3px;
+    background: var(--hue-soft); color: var(--hue); border: 1px solid transparent;
+  }
+  .pill-grid span.dim { background: var(--surface); border-color: var(--rule); color: var(--muted); font-weight: 500; }
+
+  /* 딥다이브 카드: 그룹 1개 + 예시 직업 */
+  .deep-card {
+    border: 1px solid var(--rule); border-left: 4px solid var(--hue); border-radius: 3px;
+    background: var(--surface); padding: 1rem 1.2rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: .4rem;
+  }
+  .deep-card h4 { margin: 0; font-size: 1rem; color: var(--hue); }
+  .deep-card .ex { font-size: .88rem; color: var(--muted); }
+  .deep-card .ex b { color: var(--ink); font-weight: 600; }
+  .deep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
+  @media (max-width: 40rem) { .deep-grid { grid-template-columns: 1fr; } }
+
+  /* 쉬운 요약 인용구 */
+  .summary {
+    background: var(--surface); border: 1px dashed var(--rule-strong); border-radius: 3px;
+    padding: 1.1rem 1.3rem; font-size: .96rem; color: var(--ink); position: relative;
+  }
+  .summary::before { content: "쉬운 요약"; position: absolute; top: -.6rem; left: 1rem; background: var(--bg); padding: 0 .5rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--hue); }
+
+  .qa { display: flex; flex-direction: column; gap: 1rem; }
+  .qa .q { font-weight: 700; font-size: .95rem; }
+  .qa .q::before { content: "Q. "; color: var(--hue); }
+  .qa .a { color: var(--muted); font-size: .93rem; margin-top: .25rem; }
+  .qa .a::before { content: "A. "; color: var(--ink); font-weight: 700; }
+
+  /* 계산 예시 박스 (그룹 B) */
+  .calc { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1rem 1.2rem; box-shadow: var(--shadow); font-size: .92rem; }
+  .calc .row { display: flex; gap: .8rem; padding: .35rem 0; border-bottom: 1px solid var(--rule); align-items: baseline; flex-wrap: wrap; }
+  .calc .row:last-child { border-bottom: none; }
+  .calc .label { font-weight: 700; color: var(--hue); min-width: 6.5rem; }
+  .calc .val { font-family: var(--mono); color: var(--ink); }
+
+  /* 파이프라인 단계 표시 (그룹 C·D) */
+  .steps { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; }
+  .steps .step { display: grid; grid-template-columns: 2.6rem 1fr; gap: .9rem; padding: .9rem 1.1rem; border-bottom: 1px solid var(--rule); align-items: start; }
+  .steps .step:last-child { border-bottom: none; }
+  .steps .step .no { font-family: var(--mono); font-weight: 700; color: var(--surface); background: var(--hue); border-radius: 3px; width: 1.9rem; height: 1.9rem; display: flex; align-items: center; justify-content: center; font-size: .85rem; }
+  .steps .step b { display: block; font-size: .95rem; margin-bottom: .2rem; }
+  .steps .step span.d { color: var(--muted); font-size: .9rem; }
+
+
+  /* ============================== 큰 탭(그룹 A/B/C·D) ============================== */
+  .outer-tabnav { display: flex; gap: .7rem; flex-wrap: wrap; }
+  .outer-tab-btn {
+    flex: 1 1 15rem; display: flex; flex-direction: column; gap: .3rem; text-align: left;
+    font-family: var(--sans); font-weight: 700; font-size: 1.08rem; letter-spacing: -.015em;
+    padding: 1rem 1.2rem; border: 1px solid var(--rule); border-radius: 6px;
+    background: var(--surface); color: var(--ink); cursor: pointer; box-shadow: var(--shadow);
+    transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+  }
+  .outer-tab-btn .sub { font-family: var(--mono); font-weight: 500; font-size: .72rem; letter-spacing: .03em; color: var(--faint); }
+  .outer-tab-btn:hover { border-color: var(--rule-strong); }
+  .outer-tab-btn.active { color: var(--surface); border-color: transparent; }
+  .outer-tab-btn.active .sub { color: var(--surface); opacity: .85; }
+  .outer-tab-btn.active[data-outer="groupA"] { background: var(--teal); }
+  .outer-tab-btn.active[data-outer="groupB"] { background: var(--indigo); }
+  .outer-tab-btn.active[data-outer="groupCD"] { background: var(--clay); }
+  .outer-tab-panel[hidden] { display: none; }
+  .outer-tab-panel { display: flex; flex-direction: column; gap: 3.25rem; padding-top: 2.75rem; border-top: 2px solid var(--rule); }
+  .outer-tab-panel > .masthead { margin-top: -.6rem; }
+
+  footer { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .04em; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 통합본 · 그룹 A·B·C·D (자료 8개) · 2026.08.21~22 작성 · 2026.08.23 통합</div>
+    <h1>조사 3 자료 딥다이브 통합본<br>그룹 A · 그룹 B · 그룹 C·D</h1>
+    <p class="standfirst">아래 큰 탭에서 그룹 A · 그룹 B · 그룹 C·D를 먼저 고르고, 그 안의 작은 탭에서 각 자료를 봅니다. 그룹 A는 사람이 미리 정한 기준으로 직업을 분류하는 자료(O*NET · ESCO · KNOW), 그룹 B는 직무 데이터를 숫자로 바꿔 계산하는 콘텐츠 기반 논문 세 편, 그룹 C·D는 실무 사례와 설명 가능성을 다루는 자료 세 편입니다.</p>
+  </header>
+
+  <nav class="outer-tabnav" role="tablist">
+    <button class="outer-tab-btn active" data-outer="groupA" role="tab" aria-selected="true">그룹 A<span class="sub">O*NET · ESCO · KNOW — 공식 분류표</span></button>
+    <button class="outer-tab-btn" data-outer="groupB" role="tab" aria-selected="false">그룹 B<span class="sub">국내논문 · ScienceDirect · arXiv — 콘텐츠 기반</span></button>
+    <button class="outer-tab-btn" data-outer="groupCD" role="tab" aria-selected="false">그룹 C·D<span class="sub">LinkedIn · JD/Resume 매칭 · 채용 추천 — 실무 · 설명가능성</span></button>
+  </nav>
+
+  <div class="outer-tab-panel" data-outer="groupA" id="outer-panel-groupA">
+    <header class="masthead">
+      <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 1-2/8 + 보충자료(KNOW) · 2026.08.21</div>
+      <h1>공식 직업 분류표 세 가지<br>O*NET · ESCO · KNOW</h1>
+      <p class="standfirst">아래 탭을 눌러 세 자료를 각각 자세히 볼 수 있습니다. 모두 "사람이 미리 정한 기준으로 직업을 분류하는" 그룹 A 성격의 자료라서, 같은 형식으로 정리해 비교하기 쉽게 만들었습니다. KNOW는 지난번에 본 국내 논문(자료3)이 실제로 사용한 데이터이기도 합니다.</p>
+      <div class="roster">
+        <span class="roster-label">한눈에 비교</span>
+        <span>미국: 직업 약 900여 개</span><span>유럽: 직업 3,039개 · 언어 28개</span><span>한국: 직업 약 537개 · 심리검사 연계</span>
+      </div>
+    </header>
+
+    <nav class="tabnav" role="tablist">
+      <button class="tab-btn active" data-tab="onet" role="tab" aria-selected="true">O*NET<span class="sub">미국 · 노동부</span></button>
+      <button class="tab-btn" data-tab="esco" role="tab" aria-selected="false">ESCO<span class="sub">유럽연합 · EU 집행위</span></button>
+      <button class="tab-btn" data-tab="know" role="tab" aria-selected="false">KNOW<span class="sub">한국 · 고용정보원</span></button>
+    </nav>
+
+    <!-- ============================== O*NET 탭 ============================== -->
+    <div class="tab-panel" data-panel="onet" id="panel-onet">
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>O*NET은 미국 정부가 운영하는 <strong>"직업 정보 데이터베이스"</strong>입니다. 직업판 위키백과라고 생각하면 이해가 빠릅니다.</li>
+          <li>등록된 직업 약 900여 개를 <strong>똑같은 틀(하는 일, 필요한 기술, 학력, 연봉 등)</strong>로 정리해둬서, 서로 다른 직업끼리 비교하기 쉽습니다.</li>
+          <li>직업을 묶는 방법이 <strong>목적에 따라 2가지</strong> 있습니다 — 교육과정 설계용 <strong>커리어 클러스터(14개)</strong>와, 통계·데이터 관리용 <strong>Job Family(23개)</strong>.</li>
+          <li>이 분류표는 고정된 게 아니라 계속 개편됩니다. 실제로 2024년에 커리어 클러스터가 16개 → 14개로 바뀌었습니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> O*NET이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> "직업판 위키백과"라고 생각하면 쉽습니다. 다만 아무나 수정하는 위키백과와 달리, 미국 노동부 산하 기관이 설문조사와 전문가 평가를 거쳐 내용을 채우고 꾸준히 관리합니다. 그래서 신뢰할 수 있는 공식 자료로 쓰입니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>정식 이름:</strong> Occupational Information Network (직업정보네트워크), 줄여서 O*NET</li>
+        <li><strong>운영:</strong> 미국 노동부 산하 고용훈련청이 후원하고, 노스캐롤라이나 주정부 기관이 실제 데이터를 만들고 관리</li>
+        <li><strong>왜 만들었나:</strong> 예전에는 <strong>「직업사전(DOT)」</strong>이라는 종이책 한 권으로 모든 직업 정보를 관리했는데, 내용이 금방 낡고 업데이트가 느려서 1998년부터 온라인 데이터베이스로 대체했습니다.</li>
+        <li><strong>누가 쓰나:</strong> 진로상담사, 구직자, 인사담당자, 정부 정책 담당자, 그리고 우리처럼 진로 관련 서비스를 만드는 사람들</li>
+      </ul>
+
+      <a class="src" href="https://www.onetonline.org/" target="_blank" rel="noopener">O*NET OnLine 홈페이지</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 직업 하나에는 어떤 정보가 담겨 있나요?</h2>
+      <p>말로만 설명하면 감이 안 오니, 실제 O*NET에 등록된 직업 하나를 통째로 보여드리겠습니다.</p>
+
+      <div class="source-card">
+        <h3>예시 직업: Data Scientists (데이터 사이언티스트)</h3>
+        <p><strong>O*NET 코드</strong> 15-2051.00 · <strong>필요 학력 수준(Job Zone 4)</strong> 4년제 학사 이상 + 상당한 실무 경력 필요 · <strong>연봉 중앙값</strong> 약 $120,230 · <strong>고용 성장 전망</strong> 평균보다 훨씬 빠름</p>
+        <p style="margin-top:.4rem"><strong>하는 일(Tasks) 예시</strong></p>
+        <ul>
+          <li>통계 소프트웨어로 대규모 데이터를 분석·가공한다</li>
+          <li>분석 결과를 그래프·차트 등으로 시각화한다</li>
+          <li>비즈니스 문제나 경영 목표를 데이터 분석으로 풀 수 있는지 찾아낸다</li>
+        </ul>
+        <p style="margin-top:.4rem"><strong>필요한 기술·지식 예시</strong></p>
+        <ul>
+          <li>Python, R, SQL 같은 프로그래밍 언어</li>
+          <li>데이터 마이닝, 모델링, 머신러닝 활용 능력</li>
+          <li>분석 결과를 이해관계자에게 보여주는 시각화 도구 활용</li>
+        </ul>
+        <a class="src" href="https://www.onetonline.org/link/summary/15-2051.00" target="_blank" rel="noopener">O*NET · Data Scientists 프로필</a>
+      </div>
+
+      <div class="notice">핵심: 이 모든 항목이 <strong>직업마다 똑같은 틀</strong>로 정리되어 있습니다. 그래서 "이 직업과 저 직업이 얼마나 비슷한지"를 사람이든 컴퓨터든 비교하기 쉽습니다 — 이게 O*NET이 직무 추천·분류 연구에서 자주 인용되는 이유입니다.</div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 직업을 묶는 2가지 분류표</h2>
+      <p>O*NET에는 900여 개 직업을 사람이 보기 좋게 큰 그룹으로 묶어놓은 분류표가 <strong>목적이 다른 2가지</strong> 있습니다.</p>
+
+      <h4>04-A · 커리어 클러스터 (Career Cluster) — 14개</h4>
+      <p><strong>목적:</strong> 진로·교육과정 설계용. "이 분야로 가려면 학교에서 어떤 과목을 들어야 할까?"에 답하기 위한 용도로, 미국 진로교육 전문기관인 <strong>Advance CTE</strong>가 만들었습니다. (정부 통계 기관이 아니라 교육 전문 단체가 주도했다는 점이 Job Family와 다릅니다.)</p>
+
+      <div class="pill-grid">
+        <span>Advanced Manufacturing</span><span>Construction</span><span>Supply Chain &amp; Transportation</span>
+        <span>Arts, Entertainment, &amp; Design</span><span>Hospitality, Events, &amp; Tourism</span><span>Financial Services</span>
+        <span>Education</span><span>Healthcare &amp; Human Services</span><span>Public Service &amp; Safety</span>
+        <span>Agriculture</span><span>Energy &amp; Natural Resources</span><span>Digital Technology</span>
+        <span>Management &amp; Entrepreneurship</span><span>Marketing &amp; Sales</span>
+      </div>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>Digital Technology</h4>
+          <p class="ex"><b>예시 직업</b> · 데이터 사이언티스트, 소프트웨어 개발자, 정보보안 분석가</p>
+        </div>
+        <div class="deep-card">
+          <h4>Financial Services</h4>
+          <p class="ex"><b>예시 직업</b> · 재무분석가, 보험계리사, 회계사</p>
+        </div>
+        <div class="deep-card">
+          <h4>Healthcare &amp; Human Services</h4>
+          <p class="ex"><b>예시 직업</b> · 간호사, 사회복지사, 유전상담사</p>
+        </div>
+        <div class="deep-card">
+          <h4>Marketing &amp; Sales</h4>
+          <p class="ex"><b>예시 직업</b> · 마케팅 매니저, 시장조사 분석가, 영업 담당자</p>
+        </div>
+      </div>
+
+      <div class="notice">눈여겨볼 점: 원래 커리어 클러스터는 1999년부터 <strong>16개</strong>였습니다. 그런데 IT 산업이 커지고 에너지·환경 분야가 재편되면서, Advance CTE가 2년에 걸친 개편 작업 끝에 <strong>2024년에 14개로 다시 정리</strong>했습니다. (예: 기존 "Information Technology"는 "Digital Technology"로 확장·개명, "Law, Public Safety" + "Government"는 "Public Service &amp; Safety"로 통합) 분류표도 시대에 따라 계속 바뀐다는 걸 보여주는 좋은 사례입니다.</div>
+
+      <a class="src" href="https://www.onetonline.org/find/career" target="_blank" rel="noopener">O*NET · Browse by Career Cluster</a>
+      <a class="src" href="https://careertech.org/career-clusters/" target="_blank" rel="noopener">Advance CTE · Career Clusters 소개</a>
+
+      <h4>04-B · Job Family — 23개</h4>
+      <p><strong>목적:</strong> 통계·데이터 관리용. 미국 노동통계국이 임금·고용 통계를 낼 때 쓰는 공식 기준인 <strong>SOC(표준직업분류)</strong>를 그대로 따릅니다. "이 직업이 실제로 어떤 성격의 업무 집단에 속하는가"를 통계적으로 나눈 것이라, 커리어 클러스터보다 더 실무적이고 촘촘합니다.</p>
+
+      <div class="pill-grid">
+        <span>Architecture and Engineering</span><span>Arts, Design, Entertainment, Sports, and Media</span>
+        <span>Building and Grounds Cleaning and Maintenance</span><span>Business and Financial Operations</span>
+        <span>Community and Social Service</span><span>Computer and Mathematical</span>
+        <span>Construction and Extraction</span><span>Educational Instruction and Library</span>
+        <span>Farming, Fishing, and Forestry</span><span>Food Preparation and Serving Related</span>
+        <span>Healthcare Practitioners and Technical</span><span>Healthcare Support</span>
+        <span>Installation, Maintenance, and Repair</span><span>Legal</span>
+        <span>Life, Physical, and Social Science</span><span>Management</span>
+        <span>Military Specific</span><span>Office and Administrative Support</span>
+        <span>Personal Care and Service</span><span>Production</span>
+        <span>Protective Service</span><span>Sales and Related</span>
+        <span>Transportation and Material Moving</span>
+      </div>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>Computer and Mathematical</h4>
+          <p class="ex"><b>예시 직업</b> · 데이터 사이언티스트, 통계학자, 소프트웨어 개발자</p>
+        </div>
+        <div class="deep-card">
+          <h4>Business and Financial Operations</h4>
+          <p class="ex"><b>예시 직업</b> · 경영 컨설턴트, 재무분석가, 시장조사 분석가</p>
+        </div>
+        <div class="deep-card">
+          <h4>Healthcare Practitioners and Technical</h4>
+          <p class="ex"><b>예시 직업</b> · 의사, 간호사, 약사</p>
+        </div>
+        <div class="deep-card">
+          <h4>Management</h4>
+          <p class="ex"><b>예시 직업</b> · 마케팅 매니저, 일반 경영관리자, 인사담당 임원</p>
+        </div>
+      </div>
+
+      <a class="src" href="https://www.onetonline.org/find/family" target="_blank" rel="noopener">O*NET · Browse by Job Family</a>
+
+      <h4>04-C · 그래서 뭐가 다른가요? — 같은 직업, 다른 서랍</h4>
+      <p>가장 헷갈리는 부분이라 예시로 정리했습니다. <strong>"데이터 사이언티스트"</strong>라는 같은 직업이 두 분류표에서 각각 다른 그룹에 들어갑니다.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>커리어 클러스터</th><th>Job Family</th></tr></thead>
+          <tbody>
+            <tr><td class="who">데이터 사이언티스트가<br>속한 그룹</td><td class="what">Digital Technology</td><td class="what">Computer and Mathematical</td></tr>
+            <tr><td class="who">누가 만들었나</td><td class="what">진로교육 전문단체(Advance CTE)</td><td class="what">정부 통계 기준(SOC)</td></tr>
+            <tr><td class="who">주로 쓰이는 곳</td><td class="what">고등학교·전문대 진로교육 과정 설계</td><td class="what">임금·고용 통계, 채용 데이터 분류</td></tr>
+            <tr><td class="who">묶음 개수</td><td class="what">14개 (2024년 개편)</td><td class="what">23개</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>즉, 두 분류표는 "정답이 다른" 게 아니라 <strong>보는 목적이 다른 것</strong>입니다. 하나의 직업이 여러 기준으로 동시에 분류될 수 있다는 사실 자체가, 우리가 조사3에서 "직무 묶음"을 설계할 때 참고할 만한 지점입니다.</p>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "O*NET은 미국 정부가 운영하는 직업 정보 사이트예요. 900여 개 직업을 똑같은 틀로 정리해뒀고, 이 직업들을 묶는 방법이 두 가지 있어요. 하나는 학교에서 진로 교육과정을 짤 때 쓰는 '커리어 클러스터' 14개고, 다른 하나는 정부가 임금 통계를 낼 때 쓰는 'Job Family' 23개예요. 예를 들어 데이터 사이언티스트는 커리어 클러스터로는 'Digital Technology'에, Job Family로는 'Computer and Mathematical'에 속해요. 같은 직업인데 보는 목적에 따라 다른 그룹에 들어가는 거죠. 저희는 이 아이디어에서 '사람이 미리 정한 기준으로 직무를 묶는' 규칙 기반 방법의 근거를 가져왔어요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">O*NET은 미국 직업 기준인데, 한국 채용공고에도 그대로 쓸 수 있어요?</p>
+          <p class="a">그대로 쓰긴 어렵습니다. 직업 이름과 산업 구조가 달라서요. 저희가 O*NET에서 가져오는 건 "특정 직업 목록"이 아니라 "사람이 정한 기준으로 직업을 묶는다"는 <strong>방법론</strong>입니다. 실제 태그는 저희가 조사한 국내 채용공고를 기준으로 새로 만듭니다.</p>
+        </div>
+        <div>
+          <p class="q">왜 O*NET엔 분류표가 두 개나 있어요? 하나만 있으면 안 돼요?</p>
+          <p class="a">목적이 다르기 때문입니다. 교육과정을 짜는 사람과 임금 통계를 내는 사람이 필요로 하는 그룹 단위가 다르거든요. 저희 프로젝트도 "사용자에게 보여줄 그룹"과 "내부적으로 데이터를 관리할 그룹"이 다를 수 있다는 걸 여기서 참고할 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">06</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>O*NET에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">직업마다 같은 틀(하는 일·필요 기술·학력)로 정리해두면 비교가 쉬워진다</td><td class="what">채용공고에서 뽑은 업무·역량도 항목을 통일된 틀로 정리하기</td></tr>
+            <tr><td class="what">목적에 따라 분류 기준을 다르게 둘 수 있다 (교육용 vs 통계용)</td><td class="what">사용자에게 보여줄 "관심 업무 태그" 기준과, 내부 데이터 관리 기준을 분리해서 설계</td></tr>
+            <tr><td class="what">분류표는 한 번 만들고 끝이 아니라 계속 개편된다 (16개→14개)</td><td class="what">1차 프로토타입의 태그·묶음 기준도 고정하지 않고, 다음 조사 결과에 따라 수정하는 것을 전제로 설계</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /O*NET 탭 ============================== -->
+
+    <!-- ============================== ESCO 탭 ============================== -->
+    <div class="tab-panel" data-panel="esco" id="panel-esco" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>ESCO는 <strong>유럽연합(EU)</strong>이 만든 다국어 직업·기술 분류 체계입니다. "유럽판 O*NET"이라고 생각하면 빠릅니다.</li>
+          <li>직업 <strong>3,039개</strong>와 지식·기술·역량 <strong>13,939개</strong>를 서로 연결해둔 데이터베이스입니다.</li>
+          <li>직업(Occupations)과 스킬(Skills)이라는 <strong>두 기둥(pillar)</strong>으로 나뉘어 있고, 각 직업마다 필요한 스킬을 "필수(essential)"와 "선택(optional)"로 구분해서 보여줍니다.</li>
+          <li>가장 큰 특징은 <strong>28개 언어</strong>로 제공된다는 점입니다 — 여러 나라가 국경을 넘어 같은 기준으로 직업을 이야기할 수 있게 만든 것이 ESCO의 존재 이유입니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> ESCO가 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 유럽은 여러 나라, 여러 언어가 모여 있는 곳입니다. 유럽이 화폐를 "유로"로 통일해서 국경을 넘는 거래를 쉽게 만든 것처럼, ESCO는 <strong>직업과 기술의 이름을 유럽 전역에서 통일</strong>해서, 어느 나라 사람이든 같은 기준으로 직업을 검색·비교·인정받을 수 있게 만든 프로젝트입니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>정식 이름:</strong> European Skills, Competences, Qualifications and Occupations (유럽 기술·역량·자격·직업 분류), 줄여서 ESCO</li>
+        <li><strong>운영:</strong> 유럽연합 집행위원회의 고용·사회정책 담당 부서(DG Employment)가 만들고 관리</li>
+        <li><strong>왜 만들었나:</strong> EU 회원국은 나라마다 언어와 직업 이름 체계가 달라서, 국경을 넘어 일자리를 구하거나 학위·자격을 인정받을 때 "같은 일인데 이름이 달라서" 생기는 혼란이 컸습니다. ESCO는 이 문제를 풀기 위한 공통 언어입니다.</li>
+        <li><strong>규모(v1.2.1, 2025.12 기준):</strong> 직업 3,039개, 지식·기술·역량 13,939개, 28개 언어로 제공</li>
+        <li><strong>누가 쓰나:</strong> EU 회원국들의 구인구직 플랫폼(예: 유럽 공동 구인구직 포털 EURES), 각국 정부의 직업훈련·자격 인증 기관</li>
+      </ul>
+
+      <a class="src" href="https://esco.ec.europa.eu/en" target="_blank" rel="noopener">ESCO 공식 홈페이지</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 직업 하나에는 어떤 정보가 담겨 있나요?</h2>
+      <p>ESCO는 O*NET과 달리 "직업 하나"와 "그 직업에 필요한 능력"을 각각 독립된 목록으로 관리하고, 이 둘을 서로 연결하는 방식입니다. 두 가지 예시로 감을 잡아보겠습니다.</p>
+
+      <div class="source-card">
+        <h3>예시 1 · 큰 직업 → 더 좁은 전문분야 (계층 구조)</h3>
+        <p>ESCO는 직업을 계층으로 연결합니다. 예를 들어 <strong>"바텐더(bartender)"</strong>라는 직업 아래에, 더 좁은 전문분야인 <strong>"칵테일 바텐더"</strong>와 <strong>"바리스타"</strong>가 하위 항목으로 연결되어 있습니다. "바텐더"라는 큰 직업 안에 더 구체적인 두 가지 전문분야가 있다고 이해하면 됩니다.</p>
+      </div>
+
+      <div class="source-card">
+        <h3>예시 2 · 필수(essential) vs 선택(optional) 스킬</h3>
+        <p>ESCO에서 직업 하나를 열어보면, 그 직업에 연결된 지식·기술·역량이 두 가지로 나뉘어 표시됩니다.</p>
+        <ul>
+          <li><strong>필수(essential):</strong> 어느 회사에서 일하든 이 직업이라면 사실상 꼭 필요한 능력</li>
+          <li><strong>선택(optional):</strong> 회사나 산업, 국가에 따라 있으면 좋은 능력 (필수는 아님)</li>
+        </ul>
+      </div>
+
+      <div class="source-card">
+        <h3>재미있는 비교 · "데이터 사이언티스트"는 ESCO에서 어떻게 다룰까</h3>
+        <p>ESCO에도 "data scientist"라는 직업이 등록되어 있습니다. 그런데 흥미로운 점은, ESCO는 이 항목의 <strong>다른 이름(대체 명칭)</strong>으로 "data engineer"도 함께 등록해뒀다는 것입니다. 즉 ESCO는 데이터 사이언티스트와 데이터 엔지니어를 사실상 같은 개념으로 취급합니다.</p>
+        <p style="margin-top:.4rem">반면 앞서 본 O*NET은 <strong>Data Scientists(15-2051.00)</strong>를 별도 코드로 딱 떼어놓고 있었죠. 같은 직업이라도 "얼마나 세밀하게 나눌지"는 분류표를 만든 기관마다 다르다는 걸 보여주는 좋은 비교 사례입니다.</p>
+      </div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 직업을 조직하는 두 기둥(pillar) 구조</h2>
+      <p>ESCO는 "직업 기둥(Occupations pillar)"과 "스킬 기둥(Skills pillar)"이라는 두 축으로 이루어져 있고, 이 둘이 서로 연결됩니다.</p>
+
+      <h4>04-A · Occupations pillar (직업 기둥)</h4>
+      <p>ESCO는 직업을 처음부터 새로 나누지 않고, 국제노동기구(ILO)가 만든 국제표준 <strong>ISCO-08</strong> 위에 쌓아올렸습니다. ISCO가 가장 큰 상위 4단계를 제공하고, ESCO는 그 아래 5단계 이하에 더 세부적인 직업 3,039개를 채워 넣는 방식입니다. 즉 ESCO는 "국제 표준 뼈대 + 유럽 맞춤 세부사항"인 셈입니다.</p>
+
+      <p style="margin-top:.6rem"><strong>ISCO 최상위 10개 대분류 (Major Group)</strong></p>
+      <div class="pill-grid">
+        <span>0. Armed forces occupations</span><span>1. Managers</span><span>2. Professionals</span>
+        <span>3. Technicians &amp; associate professionals</span><span>4. Clerical support workers</span>
+        <span>5. Service &amp; sales workers</span><span>6. Skilled agricultural, forestry &amp; fishery workers</span>
+        <span>7. Craft &amp; related trades workers</span><span>8. Plant &amp; machine operators &amp; assemblers</span>
+        <span>9. Elementary occupations</span>
+      </div>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>2 · Professionals (전문가)</h4>
+          <p class="ex"><b>예시 직업</b> · 데이터 사이언티스트, 소프트웨어 개발자, 회계사</p>
+        </div>
+        <div class="deep-card">
+          <h4>1 · Managers (관리자)</h4>
+          <p class="ex"><b>예시 직업</b> · 경영관리자, 영업관리자, 정보통신 서비스관리자</p>
+        </div>
+        <div class="deep-card">
+          <h4>3 · Technicians &amp; associate professionals</h4>
+          <p class="ex"><b>예시 직업</b> · 웹 개발자, 그래픽 디자이너, 회계 보조원</p>
+        </div>
+        <div class="deep-card">
+          <h4>5 · Service &amp; sales workers</h4>
+          <p class="ex"><b>예시 직업</b> · 판매원, 바텐더, 요리사</p>
+        </div>
+      </div>
+
+      <a class="src" href="https://esco.ec.europa.eu/en/classification/occupation" target="_blank" rel="noopener">ESCO · Occupations pillar</a>
+
+      <h4>04-B · Skills pillar (스킬 기둥) — 13,939개</h4>
+      <p>ESCO는 "능력"을 딱 하나의 목록이 아니라 성격이 다른 4가지로 나눠서 관리합니다.</p>
+
+      <dl class="terms">
+        <div class="term"><dt>지식 (Knowledge)</dt><dd>어떤 분야에 대해 알고 있어야 하는 사실·이론. 예: "회계 원칙", "데이터베이스 이론"</dd></div>
+        <div class="term"><dt>기술 (Skills)</dt><dd>실제로 할 수 있어야 하는 행동·능력. 예: "SQL로 데이터 조회하기", "그래프 그리기"</dd></div>
+        <div class="term"><dt>범용 역량 (Transversal skills)</dt><dd>특정 직업에 갇히지 않고 여러 직업에서 공통으로 필요한 능력. 예: "의사소통하기", "문제 해결하기", "팀으로 협업하기"</dd></div>
+        <div class="term"><dt>언어 능력 (Language skills and knowledge)</dt><dd>특정 언어를 구사하는 능력. 예: "영어로 업무 의사소통하기"</dd></div>
+      </dl>
+
+      <a class="src" href="https://esco.ec.europa.eu/en/classification/skill_main" target="_blank" rel="noopener">ESCO · Skills pillar</a>
+
+      <h4>04-C · 두 기둥이 만나는 지점</h4>
+      <p>결국 ESCO를 요약하면 이렇습니다 — <strong>"직업 3,039개" × "능력 13,939개"</strong>를 서로 연결한 거대한 표. 이 직업에는 이 능력이 필수고, 저 능력은 선택이라는 식으로 모든 조합에 관계가 표시되어 있습니다. 이 연결 관계 자체가 "직무 간 유사도"를 계산하는 재료로 쓰일 수 있다는 점이 조사3과 바로 연결됩니다 (05번 자료 "그룹 B 콘텐츠 기반" 방법들이 이런 연결 데이터를 활용합니다).</p>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "ESCO는 유럽연합이 만든 직업·기술 분류표예요. '유럽판 O*NET'이라고 생각하면 됩니다. 직업 3,039개랑 필요한 능력 13,939개를 서로 연결해둔 거대한 데이터베이스예요. 특이한 점은 이 능력들을 '지식', '기술', '범용 역량', '언어 능력' 이렇게 4가지로 나누고, 각 직업마다 어떤 능력이 '꼭 필요한지(필수)'랑 '있으면 좋은지(선택)'를 구분해서 보여준다는 거예요. 그리고 O*NET이랑 다르게 28개 언어로 제공돼요 — 유럽은 나라마다 언어가 다르니까, 직업 이름을 통일해서 국경 넘어서도 같은 기준으로 얘기할 수 있게 만든 거죠."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">ISCO랑 ESCO는 뭐가 다른 거예요? 둘 다 직업 분류 아니에요?</p>
+          <p class="a">ISCO는 국제노동기구(ILO)가 전 세계 나라들의 고용 통계를 비교하려고 만든 "가장 큰 뼈대"입니다 (상위 4단계, 대분류 10개). ESCO는 그 뼈대 위에 유럽연합이 훨씬 더 세밀한 직업 3,039개와 스킬 정보를 덧붙인 것입니다. ISCO가 큰 도로 지도라면, ESCO는 그 위에 그려 넣은 동네 골목길 지도라고 보면 됩니다.</p>
+        </div>
+        <div>
+          <p class="q">한국에도 이런 게 있어요?</p>
+          <p class="a">한국고용정보원이 만드는 「한국직업사전」이 비슷한 역할을 합니다. 다만 ESCO처럼 여러 나라가 같이 쓰도록 다국어로 설계된 건 아니고, 한국 안에서 쓰는 표준입니다. 저희 조사3에서는 O*NET·ESCO를 "다른 나라는 이런 방식으로 이미 만들어봤다"는 근거 사례로 참고하는 것이지, 그대로 가져다 쓰는 게 아닙니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">06</span> O*NET vs ESCO, 나란히 놓고 비교하기</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>O*NET</th><th>ESCO</th></tr></thead>
+          <tbody>
+            <tr><td class="who">운영 주체</td><td class="what">미국 노동부(후원) + 노스캐롤라이나 주정부 기관(운영)</td><td class="what">유럽연합 집행위원회</td></tr>
+            <tr><td class="who">대상 범위</td><td class="what">미국 한 나라</td><td class="what">유럽연합 여러 회원국</td></tr>
+            <tr><td class="who">제공 언어</td><td class="what">영어 1개</td><td class="what">28개 언어</td></tr>
+            <tr><td class="who">직업 수</td><td class="what">약 900여 개</td><td class="what">3,039개</td></tr>
+            <tr><td class="who">능력 정보</td><td class="what">직업 안에 항목으로 포함 (별도 목록 없음)</td><td class="what">13,939개 독립된 스킬 목록(Skills pillar)</td></tr>
+            <tr><td class="who">분류가 2가지인 이유</td><td class="what">목적이 다름 (교육용 커리어 클러스터 / 통계용 Job Family)</td><td class="what">대상이 다름 (직업 자체 / 직업에 필요한 능력)</td></tr>
+            <tr><td class="who">기반 표준</td><td class="what">자체 개발</td><td class="what">국제노동기구(ILO)의 ISCO-08 위에 구축</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>공통점은 <strong>둘 다 "사람이 정한 기준으로 직업을 정리해서, 왜 이렇게 묶였는지 설명할 수 있게 만들었다"</strong>는 점입니다. 이게 저희가 조사3의 "그룹 A: 규칙 기반" 방법의 근거로 이 두 자료를 함께 인용하는 이유입니다.</p>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">07</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ESCO에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">능력을 "필수"와 "선택"으로 나눠서 연결한다</td><td class="what">채용공고에서 뽑은 업무·역량 태그도 "핵심 업무"와 "우대 업무"로 구분해서 관리</td></tr>
+            <tr><td class="what">같은 개념을 여러 이름(대체 명칭)으로 묶어서 관리한다 (data scientist = data engineer)</td><td class="what">채용공고마다 다르게 쓰는 표현(예: "데이터 분석", "데이터 인사이트 도출")을 같은 태그로 묶을 때 참고</td></tr>
+            <tr><td class="what">국제 표준(ISCO) 위에 지역 맞춤형 세부 항목을 쌓아올렸다</td><td class="what">공통 대분류 태그 위에, 국내 채용시장에 맞는 세부 태그를 쌓는 2단계 구조로 설계</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /ESCO 탭 ============================== -->
+
+    <!-- ============================== KNOW 탭 ============================== -->
+    <div class="tab-panel" data-panel="know" id="panel-know" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>KNOW는 한국고용정보원이 운영하는 <strong>"한국판 O*NET"</strong>입니다. 2001년부터 매년 재직자를 조사해 직업정보를 갱신합니다.</li>
+          <li>직업 하나당 임금·전망·하는 일뿐 아니라, <strong>무료 진로 심리검사(적성·흥미·가치관 검사)</strong>까지 연결되어 있는 게 O*NET·ESCO에는 없는 KNOW만의 특징입니다.</li>
+          <li>밑바탕이 되는 분류체계는 <strong>KECO(한국고용직업분류)</strong>로, 대분류 10개 · 중분류 35개 · 소분류 140개 · 세분류 495개로 구성됩니다(2025년 기준).</li>
+          <li>지난번 살펴본 <strong>국내 논문(자료3, 직무적합도 추천 알고리즘)</strong>이 바로 이 KNOW 데이터를 사용했습니다 — 그룹 A(공식 분류체계)와 그룹 B(콘텐츠 기반 계산)를 실제로 이어주는 다리입니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> KNOW가 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> "한국판 O*NET이자, 무료 진로 심리검사 센터"라고 생각하면 쉽습니다. O*NET이 미국 노동부가 만든 직업 백과사전이라면, KNOW는 한국고용정보원이 만든 한국어판 직업 백과사전입니다. 다만 KNOW는 여기에 "당신에게 맞는 직업은 무엇인가"를 알려주는 무료 심리검사까지 얹어놓았다는 점이 다릅니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>정식 이름:</strong> 한국직업정보시스템 (KNOW, Korea Network for Occupations and Workers)</li>
+        <li><strong>운영:</strong> 고용노동부 산하 한국고용정보원(KEIS)</li>
+        <li><strong>왜 만들었나:</strong> 빠르게 바뀌는 직업 세계를 반영해 최신 직업정보를 국민에게 무료로 제공하고, 청소년·성인의 진로 선택을 돕기 위해 2001년부터 재직자 조사를 시작</li>
+        <li><strong>규모:</strong> 2016년 조사 기준 639개 직업 · 재직자 19,827명 조사, 2021년 12월 기준 약 537개 대표 직업 정보 제공</li>
+        <li><strong>접속:</strong> know.work.go.kr, 워크넷(work.go.kr)에서 무료 이용 가능하며, 최근 임금직업포털(wagework.go.kr)로 기능이 확장되는 중</li>
+      </ul>
+
+      <a class="src" href="http://know.work.go.kr/" target="_blank" rel="noopener">한국직업정보시스템(KNOW) 바로가기</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 직업 하나에는 어떤 정보가 담겨 있나요?</h2>
+      <p>KNOW는 재직자를 대상으로 4가지 영역을 조사해서, 항목 구성이 O*NET과 상당히 비슷합니다.</p>
+
+      <div class="source-card">
+        <h3>4대 조사 영역 (4년 주기로 순환 조사해 최신성 유지)</h3>
+        <ul>
+          <li><strong>직무수행능력·가치관</strong> — 이 일을 하려면 어떤 능력이 필요하고, 무엇을 중요하게 여기는가 (O*NET의 Skills·Work Values에 대응)</li>
+          <li><strong>일반 업무활동</strong> — 실제로 어떤 일을 하는가 (O*NET의 Tasks·Work Activities에 대응)</li>
+          <li><strong>작업환경·흥미</strong> — 어떤 환경에서 일하고, 어떤 흥미 유형에 맞는가 (O*NET의 Work Context·Interests에 대응)</li>
+          <li><strong>지식·성격</strong> — 어떤 지식이 필요하고, 어떤 성격이 잘 맞는가 (O*NET의 Knowledge에 대응)</li>
+        </ul>
+        <p style="margin-top:.4rem">여기에 더해 <strong>임금, 직업만족도, 직업전망, 교육수준·전공분포</strong> 정보도 함께 제공됩니다.</p>
+      </div>
+
+      <div class="notice">핵심: O*NET의 Data Scientists 프로필(지난 탭 03번)과 항목을 나란히 놓고 보면, "하는 일 / 필요 능력·지식 / 임금·전망"이라는 뼈대가 거의 똑같습니다. 나라는 다르지만 "직업 정보를 표준화된 틀로 정리한다"는 설계 철학은 동일하다는 걸 보여줍니다.</div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 가장 큰 차별점 — 무료 진로 심리검사</h2>
+      <p>O*NET·ESCO에는 없는 KNOW만의 기능입니다. KNOW·워크넷은 직업 정보와 <strong>"나의 심리검사 결과"</strong>를 직접 연결합니다.</p>
+
+      <div class="deep-grid">
+        <div class="deep-card"><h4>직업흥미검사</h4><p class="ex">어떤 유형의 일에 흥미를 느끼는지 확인</p></div>
+        <div class="deep-card"><h4>직업적성검사</h4><p class="ex">일과 관련된 여러 분야에서 내가 가진 잠재 능력을 확인</p></div>
+        <div class="deep-card"><h4>직업가치관검사</h4><p class="ex">일에서 어떤 가치를 가장 중요하게 여기는지 확인</p></div>
+        <div class="deep-card"><h4>진로성숙도검사</h4><p class="ex">진로를 계획하고 준비할 준비가 얼마나 되어 있는지 확인</p></div>
+        <div class="deep-card"><h4>진로개발역량검사</h4><p class="ex">진로를 개발해나갈 역량이 얼마나 되는지 확인</p></div>
+        <div class="deep-card"><h4>진로실행력검사</h4><p class="ex">계획한 진로를 실제로 실행하는 힘이 얼마나 되는지 확인</p></div>
+      </div>
+
+      <div class="notice">연결 포인트: 이 심리검사 점수가 바로 지난 딥다이브(자료3 · 국내 논문)에서 본 <strong>"구직자 프로필"</strong>의 실제 재료입니다. 그 논문은 이 검사 점수(개인 프로필)와 KNOW의 재직자 데이터(직업 프로필) 사이의 유클리디안 거리를 계산해서 직업을 추천했습니다. 즉 오늘 본 KNOW 자체가, 저번에 본 논문이 실제로 사용한 원재료입니다.</div>
+
+      <a class="src" href="https://www.work.go.kr/consltJobCarpa/jobPsyExamNew/jobPsyExamList.do" target="_blank" rel="noopener">워크넷 · 직업심리검사</a>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 밑바탕 분류체계 — KECO(한국고용직업분류)</h2>
+      <p>KNOW가 수백 개 직업을 정리할 때 쓰는 뼈대가 <strong>KECO(한국고용직업분류)</strong>입니다. O*NET의 Job Family, ESCO의 ISCO처럼, 직업을 큰 그룹부터 작은 그룹까지 계층으로 나눕니다.</p>
+
+      <p><strong>2025년 기준 구조:</strong> 대분류 10개 → 중분류 35개 → 소분류 140개 → 세분류 495개</p>
+
+      <div class="pill-grid">
+        <span>1. 경영·사무·금융·보험직</span><span>2. 연구직 및 공학 기술직</span>
+        <span>3. 교육·법률·사회복지·경찰·소방직 및 군인</span><span>4. 보건·의료직</span>
+        <span>5. 예술·디자인·방송·스포츠직</span><span>6. 미용·여행·숙박·음식·경비·청소직</span>
+        <span>7. 영업·판매·운전·운송직</span><span>8. 건설·채굴직</span>
+        <span>9. 설치·정비·생산직</span><span>10. 농림어업직</span>
+      </div>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>2. 연구직 및 공학 기술직</h4>
+          <p class="ex"><b>예시 직업</b> · 데이터 사이언티스트, 소프트웨어 개발자, 컴퓨터시스템 설계 분석가</p>
+        </div>
+        <div class="deep-card">
+          <h4>1. 경영·사무·금융·보험직</h4>
+          <p class="ex"><b>예시 직업</b> · 경영컨설턴트, 재무분석가, 인사담당자</p>
+        </div>
+        <div class="deep-card">
+          <h4>4. 보건·의료직</h4>
+          <p class="ex"><b>예시 직업</b> · 간호사, 약사, 의사</p>
+        </div>
+        <div class="deep-card">
+          <h4>7. 영업·판매·운전·운송직</h4>
+          <p class="ex"><b>예시 직업</b> · 영업원, 물류관리자</p>
+        </div>
+      </div>
+
+      <div class="notice">눈여겨볼 점: KECO도 예전에는 대분류가 <strong>24개</strong>였습니다. 지금의 10개 대분류·35개 중분류 체계는 최근에 정리된 버전입니다. O*NET이 16개→14개로, KECO가 24개→10개로 — <strong>공식 분류표는 어느 나라든 계속 개편된다</strong>는 사실이 세 자료 모두에서 똑같이 확인됩니다.</div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "KNOW는 한국고용정보원이 운영하는 한국판 O*NET이에요. 2001년부터 매년 재직자를 조사해서 임금, 하는 일, 필요한 능력·지식 같은 정보를 갱신하는데, O*NET이랑 항목 구성이 거의 똑같아요. 근데 KNOW만의 특징이 있는데, 바로 무료 진로 심리검사예요. 흥미검사, 적성검사, 가치관검사 같은 걸 받으면 내 점수가 나오고, 이 점수를 직업 데이터랑 비교해서 나한테 맞는 직업을 찾을 수 있어요. 실제로 저희가 저번에 본 국내 논문이 이 심리검사 점수랑 KNOW의 직업 데이터를 유클리디안 거리로 비교해서 직업을 추천했거든요. 그러니까 오늘 본 KNOW가, 저번 논문에서 실제로 쓰인 진짜 데이터인 셈이죠."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">그럼 CareerLens는 KNOW 데이터를 그대로 가져다 쓰면 되는 거 아니에요?</p>
+          <p class="a">범위가 다릅니다. KNOW는 국내 전체 직업 537개를 다루는 국가 통계 자료라, 저희가 필요한 "특정 도메인 채용공고 기반 태그"보다 훨씬 넓고 일반적입니다. 다만 "심리검사 점수 같은 개인 특성과 직업 데이터를 연결한다"는 아이디어와 "직무수행능력·업무활동·지식으로 항목을 나눈다"는 틀은 참고할 수 있습니다.</p>
+        </div>
+        <div>
+          <p class="q">O*NET·ESCO·KNOW 중에 우리 프로젝트에 제일 가까운 건 뭐예요?</p>
+          <p class="a">구조상으로는 셋 다 비슷하지만, KNOW가 국내 데이터라 채용공고 언어·직업 이름이 가장 맞닿아 있습니다. 다만 "규칙 기반 분류"라는 방법론 자체는 세 자료 모두 동일하게 참고하고 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">07</span> 세 나라 나란히 비교하기 — O*NET vs ESCO vs KNOW</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>O*NET (미국)</th><th>ESCO (유럽)</th><th>KNOW (한국)</th></tr></thead>
+          <tbody>
+            <tr><td class="who">운영 주체</td><td class="what">미국 노동부(후원)</td><td class="what">유럽연합 집행위원회</td><td class="what">한국고용정보원</td></tr>
+            <tr><td class="who">직업 수</td><td class="what">약 900여 개</td><td class="what">3,039개</td><td class="what">약 537개</td></tr>
+            <tr><td class="who">최상위 대분류 수</td><td class="what">14개 (커리어 클러스터)</td><td class="what">10개 (ISCO 대분류)</td><td class="what">10개 (KECO 대분류)</td></tr>
+            <tr><td class="who">독특한 기능</td><td class="what">교육용/통계용 분류 이원화</td><td class="what">28개 언어 · 필수/선택 스킬 구분</td><td class="what">직업 정보 + 무료 진로 심리검사 연계</td></tr>
+            <tr><td class="who">분류표 개편 이력</td><td class="what">16개 → 14개 (2024년)</td><td class="what">계속 버전 갱신 (v1.2.1)</td><td class="what">24개 → 10개 (KECO 최신 개편)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>세 자료 모두 <strong>"사람이 정한 기준으로 직업을 분류하고, 그 기준을 계속 다듬어 나간다"</strong>는 점에서 같은 철학을 공유합니다. 나라마다 독립적으로 만들었는데도 비슷한 결론에 도달했다는 사실 자체가, 규칙 기반 분류 방법(그룹 A)이 신뢰할 만한 접근이라는 근거가 됩니다.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">08</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>KNOW에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">직업 정보를 "능력·지식·업무활동·환경" 4개 영역으로 나눠 조사한다</td><td class="what">채용공고에서 뽑을 태그도 비슷한 4~5개 영역(핵심업무·필요역량·도구·도메인 등)으로 미리 구조화</td></tr>
+            <tr><td class="what">개인 심리검사 점수와 직업 데이터를 연결해 추천한다</td><td class="what">사용자의 "관심 업무 선택"을 KNOW의 심리검사 점수와 같은 역할로 보고, 직무 태그와 연결하는 설계에 참고</td></tr>
+            <tr><td class="what">분류체계(KECO)는 국가 표준이지만 우리 서비스 범위에는 너무 넓다</td><td class="what">KECO의 대분류를 그대로 쓰지 않고, 우리가 다루는 도메인에 맞게 세분류 수준에서 새로 태그를 설계</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /KNOW 탭 ============================== -->
+
+  </div>
+
+  <div class="outer-tab-panel" data-outer="groupB" id="outer-panel-groupB" hidden>
+    <header class="masthead">
+      <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 3-5/8 (그룹 B · 콘텐츠 기반) · 2026.08.21</div>
+      <h1>숫자로 직무를 비교하다<br>그룹 B 콘텐츠 기반 논문 세 편</h1>
+      <p class="standfirst">아래 탭을 눌러 세 논문을 각각 볼 수 있습니다. 모두 "태그가 겹치는지 세는" 그룹 A와 달리, 직무 데이터를 숫자로 바꿔서 계산하는 그룹 B 자료입니다.</p>
+      <div class="roster">
+        <span class="roster-label">핵심 정보</span>
+        <span>국내논문: 저자 4인 · 2022년</span><span>ScienceDirect: 저자 5인 · 2020년</span><span>arXiv: 저자 3인 · 2025년</span>
+      </div>
+    </header>
+
+    <nav class="tabnav" role="tablist">
+      <button class="tab-btn active" data-tab="kr" role="tab" aria-selected="true">국내 논문<span class="sub">홍세희 외, 2022</span></button>
+      <button class="tab-btn" data-tab="sd" role="tab" aria-selected="false">ScienceDirect<span class="sub">Mhamdi 외, 2020</span></button>
+      <button class="tab-btn" data-tab="arxiv" role="tab" aria-selected="false">arXiv<span class="sub">Vázquez García 외, 2025</span></button>
+    </nav>
+
+    <div class="tab-panel" data-panel="kr" id="panel-kr">
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>2022년 한국 연구자 4명이 쓴 논문으로, 재직자·구직자의 <strong>"특성 프로필"을 숫자로 만들어 거리를 계산</strong>해서 어울리는 직업을 추천하는 알고리즘을 개발했습니다.</li>
+          <li>사용한 데이터는 한국고용정보원이 운영하는 <strong>KNOW(한국직업정보시스템)</strong> — 지난번에 본 O*NET의 <strong>한국판</strong>이라고 보면 됩니다.</li>
+          <li>핵심 계산 방법은 <strong>유클리디안 거리(Euclidean distance)</strong> — 중·고등학교 수학에서 배우는 "두 점 사이의 거리" 공식과 똑같습니다.</li>
+          <li>검증 방법이 영리합니다. 이미 직업이 있는 사람 데이터를 거꾸로 넣어서 "이 사람의 진짜 직업을 1등으로 추천하는지" 테스트했고, 실제로 잘 맞혔습니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 온라인 쇼핑몰의 "이 상품과 비슷한 상품" 추천을 떠올려보세요. 상품마다 가격·색상·크기 같은 특성을 숫자로 매겨두면, 특성이 비슷한 상품끼리 묶어 추천할 수 있습니다. 이 논문은 상품 대신 <strong>"사람"과 "직업"</strong>에 똑같은 방식을 적용합니다 — 각각을 여러 특성 점수로 표현해두고, 점수가 가까운 사람과 직업을 서로 추천하는 것입니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>제목(국문):</strong> 직무특성 기반 직업추천 프로그램 개발에 관한 연구</li>
+        <li><strong>제목(영문):</strong> The Study on the Development of Job Recommendation Program Based on Work-Oriented Characteristics</li>
+        <li><strong>저자:</strong> 홍세희, 장유나, 이은수, 최기성</li>
+        <li><strong>게재:</strong> 「직업과 자격 연구」 2022년 11권 3호, 39~64쪽</li>
+        <li><strong>목적:</strong> 스킬·지식·업무활동 같은 "직무 중심(work-oriented) 요인"을 바탕으로 직업을 추천하는 알고리즘 개발. 궁극적으로는 직업 만족도를 높이고, 이직·진로전환을 더 매끄럽게 돕는 것이 목표</li>
+      </ul>
+
+      <a class="src" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002883321" target="_blank" rel="noopener">KCI · 논문 원문 바로가기</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 어떤 데이터를 썼나요? — KNOW, 한국판 O*NET</h2>
+      <p>이 논문이 사용한 <strong>KNOW(한국직업정보시스템)</strong>는 한국고용정보원이 운영하는 자료로, 지난 딥다이브에서 본 O*NET과 구조가 매우 비슷합니다. O*NET·ESCO를 이미 보셨다면 바로 감이 올 것입니다.</p>
+
+      <div class="source-card">
+        <h3>KNOW (Korea Network for Occupations and Workers)</h3>
+        <ul>
+          <li><strong>운영:</strong> 한국고용정보원</li>
+          <li><strong>조사 방식:</strong> 2001년부터 매년, 직업분류(KECO) 세분류 기준으로 재직자를 약 30명씩 조사</li>
+          <li><strong>조사 영역 4가지:</strong> 직무수행능력·가치관 / 일반 업무활동 / 작업환경·흥미 / 지식·성격 (4년 주기로 순환)</li>
+          <li><strong>규모(2016년 조사):</strong> 639개 직업, 재직자 19,827명 대상</li>
+          <li><strong>제공 직업 수(2021.12 기준):</strong> 약 537개 대표 직업</li>
+          <li><strong>용도:</strong> 청소년·성인 진로선택, 진로설계, 진로상담, 구인구직</li>
+        </ul>
+      </div>
+
+      <div class="notice">연결 포인트: O*NET이 미국 정부의 "직업 백과사전"이었다면, <strong>KNOW는 한국판</strong>입니다. 이 논문은 이런 자료를 실제로 "추천 알고리즘"을 만드는 데 활용한 사례라서, 그룹 A(공식 분류체계)와 그룹 B(콘텐츠 기반 계산)를 이어주는 다리 역할을 합니다.</div>
+
+      <a class="src" href="http://know.work.go.kr/" target="_blank" rel="noopener">한국직업정보시스템(KNOW) 바로가기</a>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 핵심 아이디어 — 사람과 직업을 숫자로 바꿔 거리 재기</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 지도 위 GPS 좌표를 생각해보세요. 서울과 부산의 거리를 잴 때 위도·경도라는 숫자 두 개로 계산하죠. 이 논문도 똑같습니다. "사람"과 "직업"을 각각 여러 개의 특성 점수(좌표)로 표현한 다음, 그 점들 사이의 거리를 계산해서 <strong>"얼마나 가까운지 = 얼마나 잘 맞는지"</strong>를 구합니다.
+      </div>
+
+      <h4>먼저 알아두면 좋은 단어 3개</h4>
+      <dl class="terms">
+        <div class="term"><dt>프로필(profile)</dt><dd>한 사람 또는 한 직업을 여러 특성 점수로 표현한 것. 예: [문제해결력 7점, 대인관계 5점, 손재주 3점, ...]</dd></div>
+        <div class="term"><dt>유클리디안 거리(Euclidean distance)</dt><dd>두 프로필(숫자 목록) 사이의 직선 거리를 재는 공식. 중·고등학교 수학의 "두 점 사이의 거리" 공식과 똑같습니다. 거리가 가까울수록 두 프로필이 비슷하다는 뜻입니다.</dd></div>
+        <div class="term"><dt>요인분석(factor analysis)</dt><dd>수십 개의 세부 항목(스킬·지식·업무활동 등)을 몇 개의 더 큰 "요인"으로 압축하는 통계 기법. 예: "숫자 계산", "통계 활용", "데이터 해석" 같은 세부 항목을 "분석적 사고"라는 하나의 요인으로 묶는 식.</dd></div>
+      </dl>
+
+      <h4>간단한 예시로 계산 감 잡기</h4>
+      <div class="calc">
+        <div class="row"><span class="label">직업 A 프로필</span><span class="val">[분석적 사고 8, 대인관계 3]</span></div>
+        <div class="row"><span class="label">구직자 프로필</span><span class="val">[분석적 사고 7, 대인관계 4]</span></div>
+        <div class="row"><span class="label">거리 계산</span><span class="val">√((8-7)² + (3-4)²) = √2 ≈ 1.41</span></div>
+        <div class="row"><span class="label">해석</span><span class="val">숫자가 작을수록 가까움 → 이 구직자에게는 직업 A가 유력한 추천 후보</span></div>
+      </div>
+
+      <h4>알고리즘 이름: H-JFIT</h4>
+      <p>이 논문은 <strong>H-JFIT</strong>이라는 프레임워크를 사용합니다. H-JFIT은 원래 적성검사 등 다양한 검사에 폭넓게 쓸 수 있도록 만든 "직무적합도 지수 계산 방법"으로, 직무별·영역별·차원별 가중치를 도입해 여러 하위 점수를 하나의 지수로 통합합니다. 이 논문은 H-JFIT을 KNOW 데이터에 적용해서, 재직자 데이터(직업 프로필)와 구직자 데이터(개인 프로필)를 요인분석으로 정리한 뒤 유클리디안 거리로 "프로필의 모양(패턴)"과 "프로필의 수준(전체적으로 높은지 낮은지)"이 얼마나 일치하는지 계산합니다.</p>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 검증은 어떻게 했나요? — "자기 직업 맞히기" 테스트</h2>
+      <p>좋은 추천 알고리즘인지 확인하려면 "정답"이 있어야 하는데, 구직자는 아직 직업이 없으니 정답을 알 수 없습니다. 그래서 저자들은 영리한 우회 방법을 씁니다.</p>
+      <ul>
+        <li><strong>방법:</strong> 이미 직업을 가진 재직자의 프로필을 거꾸로 알고리즘에 넣습니다.</li>
+        <li><strong>질문:</strong> 이 알고리즘이 이 사람에게 "가장 잘 맞는 직업 1위"로, 그 사람이 실제로 하고 있는 <strong>현재 직업</strong>을 추천하는가?</li>
+        <li><strong>결과:</strong> 교차검증(cross-validation) 결과, 재직자 자신의 현재 직업을 상당히 정확하게 다시 맞혀냈습니다 — 즉 알고리즘이 실제로 쓸만한 성능을 보인다는 근거로 제시했습니다.</li>
+      </ul>
+      <div class="notice">이 검증 방식 자체가 저희 조사3에도 참고할 만합니다. "정답이 없는 추천"을 검증하려면, 정답을 이미 아는 다른 데이터(재직자의 현재 직업)로 우회 검증하는 전략이 필요하다는 교훈입니다.</div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "이 논문은 2022년에 한국 연구자 4명이 쓴 논문인데요, 사람이랑 직업을 각각 숫자로 된 '특성 프로필'로 표현한 다음, 그 둘 사이의 거리를 계산해서 어울리는 직업을 추천하는 알고리즘을 만들었어요. 데이터는 한국고용정보원이 운영하는 KNOW라는, 한국판 O*NET 같은 자료를 썼고요. 거리 계산은 중학교 수학에서 배우는 '두 점 사이 거리' 공식이랑 똑같은 유클리디안 거리를 썼습니다. 재미있는 건 검증 방법인데, 이미 직업을 가진 사람들 데이터를 거꾸로 넣어서 '이 알고리즘이 이 사람의 진짜 직업을 1등으로 추천하는지' 테스트했고, 실제로 잘 맞혔대요. 저희는 여기서 '태그가 겹치는 걸 세는' 규칙 기반 방식 말고, '숫자로 바꿔서 거리를 재는' 방식도 실제로 검증된 방법이라는 근거를 가져왔습니다."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">이 논문 방법을 CareerLens에 그대로 쓸 수 있어요?</p>
+          <p class="a">그대로는 어렵습니다. 이 논문은 "사람의 적성 점수 vs 직업의 요구 점수"를 재는 것이고, 저희는 "채용공고 텍스트끼리" 비슷한지 재는 것이라 비교 대상 자체가 다릅니다. 다만 "여러 항목을 숫자로 바꾸고 거리로 유사도를 잰다"는 방법론 자체는 그대로 참고할 수 있습니다.</p>
+        </div>
+        <div>
+          <p class="q">유클리디안 거리 말고 다른 방법은 없어요?</p>
+          <p class="a">있습니다. 코사인 유사도(방향/각도로 비교), 자카드 유사도(집합이 겹치는 비율로 비교) 등 여러 방법이 있고, 데이터 형태에 따라 더 잘 맞는 방법이 다릅니다. 이후 살펴볼 논문(ScienceDirect, arXiv)에서는 텍스트 데이터에 쓰는 다른 유사도 계산법을 비교해볼 예정입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">07</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">KNOW라는 "한국판 O*NET"이 실제로 존재하고, 이미 알고리즘 개발에 활용된 선례가 있다</td><td class="what">향후 국내 직무 태그를 설계할 때 KNOW의 조사 영역(직무수행능력·업무활동·지식 등) 구조를 참고</td></tr>
+            <tr><td class="what">특성을 숫자(프로필)로 바꾸고 거리로 비교하는 방법이 실제로 검증됐다</td><td class="what">그룹 B(콘텐츠 기반) 검증 방법의 기술적 근거로 사용 — 태그 겹침(그룹 A)과 대조할 실험 설계에 참고</td></tr>
+            <tr><td class="what">"정답 없는 추천"은 교차검증 같은 우회 전략으로 검증해야 한다</td><td class="what">그룹 A(태그 겹침) vs 그룹 B(텍스트 유사도) 결과를 비교하는 실험에도 비슷한 검증 전략 도입 검토</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /국내 논문 탭 ============================== -->
+
+    <!-- ============================== ScienceDirect 탭 ============================== -->
+    <div class="tab-panel" data-panel="sd" id="panel-sd" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>2020년 Procedia Computer Science에 실린 연구로, <strong>채용공고를 자동으로 그룹핑(클러스터링)</strong>한 다음 구직자의 행동 데이터(지원·좋아요·평점)를 결합해서 추천하는 <strong>하이브리드 시스템</strong>을 제안합니다.</li>
+          <li>국내 논문(사람의 적성 점수 vs 직업 요구 점수를 비교)과 달리, 이 논문은 실제 <strong>"채용공고 텍스트"</strong>에서 직무명·기술 스택 같은 특징을 뽑아 자동으로 그룹을 만듭니다 — CareerLens가 실제로 하려는 작업과 가장 가까운 사례입니다.</li>
+          <li>방법이 두 가지를 섞은 하이브리드입니다: <strong>① 콘텐츠 기반</strong>(채용공고 특징으로 클러스터 만들기) + <strong>② 협업 필터링</strong>(비슷한 취향의 다른 사용자 행동 참고하기).</li>
+          <li>※ 원문이 유료 논문(ScienceDirect)이라 세부 알고리즘 이름까지는 확인이 어려웠습니다. 아래 내용은 논문 초록과 이 논문을 인용한 다른 자료들로 교차 확인된 범위까지만 정리했습니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 유튜브나 넷플릭스의 "이 영상을 본 사람들이 좋아한 다른 영상" 추천을 떠올려보세요. 이 논문은 영상 대신 <strong>채용공고</strong>에 같은 방식을 적용합니다 — "이 공고와 비슷한 공고들"을 미리 그룹으로 묶어두고, "이 공고에 관심을 보인 사람들이 좋아한 다른 공고"까지 함께 참고해서 추천합니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>제목:</strong> Job Recommendation based on Job Profile Clustering and Job Seeker Behavior</li>
+        <li><strong>저자:</strong> D. Mhamdi, R. Moulouki, M. Y. El Ghoumari, M. Azzouazi, L. Moussaid</li>
+        <li><strong>게재:</strong> Procedia Computer Science, 2020, 175권, 695~699쪽 (국제 학회 발표 논문을 모아 신속히 출판하는 저널)</li>
+        <li><strong>목적:</strong> 구직자가 자신에게 맞는 채용공고를 더 쉽게 찾을 수 있도록 돕는 추천 시스템 설계</li>
+      </ul>
+
+      <a class="src" href="https://www.sciencedirect.com/science/article/pii/S1877050920318020" target="_blank" rel="noopener">ScienceDirect · 논문 페이지</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 어떻게 작동하나요? — 3단계로 이해하기</h2>
+      <ul>
+        <li><strong>1단계 · 공고 모으기:</strong> 여러 채용 사이트에서 채용공고를 수집합니다.</li>
+        <li><strong>2단계 · 특징 뽑고 자동으로 묶기:</strong> 공고 텍스트에서 직무명, 요구 기술(예: Python, 회계) 같은 의미 있는 특징을 뽑아내고, 특징이 비슷한 공고끼리 자동으로 그룹(클러스터)을 만듭니다.</li>
+        <li><strong>3단계 · 행동 데이터와 결합해 추천:</strong> 구직자가 특정 클러스터 안의 공고 하나에 반응(지원·좋아요·평점)을 보이면, 같은 클러스터 안의 다른 공고도 좋아할 가능성이 높다고 보고 상위 N개 추천 목록을 만듭니다.</li>
+      </ul>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 핵심 아이디어 — 콘텐츠 기반과 협업 필터링을 섞다</h2>
+
+      <h4>먼저 알아두면 좋은 단어 3개</h4>
+      <dl class="terms">
+        <div class="term"><dt>콘텐츠 기반 필터링(content-based filtering)</dt><dd>아이템(여기선 채용공고) 자체의 특징을 비교해서 비슷한 것끼리 묶는 방식. 국내 논문도, 지난 O*NET·ESCO도 모두 이 계열입니다.</dd></div>
+        <div class="term"><dt>협업 필터링(collaborative filtering)</dt><dd>아이템 자체 내용은 보지 않고, "취향이 비슷한 다른 사람들의 행동"을 참고해서 추천하는 방식. "이 상품을 산 사람들이 함께 산 상품" 같은 추천이 대표적입니다.</dd></div>
+        <div class="term"><dt>하이브리드 추천(hybrid recommendation)</dt><dd>콘텐츠 기반과 협업 필터링을 함께 쓰는 방식. 이 논문이 바로 이 방식입니다.</dd></div>
+      </dl>
+
+      <div class="notice">지난 국내 논문(홍세희 외)은 <strong>순수 콘텐츠 기반</strong>이었습니다 — 사람과 직업의 점수를 직접 비교했죠. 이 논문은 여기에 <strong>"다른 구직자들의 행동"</strong>이라는 새로운 정보를 더합니다. 텍스트만으로는 못 잡아내는 유사성(예: 서로 다른 클러스터에 있어도 같은 사람들이 함께 관심을 보이는 공고 조합)까지 잡아낼 수 있다는 게 하이브리드 방식의 장점입니다.</div>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "이 논문은 2020년에 발표된 채용공고 추천 시스템 연구예요. 채용 사이트에서 공고를 모은 다음, 직무명이나 요구 기술 같은 특징을 뽑아서 비슷한 공고끼리 자동으로 그룹을 만들어요. 여기까지는 저희가 하려는 것과 거의 똑같아요. 그런데 이 논문은 한 발 더 나가서, 구직자가 어떤 공고에 지원하거나 좋아요를 눌렀는지 같은 행동 데이터도 같이 봐요. '이 그룹의 공고를 좋아한 사람은 다른 공고도 좋아할 것이다'라는 아이디어인 거죠. 콘텐츠 기반이랑 협업 필터링을 섞은 하이브리드 방식이에요. 저희는 아직 사용자 행동 데이터가 없으니까 지금은 콘텐츠 기반 부분만 참고하고, 나중에 사용자가 늘면 이 논문처럼 행동 데이터를 더하는 걸 다음 단계로 고려할 수 있어요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">이 논문에서 정확히 어떤 클러스터링 알고리즘을 썼어요?</p>
+          <p class="a">솔직히 말씀드리면, 원문이 유료 논문이라 저희도 정확한 알고리즘 이름(예: K-Means 등)까지는 확인하지 못했습니다. 초록과 인용 자료에서 확인되는 건 "공고 특징을 뽑아 클러스터로 묶고, 행동 데이터와 결합한다"는 큰 흐름까지입니다. 이 부분은 저희 조사에서 확인이 제한된 지점이라고 투명하게 밝히는 게 맞다고 생각합니다.</p>
+        </div>
+        <div>
+          <p class="q">협업 필터링을 지금 CareerLens에 바로 쓸 수 있어요?</p>
+          <p class="a">아직은 어렵습니다. 협업 필터링은 "여러 사용자의 행동 데이터"가 쌓여야 작동하는데, 저희는 아직 사용자가 없는 1차 프로토타입 단계입니다. 지금은 콘텐츠 기반(태그 겹침, 텍스트 유사도)에 집중하고, 협업 필터링은 서비스가 커진 뒤의 확장 방향으로 남겨두는 게 현실적입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 국내 논문과 나란히 비교하기</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>국내 논문 (홍세희 외, 2022)</th><th>이 논문 (Mhamdi 외, 2020)</th></tr></thead>
+          <tbody>
+            <tr><td class="who">비교 대상</td><td class="what">사람의 적성 점수 vs 직업의 요구 점수</td><td class="what">채용공고 텍스트끼리</td></tr>
+            <tr><td class="who">방법</td><td class="what">유클리디안 거리 (순수 콘텐츠 기반)</td><td class="what">클러스터링 + 협업 필터링 (하이브리드)</td></tr>
+            <tr><td class="who">데이터</td><td class="what">KNOW 심리검사 · 재직자 조사</td><td class="what">채용 사이트 공고 + 사용자 행동 로그</td></tr>
+            <tr><td class="who">CareerLens와의 유사성</td><td class="what">낮음 (개인 심리검사가 필요)</td><td class="what">높음 (채용공고 텍스트를 그대로 다룸)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">07</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">채용공고 텍스트에서 특징을 뽑아 자동으로 클러스터링하는 게 실제로 검증된 접근이다</td><td class="what">CareerLens의 그룹 B(검증용) 실험에 가장 직접적인 선례로 사용</td></tr>
+            <tr><td class="what">콘텐츠 기반만으로는 부족할 수 있어, 행동 데이터(협업 필터링)를 더하면 성능이 좋아질 수 있다</td><td class="what">1차 프로토타입 이후 사용자 클릭·저장 행동 데이터가 쌓이면 추천 방식을 확장할 로드맵으로 참고</td></tr>
+            <tr><td class="what">유료 논문은 세부 알고리즘 확인이 제한적일 수 있다</td><td class="what">정리할 때 "이 부분은 원문 접근 제한으로 개요 수준까지만 확인했다"고 밝히는 것도 정직한 리서치 태도로 언급</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /ScienceDirect 탭 ============================== -->
+
+    <!-- ============================== arXiv 탭 ============================== -->
+    <div class="tab-panel" data-panel="arxiv" id="panel-arxiv" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>2025년 발표된 논문으로, <strong>"직업 설명 텍스트만 보고 컴퓨터가 O*NET의 공식 분류를 얼마나 잘 재현하는지"</strong>를 실험했습니다. 지난번 O*NET 탭에서 본 그 데이터를 그대로 정답지로 사용한 논문입니다.</li>
+          <li>핵심 파이프라인은 4단계: <strong>① 텍스트를 숫자로 바꾸기(임베딩) → ② 숫자 개수 줄이기(차원 축소) → ③ 그룹으로 나누기(군집화) → ④ 정답과 비교해 채점</strong>.</li>
+          <li>실험 규모가 매우 큽니다 — AI 임베딩 모델 6개 × 차원 축소 방법 7개 × 군집화 알고리즘 4개를 전부 조합해서 비교했습니다.</li>
+          <li>핵심 발견: 차원을 잘 줄이고 "몇 개로 나눌지"를 스스로 찾게 하면 정확도가 <strong>80.5% → 93.3%</strong>까지 크게 올랐습니다. 이 조사3에서 그룹 A(O*NET)와 그룹 B(자동 계산)를 가장 직접적으로 이어주는 자료입니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 직업 설명을 사진처럼 찍어서, 비슷하게 생긴 사진끼리 자동으로 앨범(폴더)에 정리해주는 프로그램을 만든다고 생각하면 됩니다. 다만 사진 대신 <strong>텍스트</strong>를 씁니다. 그리고 이 프로그램이 정리한 앨범이, 사람이 미리 만들어둔 "정답 앨범"(O*NET의 공식 분류)과 얼마나 비슷한지 점수를 매깁니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>제목:</strong> Improving Clustering on Occupational Text Data through Dimensionality Reduction</li>
+        <li><strong>저자·소속:</strong> Iago Xabier Vázquez García(스페인 ITCL Technology Center), Damla Partanaz·E. Fatih Yetkin(터키 Kadir Has University)</li>
+        <li><strong>게재:</strong> Expert Systems with Applications(저널) · arXiv 2507.07582, 2025년 7월</li>
+        <li><strong>목적:</strong> 회사마다·나라마다 다르게 부르는 직업 이름을 서로 매칭하기 위한 <strong>"최적의 자동 분류 방법"</strong>을 찾는 것 (예: "데이터 분석가"와 "Data Analyst"가 사실 같은 일인지 컴퓨터가 스스로 알아채게 만들기)</li>
+      </ul>
+
+      <a class="src" href="https://arxiv.org/html/2507.07582" target="_blank" rel="noopener">arXiv · 논문 원문(전문 공개)</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 어떤 데이터로 실험했나요?</h2>
+      <div class="source-card">
+        <h3>O*NET 직업 설명 1,016개</h3>
+        <ul>
+          <li><strong>출처:</strong> O*NET 데이터베이스(onetonline.org) — 지난 O*NET 탭에서 본 바로 그 자료</li>
+          <li><strong>사용한 항목:</strong> 각 직업의 "정의(definition)" 설명 텍스트</li>
+          <li><strong>정답지(ground truth):</strong> O*NET·SOC 체계의 <strong>23개 대분류</strong> — "컴퓨터가 자동으로 나눈 그룹이 이 23개 정답과 얼마나 비슷한가"로 채점</li>
+        </ul>
+      </div>
+      <div class="notice">연결 포인트: 지난 O*NET 딥다이브에서 본 "Job Family(당시 기준 23개)"가 바로 이 논문의 정답지입니다. 즉 이 논문은 <strong>"사람이 만든 그룹(그룹 A)을 컴퓨터가 텍스트만으로 다시 만들어낼 수 있는가"</strong>를 실제로 테스트한 실험입니다.</div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 핵심 파이프라인 — 4단계로 이해하기</h2>
+
+      <h4>먼저 알아두면 좋은 단어 3개</h4>
+      <dl class="terms">
+        <div class="term"><dt>임베딩(embedding)</dt><dd>문장을 AI 모델(BERT 계열)에 넣어 384~768개짜리 숫자 목록으로 바꾸는 것. 뜻이 비슷한 문장은 숫자도 비슷하게 나옵니다.</dd></div>
+        <div class="term"><dt>차원 축소(dimensionality reduction)</dt><dd>숫자 개수(차원)를 줄이는 작업. 고화질 사진을 저화질로 압축해도 알아볼 수 있는 것처럼, 계산을 가볍게 하면서도 중요한 특징은 최대한 남깁니다.</dd></div>
+        <div class="term"><dt>실루엣 점수(silhouette score)</dt><dd>정답이 없을 때 "이 그룹 나누기가 잘 됐는지"를 스스로 채점하는 지표. 한 점이 자기 그룹과는 가깝고, 다른 그룹과는 멀리 떨어져 있을수록 높은 점수를 줍니다.</dd></div>
+      </dl>
+
+      <ul>
+        <li><strong>1단계 · 텍스트를 숫자로:</strong> BERT 계열 AI 모델 6종(distilbert, MiniLM 등)으로 직업 설명 1,016개를 각각 숫자 목록으로 변환</li>
+        <li><strong>2단계 · 숫자 개수 줄이기:</strong> PCA, t-SNE 등 7가지 차원 축소 방법을 비교. 5~700차원까지 다양한 크기로 줄여봄</li>
+        <li><strong>3단계 · 그룹으로 나누기:</strong> K-means, K-medoids, DBSCAN, Spectral clustering 4종의 군집화 알고리즘으로 그룹을 나눔</li>
+        <li><strong>4단계 · 채점하기:</strong> O*NET의 23개 정답 그룹과 비교해 정확도·조정랜드지수 등 여러 지표로 평가하고, 정답 없이 스스로 평가하는 실루엣 점수도 함께 사용</li>
+      </ul>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 실험 결과 — 뭐가 제일 잘 됐나요?</h2>
+
+      <div class="calc">
+        <div class="row"><span class="label">실루엣 분석 전</span><span class="val">최고 정확도 약 80.5% (모델·방법마다 성적이 들쭉날쭉함)</span></div>
+        <div class="row"><span class="label">실루엣 분석 후</span><span class="val">최고 정확도 약 93.3%로 상승 (같은 모델 조합 기준)</span></div>
+        <div class="row"><span class="label">가장 안정적인 방법</span><span class="val">차원 축소 기법 중에는 t-SNE가 여러 지표에서 꾸준히 좋은 성적</span></div>
+      </div>
+
+      <div class="notice">흥미로운 발견: 정답은 23개 그룹인데, "몇 개로 나누는 게 최선인가"를 컴퓨터가 스스로 찾게 하니 지표에 따라 <strong>10개~29개</strong>로 제각각 다르게 나왔습니다. 즉 "몇 개 그룹으로 나눌지"조차 하나의 정답이 없다는 뜻입니다 — 앞서 본 O*NET(16→14개)·KECO(24→10개) 개편 사례와 같은 교훈을 컴퓨터 실험에서도 똑같이 확인한 셈입니다.</div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "이 논문은 2025년 논문인데요, 직업 설명 텍스트만 가지고 컴퓨터가 O*NET의 공식 분류를 얼마나 잘 다시 만들어낼 수 있는지 실험했어요. 방법은 크게 네 단계예요. 먼저 직업 설명을 AI 모델로 숫자로 바꾸고, 그 숫자 개수를 줄이고, 비슷한 것끼리 그룹으로 나누고, 마지막에 진짜 정답이랑 얼마나 비슷한지 채점하는 거죠. AI 모델 6개, 숫자 줄이는 방법 7개, 그룹 나누는 방법 4개를 다 조합해서 실험했는데, 그냥 돌렸을 때는 정확도가 80%대였는데, '몇 개 그룹이 제일 자연스러운지'를 컴퓨터가 스스로 찾게 하니까 93%까지 올라갔어요. 저희는 여기서 '텍스트만으로도 상당히 정확하게 자동 분류가 가능하다'는 기술적 근거를 가져왔고, 동시에 '그룹 개수도 하나의 정답이 없다'는 것도 함께 확인했어요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">이 방법을 CareerLens에 그대로 쓸 수 있어요?</p>
+          <p class="a">파이프라인 자체(임베딩 → 차원 축소 → 군집화 → 평가)는 그대로 참고할 수 있습니다. 다만 이 논문은 영어 텍스트·BERT 모델을 썼기 때문에, 한국어 채용공고에는 한국어를 지원하는 임베딩 모델로 바꿔야 합니다. 또 저희 데이터는 1,016개보다 훨씬 적을 가능성이 높아서, 모델·설정을 그대로 복사하기보다 규모에 맞게 단순화해서 참고하는 게 현실적입니다.</p>
+        </div>
+        <div>
+          <p class="q">정답(23개 그룹)이 있는데 왜 컴퓨터는 다른 개수를 찾아요?</p>
+          <p class="a">"정답"이라는 23개 그룹도 결국 사람이 정한 기준일 뿐, 텍스트 자체의 통계적 패턴과 완벽히 일치하지는 않기 때문입니다. 컴퓨터는 "텍스트가 실제로 얼마나 비슷한가"만 보고 그룹을 나누는데, 이 기준과 사람이 만든 분류 기준이 항상 같지는 않다는 걸 보여주는 결과입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">07</span> 그룹 B 세 논문, 한눈에 비교하기</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>국내 논문 (2022)</th><th>ScienceDirect (2020)</th><th>arXiv (2025)</th></tr></thead>
+          <tbody>
+            <tr><td class="who">비교 대상</td><td class="what">사람 점수 vs 직업 점수</td><td class="what">채용공고 텍스트끼리</td><td class="what">직업 설명 텍스트끼리</td></tr>
+            <tr><td class="who">방법</td><td class="what">유클리디안 거리</td><td class="what">클러스터링 + 협업 필터링</td><td class="what">AI 임베딩 + 차원축소 + 클러스터링</td></tr>
+            <tr><td class="who">정답 검증</td><td class="what">재직자 현재 직업으로 교차검증</td><td class="what">원문 접근 제한으로 불확실</td><td class="what">O*NET 23개 그룹과 직접 비교</td></tr>
+            <tr><td class="who">기술 난이도</td><td class="what">중간 (통계)</td><td class="what">중간 (하이브리드)</td><td class="what">높음 (최신 AI 임베딩)</td></tr>
+            <tr><td class="who">CareerLens 적용 난이도</td><td class="what">낮음 (개념만 참고)</td><td class="what">중간</td><td class="what">중간~높음 (AI 모델 필요, 파이프라인은 재현 가능)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">08</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">임베딩+차원축소+군집화 파이프라인이 실제로 공식 분류를 상당 부분 재현할 수 있다</td><td class="what">그룹 B(콘텐츠 기반) 검증 실험을 설계할 때 이 4단계 파이프라인을 참고 모델로 사용</td></tr>
+            <tr><td class="what">그룹 개수는 지표마다 다르게 나온다 — 하나의 정답이 없다</td><td class="what">CareerLens 태그·묶음 개수도 여러 방법으로 비교한 뒤 팀이 합의로 최종 결정</td></tr>
+            <tr><td class="what">차원 축소·실루엣 분석 같은 튜닝 단계를 더하면 성능이 크게 개선된다</td><td class="what">"묶어보기"로 끝내지 않고, 결과를 평가하고 다듬는 단계를 실험 설계에 포함</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /arXiv 탭 ============================== -->
+
+  </div>
+
+  <div class="outer-tab-panel" data-outer="groupCD" id="outer-panel-groupCD" hidden>
+    <header class="masthead">
+      <div class="kicker">CareerLens B팀 · 조사 3 자료 딥다이브 6-8/8 (그룹 C·D, 마지막 자료) · 2026.08.21</div>
+      <h1>실무 사례와 설명 가능성<br>그룹 C·D 자료 세 편</h1>
+      <p class="standfirst">아래 탭을 눌러 세 자료를 각각 볼 수 있습니다. LinkedIn(그룹 C)이 그룹 A·B를 실제로 합쳐 쓰는 사례였다면, 그룹 D의 두 논문은 "왜 이렇게 추천했는지 설명하는 방법" 자체를 다룹니다. 이 세 번째 탭으로 조사3 자료 8개 전체가 마무리됩니다.</p>
+      <div class="roster">
+        <span class="roster-label">핵심 정보</span>
+        <span>LinkedIn: 스킬 3.9만+개</span><span>JD/Resume(Barrak): 몬트리올, 2022</span><span>채용추천(Al Awad): 시리아, 2026</span>
+      </div>
+    </header>
+
+    <nav class="tabnav" role="tablist">
+      <button class="tab-btn active" data-tab="linkedin" role="tab" aria-selected="true">LinkedIn<span class="sub">그룹 C · 실무 사례</span></button>
+      <button class="tab-btn" data-tab="explain" role="tab" aria-selected="false">JD/Resume 매칭<span class="sub">그룹 D · Barrak 외, 2022</span></button>
+      <button class="tab-btn" data-tab="semantic" role="tab" aria-selected="false">채용 추천 시스템<span class="sub">그룹 D · Al Awad 외, 2026</span></button>
+    </nav>
+
+    <div class="tab-panel" data-panel="linkedin" id="panel-linkedin">
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>LinkedIn Skills Graph는 <strong>그룹 A(사람이 만든 분류표)와 그룹 B(AI 임베딩·군집화)를 실제로 합쳐서</strong> 서비스에 쓰고 있는 실무 사례입니다.</li>
+          <li>규모: 스킬 <strong>3.9만여 개</strong>(26개 언어), 별칭 37.4만여 개, 스킬 간 관계(엣지) <strong>20만여 개</strong>, 회원 8.75억 명, 기업 5,900만여 개.</li>
+          <li>스킬을 찾아내는 방식이 하이브리드입니다 — <strong>① 빠르고 단순한 사전 매칭</strong> + <strong>② AI가 뜻을 이해해서 매칭하는 의미 기반 방식</strong>을 같이 씁니다.</li>
+          <li>AI가 제안한 결과를 <strong>사람(전문 분류학자)이 검증</strong>하는 과정도 있습니다 — 완전 자동도, 완전 수동도 아닌 하이브리드 운영입니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> LinkedIn Skills Graph가 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 전 세계 직장인들의 "능력"을 하나로 연결한 거대한 지도라고 생각하면 됩니다. 지도에서 서울과 부산이 도로로 연결되어 있듯, 이 지도에서는 "데이터 분석"과 "SQL"이 연결되어 있고, "SQL"은 다시 여러 직업·강의·사람과 연결됩니다. LinkedIn은 이 지도를 이용해 학력이나 직함이 아니라 <strong>실제 능력</strong>을 기준으로 사람과 기회를 연결하려고 합니다("스킬 우선(skills-first)" 채용 문화).
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>목적:</strong> 학력·직함 대신 실제 능력(스킬)을 기준으로 사람과 채용공고·강의·인맥을 연결하는 "공통 언어" 만들기</li>
+        <li><strong>데이터 출처:</strong> 채용공고, 회원 프로필·자기소개, 경력 설명, 이력서, 강의 콘텐츠</li>
+        <li><strong>규모(2023년 기준):</strong> 스킬 약 3.9만 개(26개 언어), 별칭 37.4만여 개, 스킬 간 관계(엣지) 20만여 개, 회원 8.75억 명, 기업 5,900만여 개</li>
+      </ul>
+
+      <a class="src" href="https://www.linkedin.com/blog/engineering/skills-graph/building-linkedin-s-skills-graph-to-power-a-skills-first-world" target="_blank" rel="noopener">LinkedIn Engineering · Skills Graph 소개</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 스킬을 텍스트에서 어떻게 뽑아내나요? — 하이브리드 추출 방식</h2>
+      <p>채용공고나 자기소개 같은 텍스트에서 "스킬"을 자동으로 찾아내야 하는데, LinkedIn은 방법 두 가지를 같이 씁니다.</p>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>① 사전 기반 방식 (빠름)</h4>
+          <p class="ex">미리 정리해둔 스킬 이름 목록을 사전처럼 만들어두고, 텍스트에서 정확히 일치하는 단어를 빠르게 찾아냅니다. 정확하고 속도가 매우 빠르지만, "다른 말로 표현된 같은 스킬"은 놓칠 수 있습니다.</p>
+        </div>
+        <div class="deep-card">
+          <h4>② 의미 기반 방식 (AI)</h4>
+          <p class="ex">"비용 관리"와 "cost management"처럼 표현이 달라도 뜻이 같은 스킬을 AI가 찾아냅니다. 문장과 스킬 이름을 각각 숫자(임베딩)로 바꾼 뒤, 두 숫자가 얼마나 가까운지 비교하는 AI 모델(BERT 계열)을 씁니다.</p>
+        </div>
+      </div>
+
+      <div class="notice">사람의 역할: AI 혼자 다 하지 않습니다. 사람(라벨러)이 AI와 함께 학습용 데이터에 스킬을 표시하고, <strong>훈련된 분류학자(taxonomist)</strong>가 최종적으로 결과를 검증합니다. 이건 지난 ESCO 딥다이브에서 본 "사람이 최종 확인한다"는 원칙과 같은 맥락입니다.</div>
+
+      <a class="src" href="https://www.linkedin.com/blog/engineering/skills-graph/extracting-skills-from-content" target="_blank" rel="noopener">LinkedIn Engineering · 콘텐츠에서 스킬 추출하기</a>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 스킬 사이의 관계는 어떻게 만드나요? — 그래프 만들기</h2>
+
+      <h4>먼저 알아두면 좋은 단어</h4>
+      <dl class="terms">
+        <div class="term"><dt>코사인 유사도(cosine similarity)</dt><dd>두 숫자 목록(임베딩)이 얼마나 비슷한 방향을 가리키는지 재는 계산법. 지난 arXiv 딥다이브에서 본 유클리디안 거리와 비슷한 역할이지만, "거리"가 아니라 "방향"으로 비교한다는 점이 다릅니다.</dd></div>
+        <div class="term"><dt>커뮤니티 탐지(community detection)</dt><dd>거대한 네트워크(그래프) 안에서 서로 긴밀하게 연결된 무리를 자동으로 찾아내는 알고리즘. 친구 관계 네트워크에서 "친한 친구 그룹"을 자동으로 찾아내는 것과 같은 원리입니다.</dd></div>
+      </dl>
+
+      <div class="steps">
+        <div class="step"><span class="no">1</span><div><b>모든 스킬을 숫자 공간에 배치</b><span class="d">3.9만여 개 스킬을 딥러닝으로 같은 고차원 숫자 공간(임베딩)에 배치합니다.</span></div></div>
+        <div class="step"><span class="no">2</span><div><b>스킬 쌍마다 유사도 계산</b><span class="d">모든 스킬 쌍 사이의 코사인 유사도를 계산합니다.</span></div></div>
+        <div class="step"><span class="no">3</span><div><b>유사도를 연결 강도로 네트워크 구성</b><span class="d">유사도가 높을수록 굵은 선으로 연결된 네트워크(그래프)를 만듭니다.</span></div></div>
+        <div class="step"><span class="no">4</span><div><b>약한 연결 잘라내기</b><span class="d">너무 약한 연결은 잘라내서 핵심 뼈대(backbone)만 남깁니다.</span></div></div>
+        <div class="step"><span class="no">5</span><div><b>커뮤니티 탐지로 스킬 군집 발견</b><span class="d">서로 보완적인 스킬끼리 자동으로 그룹(군집)을 찾아냅니다.</span></div></div>
+      </div>
+
+      <h4>계층 구조 예시 (Structured Skills)</h4>
+      <div class="pill-grid">
+        <span>인공신경망 → 딥러닝 → 머신러닝</span>
+        <span>공급망 엔지니어링 → 공급망 관리 · 산업공학</span>
+      </div>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 실제로 어디에 쓰이나요?</h2>
+      <ul>
+        <li><strong>채용 매칭:</strong> 표현이 달라도 같은 스킬로 인식 (예: "비용 관리" ↔ "프로젝트 예산 관리")</li>
+        <li><strong>학습 콘텐츠 추천:</strong> 커리어 경로에 맞는 강의를 찾아 보여줌</li>
+        <li><strong>피드 개인화:</strong> 관련 게시물·인맥·회사를 추천</li>
+        <li><strong>채용담당자 도구:</strong> LinkedIn 채용담당자의 40% 이상이 스킬 데이터를 채용에 활용</li>
+      </ul>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "LinkedIn Skills Graph는 전 세계 직장인들의 스킬 3만 9천여 개를 하나로 연결한 거대한 네트워크예요. 특징은 스킬을 찾아내는 방식이 두 가지를 섞은 하이브리드라는 거예요. 하나는 미리 만들어둔 사전으로 빠르게 찾는 방식이고, 다른 하나는 AI가 뜻을 이해해서 표현이 달라도 같은 스킬을 찾아내는 방식이에요. 그리고 스킬끼리 얼마나 비슷한지는 AI로 숫자로 바꾼 다음 코사인 유사도로 계산하고, 이걸로 네트워크를 만들어서 비슷한 스킬 그룹을 자동으로 찾아내요. 근데 여기서 끝이 아니라, 사람 전문가가 이 결과를 최종 검증해요. 그러니까 저희가 지금까지 본 그룹 A(사람이 정한 규칙)랑 그룹 B(AI 자동 계산)를 실제 회사가 이렇게 같이 쓰고 있다는 걸 보여주는 사례예요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">이런 대규모 시스템을 CareerLens 같은 소규모 프로젝트에서 따라 할 수 있어요?</p>
+          <p class="a">규모 그대로는 불가능합니다. LinkedIn은 8억 명이 넘는 회원 데이터로 AI 모델을 훈련하지만, 저희는 데이터가 훨씬 적습니다. 다만 "빠른 사전 매칭 + 정밀한 유사도 계산을 단계적으로 결합한다"는 설계와 "AI 결과를 사람이 최종 검증한다"는 원칙은 소규모로도 그대로 적용할 수 있습니다.</p>
+        </div>
+        <div>
+          <p class="q">코사인 유사도랑 유클리디안 거리는 뭐가 달라요?</p>
+          <p class="a">둘 다 "두 숫자 목록이 얼마나 비슷한가"를 재지만 기준이 다릅니다. 유클리디안 거리(지난 국내 논문에서 사용)는 직선 거리를, 코사인 유사도는 두 벡터가 가리키는 방향의 각도를 봅니다. 텍스트·스킬처럼 "크기보다 패턴이 중요한 데이터"에는 코사인 유사도가 더 자주 쓰입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">07</span> 지금까지 본 그룹 A·B와 어떻게 연결되나</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>앞서 본 개념</th><th>LinkedIn이 실제로 쓰는 방식</th></tr></thead>
+          <tbody>
+            <tr><td class="who">그룹 A · 사람이 만든 분류(O*NET·ESCO·KNOW)</td><td class="what">Structured Skills 계층 구조 + 훈련된 분류학자의 최종 검증</td></tr>
+            <tr><td class="who">그룹 B · 임베딩·군집화(arXiv 논문)</td><td class="what">스킬 임베딩 + 코사인 유사도 + 커뮤니티 탐지로 스킬 그래프 자동 생성</td></tr>
+            <tr><td class="who">그룹 B · 필수/선택 스킬 구분(ESCO)</td><td class="what">스킬 간 관계(엣지)로 "이 직무에 핵심적인 스킬 묶음"을 표현</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>LinkedIn 사례가 중요한 이유는, 저희가 따로따로 살펴본 방법들이 <strong>실제로는 함께 쓰여야 잘 작동한다</strong>는 걸 실증한다는 점입니다.</p>
+    </section>
+
+    <section>
+      <h2><span class="num">08</span> CareerLens 조사3에 왜 중요한가</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>LinkedIn에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">사전 기반(빠름) + AI 의미 기반(정확함)을 섞은 하이브리드 추출이 실제로 검증됐다</td><td class="what">태그 추출 시 키워드 매칭(1차 빠른 필터링) → 유사도 계산(정밀 검증)의 단계적 구조로 설계</td></tr>
+            <tr><td class="what">AI가 제안한 결과를 사람이 최종 검증한다</td><td class="what">자동 추출한 태그를 팀원이 검수하는 단계를 프로세스에 명시적으로 포함</td></tr>
+            <tr><td class="what">표현이 다른 같은 의미의 업무를 자동으로 매칭한다</td><td class="what">채용공고마다 다르게 쓰는 업무 표현(동의어)을 같은 태그로 묶는 실전 근거로 사용</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /LinkedIn 탭 ============================== -->
+
+    <!-- ============================== JD/Resume 매칭(그룹 D) 탭 ============================== -->
+    <div class="tab-panel" data-panel="explain" id="panel-explain" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>이 연구는 캐나다 몬트리올 폴리테크닉의 <strong>박사 연구 제안서</strong>로, "이력서-채용공고 매칭 시스템"에 <strong>추적 가능성(traceable)·설명 가능성(explainable)·공정성(fair)</strong>을 어떻게 넣을지 설계했습니다.</li>
+          <li>⚠️ 완성된 시스템의 최종 결과 논문이 아니라, 2022년 시점의 <strong>문헌조사(109편) + 제안 아키텍처</strong>를 담은 연구 제안서라는 점을 먼저 밝혀두는 게 정확합니다.</li>
+          <li>스킬을 매칭할 때 <strong>지난번 본 ESCO를 지식베이스로 그대로 사용</strong>합니다 — 그룹 A(공식 분류체계)와 그룹 D(설명 가능성)를 잇는 실제 다리입니다.</li>
+          <li>핵심 아이디어: <strong>"누구에게 설명하느냐"에 따라 설명 내용이 달라야 한다</strong> — 채용담당자용·구직자용·채용기업용 설명을 각각 따로 만듭니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> AI 면접관이 있는데, 왜 이 사람을 뽑았는지 왜 나는 떨어졌는지 아무도 설명해주지 않는다면 믿을 수 있을까요? 이 연구는 바로 그 문제를 풉니다. "잘 맞혔다"는 결과만이 아니라, <strong>"왜 이렇게 판단했는지"</strong>까지 시스템 설계에 처음부터 포함시키려는 시도입니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>제목:</strong> Toward a traceable, explainable, and fair JD/Resume recommendation system</li>
+        <li><strong>저자:</strong> Amine Barrak (지도교수: Bram Adams, Amal Zouaq)</li>
+        <li><strong>소속:</strong> Polytechnique Montréal(캐나다 몬트리올 폴리테크닉), 컴퓨터·소프트웨어공학과</li>
+        <li><strong>제출:</strong> 2022년 2월 · <strong>성격: 박사 연구 제안서</strong>(전체 시스템의 설계도 + 초기 문헌조사·예비실험)</li>
+      </ul>
+
+      <a class="src" href="https://arxiv.org/abs/2202.08960" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 왜 이 문제가 중요한가요? — 자동 채용의 딜레마</h2>
+      <ul>
+        <li><strong>수작업 채용</strong>은 시간과 비용이 많이 들어서, 많은 회사가 자동화된 매칭 시스템을 원합니다.</li>
+        <li>그런데 자동화된 매칭이 <strong>"왜 이 사람을 골랐는지" 설명을 안 해주면</strong>, 채용담당자도 구직자도 결과를 신뢰하기 어렵습니다.</li>
+        <li>저자들이 2014~2021년 논문 <strong>109편</strong>을 검토해보니, <strong>"지식베이스(ESCO 등)"와 "최신 AI 언어모델(트랜스포머)"을 같이 쓴 연구가 없었습니다</strong> — 이 빈틈을 채우는 것이 이 연구의 핵심 기여입니다.</li>
+      </ul>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 어떻게 매칭하나요? — ESCO + AI 언어모델</h2>
+      <p>지식베이스(사람이 만든 규칙)와 AI 언어모델(자동 계산)을 함께 씁니다 — 지금까지 본 그룹 A와 그룹 B를 실제로 결합한 또 하나의 사례입니다.</p>
+
+      <h4>2단계 스킬 매칭</h4>
+      <ul>
+        <li><strong>직접 매칭:</strong> 이력서의 "C++"과 공고의 "c++"처럼 완전히 같은 단어를 매칭</li>
+        <li><strong>계층 매칭:</strong> <strong>ESCO의 계층 구조</strong>를 이용해 "C++"을 더 큰 범주인 "컴퓨터 프로그래밍"으로도 연결 — 단어가 달라도 상위 개념이 같으면 매칭됨</li>
+      </ul>
+
+      <h4>AI 모델: CamemBERT</h4>
+      <p>프랑스어 이력서·공고를 다루기 위해 <strong>CamemBERT</strong>(프랑스어 버전 BERT)라는 AI 언어모델을 이 연구의 목적에 맞게 추가 학습(미세조정)해서 사용합니다.</p>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>이력서에서 뽑는 항목</h4>
+          <p class="ex">학력(학위·전공·수상), 스킬(전문·일반), 개인정보, 경력(현재 직위·연봉·산업), 언어 능력</p>
+        </div>
+        <div class="deep-card">
+          <h4>채용공고에서 뽑는 항목</h4>
+          <p class="ex">인적 요건, 학력 요건, 제시 직위·연봉, 요구 경력 연수, 기술·협업 요건</p>
+        </div>
+      </div>
+
+      <p style="margin-top:.6rem"><strong>매칭 순서:</strong> ESCO 기반 특징 유사도로 1차 필터링 → 후보 압축 → CamemBERT로 정밀 순위 매기기 → NDCG(추천 순위가 얼마나 정확한지 재는 지표)로 성능 평가</p>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 설명 가능성 — "누구에게" 설명하느냐가 다르다</h2>
+      <p>이 논문이 가장 강조하는 부분입니다. 같은 매칭 결과라도 <strong>보는 사람에 따라 필요한 설명이 다릅니다.</strong></p>
+
+      <div class="notice">용어 구분: <strong>해석가능성(interpretability)</strong>은 "왜 이런 결과가 나왔는지 원인-결과 관계를 이해하는 것"이고, <strong>설명가능성(explainability)</strong>은 그 이유를 "사람이 알아들을 수 있는 말로 풀어서 전달하는 것"입니다. 이 논문은 후자, 즉 사람에게 어떻게 전달할지에 집중합니다.</div>
+
+      <div class="deep-grid">
+        <div class="deep-card">
+          <h4>채용담당자용 리포트</h4>
+          <p class="ex">상위 후보를 선정한 기준 + 후보 간 비교 분석</p>
+        </div>
+        <div class="deep-card">
+          <h4>구직자용 리포트</h4>
+          <p class="ex">합격 또는 불합격이 된 구체적인 이유</p>
+        </div>
+        <div class="deep-card">
+          <h4>채용기업용 리포트</h4>
+          <p class="ex">채용담당자의 평가 기준이 타당했는지에 대한 근거</p>
+        </div>
+      </div>
+
+      <p style="margin-top:.6rem"><strong>설명을 만드는 방법(검토된 기법들):</strong> 레이어별 관련성 전파(어떤 특징이 결과에 얼마나 영향을 줬는지 역추적), LIME(입력값을 살짝 바꿔보며 원인을 추정), 어텐션 기반 강조 표시(AI 모델이 어떤 단어에 집중했는지 시각화)</p>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 추적 가능성과 공정성도 함께</h2>
+      <ul>
+        <li><strong>추적 가능성(traceability):</strong> 데이터가 어떻게 바뀌어왔는지, 모델 설정이 언제 어떻게 바뀌었는지, 각 매칭 결정의 근거가 무엇인지 전부 기록합니다. (DVC, MLFlow 같은 기존 도구를 활용)</li>
+        <li><strong>공정성(fairness):</strong> 성별·나이 같은 민감한 정보로 인한 편향이 없는지 데이터를 정제하고, 특정 단어 단위로 편향된 판단을 하는지 검사하며, 특정 집단에 치우치지 않은 균형 잡힌 학습 데이터를 구성합니다.</li>
+      </ul>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">07</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "이 연구는 캐나다 몬트리올 폴리테크닉의 박사 연구 제안서인데요, 이력서랑 채용공고를 자동으로 매칭하는 시스템을 만들 때 '왜 이렇게 추천했는지'를 설명하는 방법까지 처음부터 설계에 포함시켰어요. 스킬을 매칭할 때 저희가 앞서 본 ESCO를 지식베이스로 그대로 쓰고요, 프랑스어 이력서를 다루려고 CamemBERT라는 AI 언어모델도 같이 써요. 근데 제일 흥미로운 부분은, 설명을 채용담당자용, 구직자용, 채용기업용으로 각각 다르게 만든다는 거예요. 같은 매칭 결과라도 누가 보느냐에 따라 필요한 설명이 다르다는 거죠. 다만 이건 완성된 시스템이 아니라 연구 제안서라서, 최종 결과가 다 나온 건 아니고 설계와 초기 실험 단계까지만 진행됐다는 것도 같이 말씀드리는 게 정확해요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">이 논문은 완성된 연구예요, 제안서예요?</p>
+          <p class="a">연구 제안서에 가깝습니다. 2014~2021년 문헌 109편을 분석한 체계적 문헌조사와, 초기 실험(NDCG로 CamemBERT 여러 버전을 비교) 결과는 있지만, 완성되어 배포된 시스템의 최종 성능 결과까지는 이 논문 시점에 나와 있지 않습니다. 정리할 때는 "완성된 결과"가 아니라 "설계도이자 방향성"으로 인용하는 게 정확합니다.</p>
+        </div>
+        <div>
+          <p class="q">CareerLens에서 "이해관계자별 설명 나누기" 아이디어를 쓸 수 있어요?</p>
+          <p class="a">네, 이 부분이 규모와 상관없이 그대로 참고할 수 있는 아이디어입니다. CareerLens도 "사용자에게 보여줄 설명"과 "팀 내부에서 태그 근거를 확인할 설명"을 다르게 설계할 수 있습니다 — 이미 이전 문서들에서 이야기한 `reason` 문구 같은 사용자용 설명과, 태그 겹침 근거 같은 내부용 설명을 구분하는 것과 같은 맥락입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">08</span> 그룹 A~D를 하나로 잇기 + CareerLens 적용</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>그룹</th><th>이 논문에서 대응하는 부분</th></tr></thead>
+          <tbody>
+            <tr><td class="who">그룹 A · 공식 분류(ESCO)</td><td class="what">스킬 매칭의 지식베이스로 ESCO를 그대로 사용, 계층 구조로 "직접 매칭 + 계층 매칭" 구현</td></tr>
+            <tr><td class="who">그룹 B · AI 임베딩(arXiv)</td><td class="what">CamemBERT 트랜스포머 모델로 이력서·공고 텍스트를 정밀 순위 매김</td></tr>
+            <tr><td class="who">그룹 C · 실무 사례(LinkedIn)</td><td class="what">지식베이스+AI를 함께 쓰는 하이브리드 구조가 실제로도, 연구에서도 반복되는 패턴임을 재확인</td></tr>
+            <tr><td class="who">그룹 D · 설명 가능성(이 논문)</td><td class="what">이해관계자별 맞춤 설명 + 추적 가능성 + 공정성까지 시스템 설계에 포함</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>CareerLens 조사3에 적용하는 방법</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">"누구에게 설명하느냐"에 따라 설명 내용을 다르게 설계해야 한다</td><td class="what">사용자용 추천 이유 문구와, 팀 내부 검토용 근거 기록을 별도로 설계</td></tr>
+            <tr><td class="what">직접 매칭 + 계층 매칭을 함께 쓰면 놓치는 경우를 줄일 수 있다</td><td class="what">태그가 정확히 일치하지 않아도 상위 범주가 같으면 연결되도록 태그 체계에 계층을 둘지 검토</td></tr>
+            <tr><td class="what">완성 전 연구도 "설계 방향"으로는 충분히 인용할 가치가 있다</td><td class="what">정리할 때 자료의 완성도(제안서 vs 완성 논문)를 정확히 구분해서 인용하는 습관 유지</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    <!-- ============================== /JD/Resume 매칭 탭 ============================== -->
+
+    <!-- ============================== 채용 추천 시스템(그룹 D #2) 탭 ============================== -->
+    <div class="tab-panel" data-panel="semantic" id="panel-semantic" hidden>
+
+    <section>
+      <h2><span class="num">01</span> 결론 먼저 (쉬운 요약)</h2>
+      <div class="lede">
+        <ul>
+          <li>이 논문은 2026년 5월 발표된 <strong>가장 최신 자료</strong>이자, 앞선 Barrak의 제안서와 달리 <strong>실제로 완성해서 성능까지 측정한 실험 논문</strong>입니다.</li>
+          <li>핵심 특징: 채용공고의 전체 설명문이 아니라 <strong>제목·회사·지역·연차·직무분야·고용형태·산업</strong> 같은 메타데이터만 사용합니다.</li>
+          <li>키워드 매칭(TF-IDF)과 의미 기반 매칭(Sentence-BERT)을 <strong>실제 숫자 비율(0.6:0.4)</strong>로 섞어서 씁니다.</li>
+          <li>설명 방식이 실용적입니다 — SHAP·LIME 같은 복잡한 AI 해석 도구 대신, <strong>"어떤 키워드가 겹쳤는지, 어떤 필터가 적용됐는지"</strong>를 그대로 보여주는 단순한 방식을 택했습니다. 조사3에서 본 자료 중 <strong>CareerLens와 철학이 가장 비슷한</strong> 논문입니다.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">02</span> 이 논문이 정확히 뭔가요?</h2>
+
+      <div class="analogy">
+        <b>비유로 먼저 이해하기 —</b> 도서관에서 "제목에 정확히 그 단어가 들어간 책"만 찾아주는 사서(키워드 검색)와, "무슨 내용인지 이해하고 비슷한 책까지 찾아주는" 사서(의미 검색)를 <strong>둘 다 고용해서 같이 일하게 하는 것</strong>과 비슷합니다. 그리고 손님(사용자)에게는 "이 책을 추천한 이유"를 두 사서 중 누가 찾았는지까지 알려줍니다.
+      </div>
+
+      <h4>기본 정보</h4>
+      <ul>
+        <li><strong>제목:</strong> Developing an Intelligent Job Recommendation System Using Semantic Retrieval and Explainable AI Techniques</li>
+        <li><strong>저자:</strong> Hussein Ali Al Awad (지도교수: Khaled Fathi Omar)</li>
+        <li><strong>소속:</strong> 시리아 가상대학교(Syrian Virtual University) 웹과학 석사과정</li>
+        <li><strong>게재:</strong> arXiv 2605.27656, 2026년 5월 26일</li>
+        <li><strong>목적:</strong> 채용공고 전체 설명문이나 사용자 행동 기록 없이도, 구조화된 메타데이터만으로 효과적이고 설명 가능한 추천이 가능한지 확인</li>
+      </ul>
+
+      <a class="src" href="https://arxiv.org/abs/2605.27656" target="_blank" rel="noopener">arXiv · 논문 원문</a>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">03</span> 어떤 데이터로 실험했나요?</h2>
+      <div class="source-card">
+        <h3>LinkedIn 채용공고 31,262건</h3>
+        <ul>
+          <li><strong>수집:</strong> 31,597건 수집 → 정제 후 31,262건 사용 (335건 제거)</li>
+          <li><strong>사용한 필드:</strong> 직무명, 회사명, 지역, 채용상태, 게시일, 연차수준, 직무분야, 고용형태, 산업</li>
+          <li><strong>전처리:</strong> 결측값 처리, 공백 정규화, 약어 확장(ML→machine learning, SWE→software engineer 등), 노이즈 제목 제거</li>
+        </ul>
+      </div>
+      <div class="notice">LinkedIn(그룹 C)과 이 논문 둘 다 LinkedIn 채용 데이터를 다룬다는 공통점이 있습니다. 다만 그룹 C는 회사가 공개한 시스템 구조를, 이 논문은 공개된 채용공고 데이터셋으로 <strong>독립적으로 실험한 연구</strong>라는 차이가 있습니다.</div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">04</span> 시스템 구조 — 6단계 파이프라인</h2>
+
+      <div class="steps">
+        <div class="step"><span class="no">1</span><div><b>데이터 수집·전처리</b><span class="d">채용공고 정제, 텍스트 정규화, 약어 확장</span></div></div>
+        <div class="step"><span class="no">2</span><div><b>인덱싱</b><span class="d">키워드 매칭용 TF-IDF 행렬과, 의미 매칭용 임베딩 벡터를 둘 다 미리 구축</span></div></div>
+        <div class="step"><span class="no">3</span><div><b>검색</b><span class="d">벡터 유사도로 의미상 비슷한 후보 채용공고를 추출</span></div></div>
+        <div class="step"><span class="no">4</span><div><b>하이브리드 순위화</b><span class="d">키워드 점수와 의미 점수를 가중치로 합쳐 최종 순위 계산</span></div></div>
+        <div class="step"><span class="no">5</span><div><b>(선택) 재순위화</b><span class="d">상위 100개 후보만 Cross-Encoder라는 더 정밀한 AI 모델로 다시 정렬</span></div></div>
+        <div class="step"><span class="no">6</span><div><b>설명 생성</b><span class="d">검색어와 추천 결과를 연결하는 근거를 정리해 함께 제공</span></div></div>
+      </div>
+
+      <h4>핵심 공식</h4>
+      <div class="calc">
+        <div class="row"><span class="label">키워드 점수</span><span class="val">TF-IDF: 단어가 이 공고에 자주 나오면서, 다른 공고에는 드물게 나올수록 높은 점수</span></div>
+        <div class="row"><span class="label">의미 점수</span><span class="val">Sentence-BERT 임베딩 간 코사인 유사도</span></div>
+        <div class="row"><span class="label">최종 결합</span><span class="val">s_hybrid = 0.4 × 의미점수 + 0.6 × 키워드점수</span></div>
+        <div class="row"><span class="label">왜 키워드 비중이 더 큰가</span><span class="val">직무명·지역·연차 같은 "정확한 단어"가 채용 검색에서는 특히 중요하기 때문</span></div>
+      </div>
+    </section>
+
+    <section class="s-clay">
+      <h2><span class="num">05</span> 설명 가능성 — 단순하지만 실용적인 선택</h2>
+      <p>이 논문이 조사3에서 가장 눈여겨볼 부분입니다. SHAP·LIME 같은 복잡한 AI 해석 도구를 쓰지 않고, <strong>"특징 기반 설명"</strong>이라는 단순한 방식을 택했습니다.</p>
+
+      <ul>
+        <li>질의(검색어)와 채용공고 사이에 <strong>겹치는 키워드</strong></li>
+        <li><strong>적용된 필터 조건</strong> (원격근무, 연차, 지역 등)</li>
+        <li><strong>메타데이터 근거</strong> (직무분야·산업·고용형태가 일치하는지)</li>
+        <li>이 결과가 <strong>키워드 검색 / 의미 검색 / 재순위화</strong> 중 어디서 나왔는지</li>
+      </ul>
+
+      <div class="notice">저자들의 표현을 그대로 옮기면, <strong>"임베딩 공간 내부를 설명하기보다, 사용자가 직접 볼 수 있는 메타데이터에 기반한 실용적 투명성"</strong>을 목표로 했습니다. 앞서 본 Barrak 논문(레이어별 관련성 전파, LIME 등 학술적 해석 기법)과 뚜렷하게 대비되는 지점입니다.</div>
+
+      <h4>예시 쿼리로 보는 작동 방식</h4>
+      <div class="source-card">
+        <p><strong>검색어:</strong> "remote junior data analyst London"</p>
+        <p><strong>① 필터 추출:</strong> 근무형태=원격, 연차=주니어, 지역=런던</p>
+        <p><strong>② 후보 추출:</strong> 의미 검색으로 관련 채용공고 후보를 찾음</p>
+        <p><strong>③ 순위화:</strong> 키워드 비중을 높여 하이브리드 순위 계산</p>
+        <p><strong>④ 설명 생성:</strong> "data, analyst, remote, London" 키워드 일치 + 적용된 필터를 함께 제시</p>
+      </div>
+    </section>
+
+    <section class="s-indigo">
+      <h2><span class="num">06</span> 실험 결과는 어땠나요?</h2>
+
+      <h4>평가 방법 — 정답이 없을 때는 어떻게 채점하나</h4>
+      <p>사람이 직접 라벨링한 정답 데이터가 없어서, <strong>메타데이터 일치도로 등급을 매기는 방식</strong>을 만들어 썼습니다.</p>
+      <div class="pill-grid">
+        <span>등급3: 정규화된 직무명 동일</span><span>등급2: 직무분야·산업 일치</span>
+        <span>등급1: 연차·고용형태 동일</span><span>등급0: 메타데이터 불일치</span>
+      </div>
+
+      <h4>최종 성능</h4>
+      <div class="calc">
+        <div class="row"><span class="label">최적 조합</span><span class="val">의미 후보 250개, 의미:키워드 = 0.4:0.6</span></div>
+        <div class="row"><span class="label">Precision@10</span><span class="val">0.8032 (상위 10개 중 약 80%가 관련성 있음)</span></div>
+        <div class="row"><span class="label">nDCG@10</span><span class="val">0.9496 (순위까지 고려한 정확도, 1에 가까울수록 좋음)</span></div>
+        <div class="row"><span class="label">Cross-Encoder 재순위화 추가 시</span><span class="val">Precision +0.52%p, nDCG +0.72%p (소폭 개선, 계산 비용 대비 이득은 크지 않음)</span></div>
+      </div>
+    </section>
+
+    <section class="s-plum">
+      <h2><span class="num">07</span> 쉬운 요약으로 정리하면</h2>
+
+      <div class="summary">
+        "이 논문은 2026년 5월에 나온 가장 최근 자료인데요, 실제로 시스템을 완성해서 성능까지 측정한 논문이에요. 채용공고 3만 1천여 건을 가지고, 제목이나 지역, 연차 같은 메타데이터만 써서 추천 시스템을 만들었어요. 키워드 검색이랑 AI 의미 검색을 6:4 비율로 섞어서 쓰는데, 키워드 쪽 비중을 더 높였어요. 직무명이나 지역 같은 건 정확하게 맞는 게 중요하니까요. 그리고 제일 흥미로운 게 설명 방식인데, SHAP이나 LIME 같은 복잡한 AI 해석 도구를 안 쓰고, 그냥 '어떤 키워드가 겹쳤는지, 어떤 필터가 적용됐는지'를 보여주는 단순한 방식을 썼어요. 저자들이 직접 '사용자가 볼 수 있는 것에 기반한 실용적 투명성'이라고 표현했는데, 이게 저희 CareerLens가 하려는 것과 철학이 제일 비슷해요."
+      </div>
+
+      <h4>예상 질문 대비</h4>
+      <div class="qa">
+        <div>
+          <p class="q">SHAP·LIME 같은 정교한 도구를 안 쓴 이유가 뭐예요?</p>
+          <p class="a">논문에서 명확한 이유를 밝히진 않았지만, 결과로 미루어보면 "사용자가 이해하기 쉬운 설명"이 목표였기 때문으로 보입니다. SHAP·LIME은 AI 모델 내부(임베딩 공간)를 수학적으로 분석하는 도구라 전문가가 아니면 결과를 해석하기 어렵습니다. 반면 "겹치는 키워드"와 "적용된 필터"는 누구나 바로 이해할 수 있죠. 정확성보다 사용자 신뢰를 우선한 설계 판단으로 보입니다.</p>
+        </div>
+        <div>
+          <p class="q">이 논문 방법을 CareerLens에 가장 가깝게 적용한다면 어떤 모습이에요?</p>
+          <p class="a">가장 근접한 그림입니다. CareerLens도 채용공고 전체 설명 대신 구조화된 필드(직무명·지역·기업형태 등)를 쓸 가능성이 높고, 키워드 겹침(그룹 A식 태그 매칭)과 텍스트 유사도(그룹 B식 계산)를 같이 쓴다는 점도 같습니다. 설명도 "어떤 태그가 겹쳤는지"를 그대로 보여주면 되니, 복잡한 AI 해석 도구 없이도 설명 가능성을 확보할 수 있다는 걸 이 논문이 증명해줍니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="s-moss">
+      <h2><span class="num">08</span> 그룹 D 두 논문 비교 + 조사3 마무리</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>구분</th><th>JD/Resume 매칭 (Barrak 외, 2022)</th><th>채용 추천 시스템 (Al Awad 외, 2026)</th></tr></thead>
+          <tbody>
+            <tr><td class="who">완성도</td><td class="what">연구 제안서 (설계 + 초기 실험)</td><td class="what">완성된 실험 논문 (구체적 성능 수치 존재)</td></tr>
+            <tr><td class="who">사용 데이터</td><td class="what">이력서 전체 + ESCO 지식베이스</td><td class="what">채용공고 메타데이터만 (전체 설명문 제외)</td></tr>
+            <tr><td class="who">설명 방식</td><td class="what">레이어별 관련성 전파, LIME 등 학술적 기법</td><td class="what">키워드 겹침·필터 조건 등 실용적 기법</td></tr>
+            <tr><td class="who">이해관계자 설계</td><td class="what">채용담당자·구직자·기업용 설명을 각각 분리</td><td class="what">단일 사용자 대상 설명(검색자에게 보여줄 근거)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>CareerLens 조사3에 적용하는 방법</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>이 논문에서 배운 것</th><th>CareerLens에 적용하는 방법</th></tr></thead>
+          <tbody>
+            <tr><td class="what">메타데이터만으로도 충분히 쓸만한 추천 성능을 낼 수 있다 (Precision@10 = 0.80)</td><td class="what">채용공고 전체 텍스트 분석이 어렵다면, 직무명·지역·경력 같은 필드부터 먼저 활용하는 현실적 시작점으로 참고</td></tr>
+            <tr><td class="what">키워드 매칭과 의미 매칭을 섞을 때 키워드 비중을 더 높게 줄 수 있다 (0.6:0.4)</td><td class="what">그룹 A(태그 겹침)와 그룹 B(텍스트 유사도)를 결합할 때, 태그 겹침 쪽에 더 높은 가중치를 주는 방향을 실험해볼 근거로 사용</td></tr>
+            <tr><td class="what">복잡한 XAI 도구 없이도 "겹치는 키워드·적용된 필터"만으로 충분히 신뢰할 만한 설명이 가능하다</td><td class="what">CareerLens의 설명 문구도 복잡한 모델을 만들지 않고, 태그 겹침 근거를 그대로 보여주는 지금의 방향을 계속 유지</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="notice">이 탭으로 <strong>조사3 자료 8개</strong>(O*NET, ESCO, KNOW, 국내논문, ScienceDirect, arXiv 클러스터링, LinkedIn, JD/Resume 매칭 2편)를 모두 정리했습니다. 다음 단계는 이 자료들을 근거로 CareerLens의 실제 태그·클러스터링 방법을 결정하는 것입니다.</div>
+    </section>
+
+    </div>
+    <!-- ============================== /채용 추천 시스템 탭 ============================== -->
+
+  </div>
+
+  <footer>CareerLens B팀 · 조사 3 자료 딥다이브 통합본 · 그룹 A(O*NET · ESCO · KNOW) · 그룹 B(국내논문 · ScienceDirect · arXiv) · 그룹 C·D(LinkedIn · JD/Resume 매칭 · 채용 추천 시스템) · 2026.08.21~22 작성, 2026.08.23 통합 · 원문은 각 카드의 링크에서 확인 가능</footer>
+
+</div>
+
+<script>
+  // 큰 탭 (그룹 A / B / C·D)
+  var outerButtons = document.querySelectorAll('.outer-tab-btn');
+  var outerPanels = document.querySelectorAll('.outer-tab-panel');
+  outerButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      outerButtons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+      outerPanels.forEach(function (p) { p.hidden = p.dataset.outer !== btn.dataset.outer; });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // 작은 탭 (각 그룹 내부 자료별 탭)
+  var tabButtons = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabButtons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+      panels.forEach(function (p) { p.hidden = p.dataset.panel !== btn.dataset.tab; });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

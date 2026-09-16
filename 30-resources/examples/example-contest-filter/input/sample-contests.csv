@@ -1,0 +1,6 @@
+source,title,organizer,deadline,category,description,url
+csv,2026 공공데이터 활용 분석 공모전,한국데이터진흥원,2026-07-19,데이터분석,공공데이터를 활용한 분석 보고서와 시각화 결과물을 모집합니다.,https://example.org/contest/public-data
+csv,지역 문제 해결 아이디어톤,인천창업센터,2026-07-05,아이디어,지역 생활 문제 해결 아이디어를 제안하는 행사입니다.,https://example.org/contest/local-idea
+csv,AI 서비스 프로토타입 챌린지,디지털혁신재단,2026-08-12,서비스기획,AI를 활용한 서비스 기획안과 작동 가능한 프로토타입을 모집합니다.,https://example.org/contest/ai-prototype
+csv,대학생 영상 공모전,문화홍보원,2026-06-30,영상,짧은 홍보 영상을 제출하는 공모전입니다.,https://example.org/contest/video
+csv,도시 데이터 시각화 경진대회,스마트시티협회,2026-08-01,데이터시각화,교통과 생활 데이터를 분석해 대시보드 형태로 제안합니다.,https://example.org/contest/city-viz

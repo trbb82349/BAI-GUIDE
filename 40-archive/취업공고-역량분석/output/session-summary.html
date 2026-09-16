@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>취업공고 역량분석 — 진행 요약</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #6b7280; --card: #f5f5f7;
+    --accent: #4f46e5; --border: #e5e7eb; --ok: #16a34a; --warn: #b45309;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1117; --fg: #e8e8ec; --muted: #9096a3; --card: #1a1d27; --border: #2a2e3a; --ok: #4ade80; --warn: #fbbf24; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1.25rem 4rem; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, "Malgun Gothic", "Segoe UI", sans-serif; line-height: 1.6;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .subtitle { color: var(--muted); margin-top: 0; margin-bottom: 2rem; font-size: 0.9rem; }
+  section { margin-bottom: 2.5rem; }
+  h2 { font-size: 1.1rem; border-left: 4px solid var(--accent); padding-left: 0.6rem; margin-bottom: 1rem; }
+  h3 { font-size: 0.98rem; margin: 1.2rem 0 0.4rem; }
+  p { margin: 0.4rem 0; }
+  .goal-box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.25rem; font-size: 0.95rem;
+  }
+  .timeline { border-left: 2px solid var(--border); margin-left: 0.6rem; padding-left: 1.25rem; }
+  .step { position: relative; margin-bottom: 1.6rem; }
+  .step::before {
+    content: attr(data-n); position: absolute; left: -1.95rem; top: 0;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .step h3 { margin-top: 0; }
+  .step p { font-size: 0.9rem; }
+  .step .tag {
+    display: inline-block; font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 999px; padding: 0.1rem 0.55rem; margin-right: 0.4rem; margin-top: 0.3rem;
+  }
+  table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  code {
+    background: var(--card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.05rem 0.35rem; font-size: 0.85em;
+  }
+  ul.insight-list, ul.roadmap { list-style: none; padding-left: 0; }
+  ul.insight-list li {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.7rem 0.9rem; margin-bottom: 0.6rem; font-size: 0.92rem;
+  }
+  ul.roadmap li { padding: 0.3rem 0; border-bottom: 1px dashed var(--border); font-size: 0.9rem; }
+  .note-box {
+    background: var(--card); border: 1px dashed var(--border); border-radius: 10px;
+    padding: 1rem 1.25rem; font-size: 0.85rem; color: var(--muted);
+  }
+  .note-box li { margin-bottom: 0.5rem; }
+  .muted { color: var(--muted); }
+  a { color: var(--accent); }
+  footer { color: var(--muted); font-size: 0.8rem; margin-top: 3rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>취업공고 역량분석 — 진행 요약</h1>
+  <p class="subtitle">데이터과학과 1학년 · AI agent 동아리 포트폴리오 방향 탐색 세션 (2026-08-01)</p>
+
+  <section>
+    <h2>목표</h2>
+    <div class="goal-box">
+      취업공고 사이트에서 실제 채용공고를 모아 기업이 요구하는 역량을 파악하고, 이를 바탕으로
+      포트폴리오 방향을 잡는 것. 동아리 이번 주 숙제 — "채용공고 수집 프로그램을 만든 뒤,
+      나에게 맞는 분야를 찾고 앞으로 할 프로젝트의 방향성을 잡는다."
+    </div>
+  </section>
+
+  <section>
+    <h2>진행 과정</h2>
+    <div class="timeline">
+
+      <div class="step" data-n="1">
+        <h3>채용공고 수집 대상 결정</h3>
+        <p>사람인·잡코리아를 놓고 <code>robots.txt</code>를 실제로 확인. 사람인은 채용 상세 페이지가
+        명시적으로 차단돼 있어 보류하고, 잡코리아의 <code>/recruit/ai-jobs</code>(AI잡스, ClaudeBot에도
+        허용된 경로)로 시작.</p>
+        <span class="tag">robots.txt 확인</span><span class="tag">법적/윤리 리스크 점검</span>
+      </div>
+
+      <div class="step" data-n="2">
+        <h3>스크래퍼 제작 (Playwright)</h3>
+        <p>정적 HTML만으로는 공고 카드가 안 보여 Playwright로 전환. 카드 DOM 구조를 분석해
+        회사명·제목·기술태그·경력·지역·마감일을 추출하는 스크립트 제작. 50건 → 100건으로 확대
+        (이 페이지는 100건 근처가 스크롤 상한).</p>
+        <span class="tag">scrape_jobkorea_ai_jobs.py</span>
+      </div>
+
+      <div class="step" data-n="3">
+        <h3>"코딩 역량보다 업종을 먼저 보고 싶다" → 업종 분류</h3>
+        <p>회사소개 텍스트를 추가로 수집하고, 키워드 기반 규칙으로 10개 업종 카테고리에 공고를
+        분류. 결과: 모빌리티/로보틱스 34%, 제조 23%, 헬스케어 13%, IT서비스 12%, 나머지 소수.
+        분류 과정에서 "강화학습"이 "교육"으로 잘못 묶이는 버그를 발견해 수정.</p>
+        <span class="tag">classify_domain.py</span>
+      </div>
+
+      <div class="step" data-n="4">
+        <h3>업종별 기술 스택 분석</h3>
+        <p>Python은 거의 모든 업종에서 1위(공통 스킬), 업종을 가르는 건 2~3순위 스킬
+        (모빌리티=C++/ROS, 제조=Oracle/C#/JAVA, 헬스케어=SQL/NoSQL/RDBMS).</p>
+        <span class="tag">analyze_skills_by_domain.py</span>
+      </div>
+
+      <div class="step" data-n="5">
+        <h3>한눈에 보기 HTML 대시보드</h3>
+        <p>수집 현황·업종 분포·기술 TOP15·업종별 상세를 정적 HTML 한 파일로 정리. CSV를 다시
+        읽어서 그리는 방식이라 데이터가 늘어나면 재실행만으로 갱신됨.</p>
+        <span class="tag">build_dashboard.py</span><span class="tag">output/dashboard.html</span>
+      </div>
+
+      <div class="step" data-n="6">
+        <h3>관심 업종 좁히기 (IT서비스 · 금융 · 헬스케어)</h3>
+        <p>"1학년, 코딩 경험 0" 상태에서는 스킬 갭이 모든 업종에서 100%라 스킬 기준 비교가
+        의미 없다는 점을 짚고, 대신 "업종에서 어떤 종류의 일을 하는가" 관점으로 브레인스토밍.
+        세 업종에 관심이 있다는 답을 받음.</p>
+      </div>
+
+      <div class="step" data-n="7">
+        <h3>"현재 공고 수"와 "미래 성장 전망"은 다른 질문</h3>
+        <p>정부 통계·산업 리포트 기반 성장 전망 리서치를 백그라운드 에이전트로 실행. 1차 실행이
+        완료로 보고했지만 실제 파일이 없어 재실행으로 바로잡음. 이후 보완 조사가 한 번 더 붙으며
+        헬스케어 평가가 "중(불확실)" → "중~강"으로 상향(AI 채용공고 123%↑, 원격의료 법제화 확인).</p>
+        <span class="tag">notes/domain-demand-outlook-2026.md</span>
+      </div>
+
+      <div class="step" data-n="8">
+        <h3>포트폴리오 프로젝트 방향 브레인스토밍</h3>
+        <p>"바이브코딩만 해봤고 실제 코딩 지식은 없음" + 교수님의 "제품 → 실사용자 데이터 분석"
+        제안을 함께 검토. 낯선 유저를 모으는 대신, 이번 주 분석 결과 자체를 에이전트로 감싸서
+        동아리 친구들이 실제로 궁금해할 질문에 답하는 방향으로 결정.</p>
+      </div>
+
+      <div class="step" data-n="9">
+        <h3>Q&amp;A 에이전트 v1 제작</h3>
+        <p>LLM API 키가 없어 키워드 매칭 기반으로 우선 구현. 업종 이름과 의도 키워드(스킬/전망/현황)를
+        인식해 이미 만든 데이터로 답하고, 모든 질문·답변을 로그로 남김 — 나중에 이 로그 자체가
+        "실사용자가 뭘 궁금해하는지" 보여주는 데이터가 됨. 테스트 중 Windows 콘솔 인코딩(cp949)
+        버그도 발견해 수정.</p>
+        <span class="tag">ask_agent.py</span><span class="tag">notes/agent_qa_log.csv</span>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>핵심 인사이트</h2>
+    <ul class="insight-list">
+      <li><strong>지금 공고가 많은 곳 ≠ 앞으로 늘어날 곳.</strong> 공고 수 스냅샷은 헬스케어(13%) &gt;
+      IT서비스(12%) &gt; 금융(2%) 순이었지만, 성장 전망 리서치에서는 IT서비스가 가장 근거가
+      탄탄하고 헬스케어가 최근 가장 구체적인 성장 신호(채용공고 123%↑)를 보임.</li>
+      <li><strong>Python은 업종을 안 가리는 공통 스킬</strong>이고, 업종의 정체성은 2~3순위 스킬에서
+      드러남(모빌리티=C++/ROS, 제조=Oracle/JAVA, 헬스케어=SQL/NoSQL).</li>
+      <li><strong>코딩 경험이 없을수록 "낯선 유저 확보"보다 "이미 아는 사람 대상 반복 사용 도구"가
+      현실적.</strong> 이번 주 분석 결과를 에이전트로 감싸는 게 가장 빠르게 "실사용자 데이터"를
+      쌓을 수 있는 경로였음.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>최종 산출물</h2>
+    <table>
+      <thead><tr><th>파일</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td><code>src/scrape_jobkorea_ai_jobs.py</code></td><td>잡코리아 AI잡스 공고 수집 (Playwright)</td></tr>
+        <tr><td><code>src/classify_domain.py</code></td><td>공고를 업종 10개 카테고리로 규칙 기반 분류</td></tr>
+        <tr><td><code>src/analyze_skills_by_domain.py</code></td><td>업종별 기술 스택 빈도 분석</td></tr>
+        <tr><td><code>src/build_dashboard.py</code></td><td>수집·분석 결과를 정적 HTML 대시보드로 생성</td></tr>
+        <tr><td><code>src/ask_agent.py</code></td><td>터미널 Q&amp;A 에이전트 (키워드 매칭, 질문 로그 기록)</td></tr>
+        <tr><td><code>output/jobkorea_ai_jobs_*.csv</code></td><td>수집 원본 / 업종 라벨 / 업종별 스킬 빈도</td></tr>
+        <tr><td><code>output/dashboard.html</code></td><td>한눈에 보기 대시보드</td></tr>
+        <tr><td><code>notes/domain-demand-outlook-2026.md</code></td><td>IT서비스·금융·헬스케어 성장 전망 리서치</td></tr>
+        <tr><td><code>notes/agent_qa_log.csv</code></td><td>Q&amp;A 에이전트 질문/답변 로그</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>다음 단계</h2>
+    <ul class="roadmap">
+      <li>▢ 사람인 수집 여부/방법 결정 (공식 Open API 신청 가능 여부 확인)</li>
+      <li>▢ 표본 100건 이상으로 확대 (다른 직무 카테고리 페이지 탐색 필요)</li>
+      <li>▢ 게임/교육/금융/미디어/커머스처럼 표본이 적은 업종 데이터 추가 확보</li>
+      <li>▢ Q&amp;A 에이전트를 동아리 친구들에게 공유해서 실제 질문 로그 쌓기</li>
+      <li>▢ LLM API 키 확보되면 에이전트 답변을 자연어 생성으로 업그레이드</li>
+      <li>▢ 포트폴리오 방향 추천 로직: 내가 가진 기술 vs 관심 업종에서 요구하는 기술 비교</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>메모 — 시도하지 않았거나 보류한 것들</h2>
+    <ul class="note-box">
+      <li><strong>사람인 수집:</strong> robots.txt가 채용 상세 페이지를 막고 있어 이번엔 손대지 않음.
+      공식 Open API 신청이 가능한지가 다음에 확인할 조건.</li>
+      <li><strong>LLM 기반 자연어 응답:</strong> 쓸 수 있는 API 키가 없어서 이번엔 키워드 매칭으로
+      대체. 코드는 나중에 API 호출로 바꿔 끼우기 쉽게 구조만 나눠둠.</li>
+      <li><strong>웹페이지/카카오톡·디스코드 봇 형태 배포:</strong> 아직 로컬 터미널 테스트만 하고,
+      실제 배포 형태는 정하지 않음.</li>
+    </ul>
+  </section>
+
+  <footer>
+    이 문서는 세션 내용을 손으로 정리한 요약본입니다 (데이터 재계산 없음). 최신 수치는
+    <code>output/dashboard.html</code>을 다시 생성해서 확인하세요.
+  </footer>
+
+</div>
+</body>
+</html>

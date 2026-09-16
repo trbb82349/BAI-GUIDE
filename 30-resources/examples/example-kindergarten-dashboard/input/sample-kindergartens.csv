@@ -1,0 +1,7 @@
+name,district,type,students,capacity,teachers,classrooms,has_bus,aftercare_until,monthly_fee_won,open_year,special_class
+햇살유치원,연수구,사립,84,100,9,5,yes,18:30,210000,2012,no
+초록별유치원,남동구,사립,66,90,8,4,no,19:00,180000,2016,yes
+바다숲병설유치원,중구,공립,42,60,6,3,yes,17:30,42000,2008,yes
+하늘마루유치원,부평구,사립,110,120,10,6,yes,18:00,240000,2019,no
+송도누리유치원,연수구,사립,72,85,9,5,no,18:30,195000,2021,no
+미래샘병설유치원,서구,공립,38,55,5,3,yes,17:00,35000,2010,no

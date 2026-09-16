@@ -1,0 +1,8 @@
+type,keyword,weight,note
+include,데이터,3,데이터 분석 공모전 우선
+include,AI,2,AI 서비스 또는 자동화 주제
+include,시각화,2,결과물을 화면으로 보여주기 좋음
+include,프로토타입,2,실행 가능한 결과물 가능성
+include,공공,1,공공데이터 주제
+exclude,영상,3,분석 파이프라인 예시와 거리가 멂
+exclude,홍보,2,콘텐츠 제작 중심

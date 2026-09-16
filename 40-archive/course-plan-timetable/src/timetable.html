@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>수강신청 시간표 플래너</title>
+<style>
+  :root{
+    --bg:#16181c;
+    --panel:#1f2227;
+    --panel-2:#262a31;
+    --panel-3:#2c3038;
+    --border:#34383f;
+    --text:#e8e8ea;
+    --text-dim:#9aa0aa;
+    --accent:#6fa8ff;
+    --danger:#e0665f;
+    --time-col-width: 64px;
+    --day-col-min: 150px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Pretendard","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
+  header{
+    padding:16px 20px 8px;
+    border-bottom:1px solid var(--border);
+  }
+  header h1{ font-size:18px; margin:0 0 4px; }
+  header p{ font-size:12.5px; color:var(--text-dim); margin:0; }
+
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    padding:10px 20px; border-bottom:1px solid var(--border);
+    background:var(--panel);
+  }
+  .toolbar .sep{ width:1px; height:20px; background:var(--border); margin:0 4px; }
+
+  button, .btn{
+    font:inherit; cursor:pointer;
+    background:var(--panel-3); color:var(--text);
+    border:1px solid var(--border); border-radius:6px;
+    padding:6px 10px; font-size:12.5px;
+  }
+  button:hover{ background:#343943; }
+  button.primary{ background:var(--accent); border-color:var(--accent); color:#0b1220; font-weight:600; }
+  button.primary:hover{ filter:brightness(1.08); }
+  button.danger{ color:#ffd7d3; border-color:#5a2f2c; }
+  button.danger:hover{ background:#3a2422; }
+  button.small{ padding:3px 7px; font-size:11.5px; }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+
+  input[type=text], input[type=time], input[type=number], select{
+    font:inherit; background:var(--panel-2); color:var(--text);
+    border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:12.5px;
+  }
+  input[type=color]{
+    width:34px; height:30px; padding:2px; border-radius:6px; border:1px solid var(--border);
+    background:var(--panel-2); cursor:pointer;
+  }
+  label.field{ display:flex; flex-direction:column; gap:3px; font-size:11.5px; color:var(--text-dim); }
+
+  main{
+    display:flex; gap:16px; padding:16px 20px 32px; align-items:flex-start;
+  }
+
+  .sidebar{
+    width:330px; flex:none; display:flex; flex-direction:column; gap:14px;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px;
+  }
+  .card h2{ font-size:13px; margin:0 0 10px; color:var(--text-dim); font-weight:600; letter-spacing:.02em;}
+
+  .course-form{ display:flex; flex-direction:column; gap:8px; }
+  .course-form .row{ display:flex; gap:8px; }
+  #periodFieldsWrap{ display:flex; flex-direction:column; gap:8px; }
+  .course-form .row > *{ flex:1; }
+  .course-form input[type=text]{ width:100%; }
+
+  .course-list{ display:flex; flex-direction:column; gap:6px; max-height:340px; overflow:auto; }
+  .course-item{
+    display:flex; align-items:center; gap:8px;
+    background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:6px 8px;
+    font-size:12px;
+  }
+  .course-item .dot{ width:10px; height:10px; border-radius:3px; flex:none; }
+  .course-item .info{ flex:1; min-width:0; }
+  .course-item .info .name{ font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .course-item .info .meta{ color:var(--text-dim); font-size:11px; }
+  .course-item .ops{ display:flex; gap:4px; flex:none; }
+  .empty-hint{ color:var(--text-dim); font-size:12px; padding:8px 2px; }
+
+  .settings-grid{ display:flex; flex-wrap:wrap; gap:10px; }
+  .settings-grid label.field{ flex:none; }
+  .checkline{ display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-dim); }
+
+  .grid-wrap{
+    flex:1; min-width:0; overflow-x:auto;
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding:12px;
+  }
+  .grid-hint{ margin:0 0 10px; font-size:12px; color:var(--text-dim); }
+  .grid-header{
+    display:grid; position:sticky; top:0; z-index:2;
+  }
+  .grid-header .corner, .grid-header .daycol{
+    text-align:center; font-size:12.5px; color:var(--text-dim); padding-bottom:8px; font-weight:600;
+  }
+  .grid-body{ display:grid; position:relative; }
+  .time-col{ position:relative; }
+  .time-col .tick{
+    position:absolute; left:0; right:6px; text-align:right;
+    font-size:10.5px; color:var(--text-dim); transform:translateY(-6px);
+  }
+  .day-col{
+    position:relative; border-left:1px solid var(--border);
+  }
+  .hline{ position:absolute; left:0; right:0; height:1px; background:var(--border); }
+  .hline.half{ opacity:.35; }
+
+  .event-block{
+    position:absolute; border-radius:7px; padding:5px 6px; overflow:hidden;
+    color:#101216; font-size:11.5px; line-height:1.3; box-shadow:0 1px 2px rgba(0,0,0,.35);
+    user-select:none; touch-action:none; cursor:pointer;
+  }
+  .event-block:hover{ filter:brightness(1.06); }
+  .event-block.draggable{ cursor:grab; }
+  .event-block.draggable:hover{ outline:1px dashed rgba(0,0,0,.45); outline-offset:-3px; }
+  .event-block.dragging{ cursor:grabbing; z-index:30; box-shadow:0 8px 18px rgba(0,0,0,.55); opacity:.95; }
+  .event-block.grouped{ outline:2px dashed rgba(0,0,0,.5); outline-offset:-3px; }
+  .event-block .name{
+    font-weight:700; line-height:1.2; white-space:normal; word-break:break-word;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:5; line-clamp:5; overflow:hidden;
+  }
+  .event-block .prof{ font-size:10.5px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .online-section{ margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+  .online-section .label{ font-size:12px; color:var(--text-dim); font-weight:600; margin-bottom:8px; }
+  .online-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .online-block{
+    flex:1 1 150px; max-width:240px; min-width:120px;
+    border-radius:7px; padding:7px 9px; color:#101216; cursor:pointer;
+    box-shadow:0 1px 2px rgba(0,0,0,.35); user-select:none;
+  }
+  .online-block:hover{ filter:brightness(1.06); }
+  .online-block .name{ font-weight:700; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .online-block .prof{ font-size:10.5px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  footer{ padding:10px 20px 24px; color:var(--text-dim); font-size:11px; }
+  .hidden{ display:none !important; }
+
+  /* 좁은 화면(휴대폰)에서는 시간표 그리드를 위로, 강좌 추가/목록/설정 카드를 그 아래로 배치한다. */
+  @media (max-width: 840px){
+    /* day-col-min을 0으로 두면 minmax(0,1fr)이 되어, 요일 칸이 강제 최소폭 없이
+       화면 너비에 딱 맞게 나뉜다 — 그래서 옆으로 밀지 않아도 월~금이 한 번에 들어온다. */
+    :root{ --time-col-width: 38px; --day-col-min: 0px; }
+    header{ padding:12px 14px 8px; }
+    .toolbar{ padding:8px 14px; }
+    main{
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px 10px 24px;
+      gap: 12px;
+    }
+    .grid-wrap{ order:1; padding:8px 4px; overflow-x:hidden; }
+    .sidebar{ order:2; width:100%; }
+    .grid-header .corner, .grid-header .daycol{ font-size:10px; padding-bottom:6px; }
+    .time-col .tick{ font-size:8.5px; right:3px; }
+    .event-block{ padding:3px 4px; border-radius:5px; }
+    .event-block{ font-size:10px; padding:4px 5px; }
+    .event-block .prof{ font-size:9.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>수강신청 시간표 플래너</h1>
+  <p>강좌를 추가하면 시간표에 표시돼요. 시간이 겹치면 자동으로 칸이 나뉘고, 겹친 블록을 눌러 좌우로 끌면 우선순위(왼쪽이 1순위)를 바꿀 수 있어요. 변경 사항은 이 브라우저에 자동 저장됩니다.</p>
+</header>
+
+<div class="toolbar">
+  <button id="btnExport">내보내기(JSON)</button>
+  <button id="btnImport">가져오기(JSON)</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+  <div class="sep"></div>
+  <button id="btnReset" class="danger">전체 초기화</button>
+</div>
+
+<main>
+  <div class="sidebar">
+
+    <div class="card">
+      <h2>강좌 추가</h2>
+      <form class="course-form" id="courseForm">
+        <div class="row">
+          <label class="field">요일
+            <select id="fDay">
+              <option value="0">월</option>
+              <option value="1">화</option>
+              <option value="2">수</option>
+              <option value="3">목</option>
+              <option value="4">금</option>
+              <option value="5">토</option>
+              <option value="6">일</option>
+              <option value="online">이러닝 (온라인/OCU 등)</option>
+            </select>
+          </label>
+          <label class="field">색상
+            <input type="color" id="fColor" value="#6fa8ff">
+          </label>
+        </div>
+        <div id="periodFieldsWrap">
+          <label class="field">시작 교시
+            <select id="fStartPeriod" style="width:100%;"></select>
+          </label>
+          <label class="field">종료 교시
+            <select id="fEndPeriod" style="width:100%;"></select>
+          </label>
+        </div>
+        <p id="onlineHint" class="empty-hint hidden" style="margin:0 0 8px;">이러닝 강좌는 특정 요일·시간이 없어서 시간표 맨 아래에 따로 표시돼요.</p>
+        <label class="field">과목명
+          <input type="text" id="fName" placeholder="예: 데이터과학을 위한 기초수학" required>
+        </label>
+        <label class="field">교수님 성함 (선택)
+          <input type="text" id="fProfessor" placeholder="예: 홍길동">
+        </label>
+        <div class="row">
+          <button type="submit" class="primary" id="fSubmitBtn" style="flex:1;">추가</button>
+          <button type="button" id="fDeleteCourse" class="danger hidden">삭제</button>
+          <button type="button" id="fCancelEdit" class="hidden">수정 취소</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>강좌 목록</h2>
+      <div class="course-list" id="courseList"></div>
+    </div>
+
+    <div class="card">
+      <h2>시간표 설정</h2>
+      <div class="settings-grid">
+        <label class="field">1교시 시작 시각(시)
+          <input type="number" id="sBaseHour" min="0" max="23" style="width:70px;">
+        </label>
+        <label class="field">한 교시 길이(분)
+          <input type="number" id="sPeriodLen" min="10" max="180" step="5" style="width:70px;">
+        </label>
+        <label class="field">쉬는 시간(분)
+          <input type="number" id="sBreakMin" min="0" max="30" step="5" style="width:70px;">
+        </label>
+        <label class="field">표시할 최대 교시
+          <input type="number" id="sMaxPeriod" min="1" max="20" style="width:70px;">
+        </label>
+      </div>
+      <div class="settings-grid" style="margin-top:8px;">
+        <label class="checkline"><input type="checkbox" id="sShowSat"> 토요일 표시</label>
+        <label class="checkline"><input type="checkbox" id="sShowSun"> 일요일 표시</label>
+      </div>
+      <p class="empty-hint" style="margin:6px 0 0;">종료 시각은 다음 교시 시작 전 "쉬는 시간"만큼 앞당겨 표시돼요(기본 10분: 전반 20분·후반 50분 종료). 학교 교시표와 다르면 값을 조절하세요. 강좌가 범위 밖 교시를 쓰면 최대 교시가 자동으로 늘어나요.</p>
+    </div>
+
+  </div>
+
+  <div class="grid-wrap">
+    <p class="grid-hint">겹치는 강좌·강좌 목록에서 "복제"한 대안 블록은 누른 채로 좌우로 끌면 자리를 바꿀 수 있어요. 왼쪽일수록 우선순위가 높고, 점선 테두리는 다른 요일의 대안이 있다는 뜻이에요.</p>
+    <div id="gridHeader" class="grid-header"></div>
+    <div id="gridBody" class="grid-body"></div>
+    <div class="online-section">
+      <div class="label">이러닝 · 온라인/OCU 등 (요일·시간 없음)</div>
+      <div id="onlineRow" class="online-row"></div>
+    </div>
+  </div>
+</main>
+
+<footer>로컬 저장(localStorage) 전용 도구입니다. 서버로 전송되지 않으며, 브라우저 데이터를 지우면 함께 사라지니 중요하면 "내보내기"로 백업하세요.</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORAGE_KEY = "coursePlanTimetableState.v2";
+  const DAY_LABELS = ["월","화","수","목","금","토","일"];
+  const COURSE_PALETTE = ["#c96b63","#a8b45c","#4fb3a9","#c9a227","#7b8fd4","#b56fc9","#5fa8d3","#d3835f","#6fc98a","#c95f8f"];
+  const DAY_PERIOD_COUNT = 9; // 1~9교시는 주간, 10교시부터는 "야간N교시"로 표시한다.
+
+  // 교시 번호를 화면 표기로 바꾼다. 예: 3 → "3", 10 → "야간1", 12 → "야간3"
+  function periodBaseLabel(p){
+    return p<=DAY_PERIOD_COUNT ? `${p}` : `야간${p-DAY_PERIOD_COUNT}`;
+  }
+
+  function uid(prefix){
+    return prefix + "-" + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+  }
+
+  // 교시(N) + 반(half A/앞·B/뒤)을 실제 시:분으로 변환. 학교마다 1교시 시작 시각·교시 길이가 달라 설정값을 기준으로 계산한다.
+  function slotStartMinutes(period, half){
+    const s = state.settings;
+    return s.baseStartHour*60 + (period-1)*s.periodLengthMin + (half==="B" ? s.periodLengthMin/2 : 0);
+  }
+  // 종료 시각은 다음 교시(반)가 시작하기 전 쉬는 시간(breakMin)만큼 앞당긴다.
+  // 예: 1교시(60분, 쉬는 시간 10분) → 전반 종료 9:20(=9:30-10분), 후반 종료 9:50(=10:00-10분)
+  function slotEndMinutes(period, half){
+    const s = state.settings;
+    const raw = s.baseStartHour*60 + (period-1)*s.periodLengthMin + (half==="B" ? s.periodLengthMin : s.periodLengthMin/2);
+    return raw - s.breakMin;
+  }
+  function courseRange(course){
+    return {
+      start: slotStartMinutes(course.startPeriod, course.startHalf),
+      end: slotEndMinutes(course.endPeriod, course.endHalf)
+    };
+  }
+
+  function formatClock12(min){
+    let h = Math.floor(min/60), m = ((min%60)+60)%60;
+    const ampm = h<12 ? "오전" : "오후";
+    let h12 = h%12; if(h12===0) h12=12;
+    return `${ampm} ${h12}:${String(m).padStart(2,"0")}`;
+  }
+  function formatHourLabel12(min){
+    let h = Math.floor(min/60);
+    const ampm = h<12 ? "오전" : "오후";
+    let h12 = h%12; if(h12===0) h12=12;
+    return `${ampm} ${h12}시`;
+  }
+
+  function defaultState(){
+    return {
+      settings: { baseStartHour: 9, periodLengthMin: 60, breakMin: 10, maxPeriod: 12, showSat:false, showSun:false },
+      courses: [
+        // 4,5,6교시 (A/B 없이 온전히 세 교시)
+        { id: uid("crs"), day:0, startPeriod:4, startHalf:"A", endPeriod:6, endHalf:"B", name:"AI시대의 글쓰기와 글쓰기 이론과 실체", color: COURSE_PALETTE[0], order:0 },
+        { id: uid("crs"), day:1, startPeriod:4, startHalf:"A", endPeriod:4, endHalf:"B", name:"AI사고와 데이터 리터러시", color: COURSE_PALETTE[1], order:1 },
+        // 2B-3, 4-5A → 2교시 후반부터 5교시 전반까지
+        { id: uid("crs"), day:3, startPeriod:2, startHalf:"B", endPeriod:5, endHalf:"A", name:"비즈니스 프로그래밍I", color: COURSE_PALETTE[2], order:2 },
+        // 7-8A, 8B-9 → 7교시부터 9교시까지
+        { id: uid("crs"), day:0, startPeriod:7, startHalf:"A", endPeriod:9, endHalf:"B", name:"데이터과학을 위한 기초수학", color: COURSE_PALETTE[3], order:3 }
+      ]
+    };
+  }
+
+  // 예전 버전(플랜별로 강좌를 나눠 관리하던 구조, 혹은 시:분 직접 입력 구조) 데이터나 손상된
+  // 백업을 불러왔을 때도 크래시 없이 지금 구조(교시 기반 · 단일 강좌 목록)로 맞춰준다.
+  function migrateState(parsed){
+    const d = defaultState();
+    if(!parsed || typeof parsed !== "object") return d;
+
+    parsed.settings = Object.assign({}, d.settings, parsed.settings || {});
+    ["baseStartHour","periodLengthMin","breakMin","maxPeriod"].forEach(k=>{
+      if(typeof parsed.settings[k] !== "number" || Number.isNaN(parsed.settings[k])) parsed.settings[k] = d.settings[k];
+    });
+    // 야간 교시(10~12교시) 기능 추가 전에 저장된 데이터도 야간2·3교시를 바로 쓸 수 있게 한 번만 올려준다.
+    parsed.settings.maxPeriod = Math.max(parsed.settings.maxPeriod, 12);
+
+    let rawCourses = null;
+    if(Array.isArray(parsed.courses)){
+      rawCourses = parsed.courses;
+    }else if(Array.isArray(parsed.plans)){
+      // 플랜별로 나뉘어 있던 강좌를 하나의 목록으로 합친다.
+      rawCourses = parsed.plans.flatMap(p => Array.isArray(p.courses) ? p.courses : []);
+    }
+
+    if(rawCourses===null) return { settings: parsed.settings, courses: d.courses };
+
+    let orderCounter = 0;
+    const courses = rawCourses
+      .filter(c =>
+        c.day==="online" ||
+        (typeof c.startPeriod==="number" && typeof c.endPeriod==="number" &&
+         (c.startHalf==="A"||c.startHalf==="B") && (c.endHalf==="A"||c.endHalf==="B"))
+      )
+      .map(c => ({
+        id: c.id || uid("crs"),
+        day: c.day,
+        startPeriod: c.startPeriod, startHalf: c.startHalf,
+        endPeriod: c.endPeriod, endHalf: c.endHalf,
+        name: c.name || "",
+        color: c.color || COURSE_PALETTE[orderCounter % COURSE_PALETTE.length],
+        professor: typeof c.professor === "string" ? c.professor : "",
+        groupId: typeof c.groupId === "string" ? c.groupId : null,
+        order: typeof c.order === "number" ? c.order : orderCounter++
+      }));
+
+    // groupId를 참조하는 상대가 하나도 안 남았으면(=대안이 아니게 됐으면) 그룹을 해제한다.
+    const groupCounts = new Map();
+    courses.forEach(c=>{ if(c.groupId) groupCounts.set(c.groupId, (groupCounts.get(c.groupId)||0)+1); });
+    courses.forEach(c=>{ if(c.groupId && groupCounts.get(c.groupId)===1) c.groupId = null; });
+
+    return { settings: parsed.settings, courses };
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultState();
+      return migrateState(JSON.parse(raw));
+    }catch(e){
+      console.warn("저장된 데이터를 읽지 못해 기본값으로 시작합니다.", e);
+      return defaultState();
+    }
+  }
+
+  let state = loadState();
+
+  function saveState(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function normalizeRanges(){
+    let maxPeriod = state.settings.maxPeriod;
+    let sawSat = state.settings.showSat, sawSun = state.settings.showSun;
+    for(const c of state.courses){
+      if(c.day==="online") continue; // 이러닝 강좌는 요일·교시가 없어 그리드 범위 계산에서 제외
+      maxPeriod = Math.max(maxPeriod, c.endPeriod);
+      if(c.day===5) sawSat = true;
+      if(c.day===6) sawSun = true;
+    }
+    state.settings.maxPeriod = maxPeriod;
+    state.settings.showSat = sawSat;
+    state.settings.showSun = sawSun;
+  }
+
+  function visibleDays(){
+    const days = [0,1,2,3,4];
+    if(state.settings.showSat) days.push(5);
+    if(state.settings.showSun) days.push(6);
+    return days;
+  }
+
+  // 겹치는 강좌를 클러스터로 묶는다. 클러스터 안의 강좌 중 하나라도 groupId(같은 강좌의
+  // 다른 시간 선택지)를 가지고 있으면, 그 요일에 실제로 없는 다른 요일의 대안까지 "빈 칸"으로
+  // 끼워 넣어서 — 겹치는 강좌가 없어도 대안이 있는 만큼 얇게 나뉘어 보이게 만든다.
+  function timeClusters(events){
+    const sorted = [...events].sort((a,b)=> a.start-b.start || a.end-b.end);
+    const clusters = [];
+    let current = [];
+    let clusterEnd = -Infinity;
+    for(const ev of sorted){
+      if(current.length && ev.start >= clusterEnd){
+        clusters.push(current);
+        current = [];
+        clusterEnd = -Infinity;
+      }
+      current.push(ev);
+      clusterEnd = Math.max(clusterEnd, ev.end);
+    }
+    if(current.length) clusters.push(current);
+    return clusters;
+  }
+
+  function layoutEvents(events){
+    const clusters = timeClusters(events);
+    const positioned = [];
+    clusters.forEach((cluster, clusterIdx)=>{
+      // 이 클러스터에 실제로 있는 강좌 + 그 강좌들의 groupId 대안(다른 요일의 사본 포함)을 합친다.
+      const union = new Map();
+      cluster.forEach(ev => union.set(ev.course.id, ev.course));
+      cluster.forEach(ev => {
+        if(!ev.course.groupId) return;
+        state.courses.filter(c=>c.groupId===ev.course.groupId).forEach(m=> union.set(m.id, m));
+      });
+      const columnCourses = [...union.values()].sort((a,b)=> a.order-b.order);
+      const numCols = columnCourses.length;
+      cluster.forEach(ev=>{
+        const colIndex = columnCourses.findIndex(c=>c.id===ev.course.id);
+        positioned.push(Object.assign({}, ev, { colIndex, numCols, clusterIdx, columnCourses }));
+      });
+    });
+    return positioned;
+  }
+
+  // ---------- 렌더링 ----------
+
+  function render(){
+    normalizeRanges();
+    renderPeriodOptions();
+    renderCourseForm();
+    renderCourseList();
+    renderSettings();
+    renderGrid();
+    renderOnlineRow();
+    saveState();
+  }
+
+  // 요일로 "이러닝"을 고르면 교시 입력이 의미가 없으니 숨기고 안내 문구를 보여준다.
+  function updateDayDependentFields(){
+    const isOnline = document.getElementById("fDay").value === "online";
+    document.getElementById("periodFieldsWrap").classList.toggle("hidden", isOnline);
+    document.getElementById("onlineHint").classList.toggle("hidden", !isOnline);
+  }
+
+  // 요일·시간이 없는 이러닝 강좌를 그리드 맨 아래에 가로로 나열한다.
+  function renderOnlineRow(){
+    const wrap = document.getElementById("onlineRow");
+    wrap.innerHTML = "";
+    const onlineCourses = state.courses.filter(c=>c.day==="online").sort((a,b)=>a.order-b.order);
+    if(!onlineCourses.length){
+      const hint = document.createElement("div");
+      hint.className = "empty-hint";
+      hint.textContent = "등록된 이러닝 강좌가 없습니다.";
+      wrap.appendChild(hint);
+      return;
+    }
+    onlineCourses.forEach(c=>{
+      const block = document.createElement("div");
+      block.className = "online-block";
+      block.style.background = c.color;
+      block.title = `${c.name} (이러닝)`;
+      block.innerHTML = `<div class="name">${escapeHtml(c.name)}</div>` +
+        (c.professor ? `<div class="prof">${escapeHtml(c.professor)}</div>` : "");
+      block.addEventListener("click", ()=> startEdit(c.id));
+      wrap.appendChild(block);
+    });
+  }
+
+  // 시작/종료 교시 select 옵션을 채운다. 옵션 문구에 실제 시각을 같이 보여줘서
+  // "2B", "5A" 같은 표기가 몇 시인지 바로 확인할 수 있게 한다.
+  function renderPeriodOptions(){
+    ["fStartPeriod","fEndPeriod"].forEach(id=>{
+      const sel = document.getElementById(id);
+      const prevValue = sel.value;
+      sel.innerHTML = "";
+      for(let p=1; p<=state.settings.maxPeriod; p++){
+        ["A","B"].forEach(half=>{
+          const opt = document.createElement("option");
+          opt.value = p+half;
+          const halfLabel = half==="A" ? "전반" : "후반";
+          const pLabel = periodBaseLabel(p);
+          if(id==="fStartPeriod"){
+            opt.textContent = `${pLabel}교시 ${halfLabel} (${formatClock12(slotStartMinutes(p, half))} 시작)`;
+          }else{
+            opt.textContent = `${pLabel}교시 ${halfLabel}까지 (${formatClock12(slotEndMinutes(p, half))} 종료)`;
+          }
+          sel.appendChild(opt);
+        });
+      }
+      if([...sel.options].some(o=>o.value===prevValue)) sel.value = prevValue;
+    });
+  }
+
+  let editingCourseId = null;
+
+  function renderCourseForm(){
+    const submitBtn = document.getElementById("fSubmitBtn");
+    submitBtn.textContent = editingCourseId ? "수정 완료" : "추가";
+    document.getElementById("fCancelEdit").classList.toggle("hidden", !editingCourseId);
+    document.getElementById("fDeleteCourse").classList.toggle("hidden", !editingCourseId);
+  }
+
+  function renderCourseList(){
+    const wrap = document.getElementById("courseList");
+    wrap.innerHTML = "";
+    if(!state.courses.length){
+      const hint = document.createElement("div");
+      hint.className = "empty-hint";
+      hint.textContent = "아직 등록된 강좌가 없습니다. 왼쪽 폼으로 추가하세요.";
+      wrap.appendChild(hint);
+      return;
+    }
+    const daySortKey = (day)=> day==="online" ? 7 : day;
+    const sorted = [...state.courses].sort((a,b)=>
+      daySortKey(a.day)-daySortKey(b.day) ||
+      (a.day==="online" ? 0 : courseRange(a).start) - (b.day==="online" ? 0 : courseRange(b).start)
+    );
+    sorted.forEach(c=>{
+      const groupSize = c.groupId ? state.courses.filter(x=>x.groupId===c.groupId).length : 1;
+      const groupNote = groupSize>1 ? ` · 대안 ${groupSize}개 중 하나 선택` : "";
+      let metaLine;
+      if(c.day==="online"){
+        metaLine = `이러닝${c.professor ? " · "+escapeHtml(c.professor)+" 교수" : ""}${groupNote}`;
+      }else{
+        const r = courseRange(c);
+        const periodLabel = `${periodBaseLabel(c.startPeriod)}${c.startHalf}~${periodBaseLabel(c.endPeriod)}${c.endHalf}교시`;
+        metaLine = `${DAY_LABELS[c.day]} ${periodLabel} · ${formatClock12(r.start)}~${formatClock12(r.end)}${c.professor ? " · "+escapeHtml(c.professor)+" 교수" : ""}${groupNote}`;
+      }
+      const item = document.createElement("div");
+      item.className = "course-item";
+      item.innerHTML = `
+        <span class="dot" style="background:${c.color}"></span>
+        <span class="info">
+          <div class="name">${escapeHtml(c.name)}</div>
+          <div class="meta">${metaLine}</div>
+        </span>
+        <span class="ops">
+          <button type="button" class="small" data-act="dup" data-id="${c.id}" title="같은 강좌의 다른 시간 선택지를 복사해서 추가">복제</button>
+          <button type="button" class="small" data-act="edit" data-id="${c.id}">수정</button>
+          <button type="button" class="small danger" data-act="del" data-id="${c.id}">삭제</button>
+        </span>`;
+      wrap.appendChild(item);
+    });
+
+    wrap.querySelectorAll("button[data-act]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-id");
+        const act = btn.getAttribute("data-act");
+        if(act==="del"){
+          if(confirm("이 강좌를 삭제할까요?")){
+            state.courses = state.courses.filter(c=>c.id!==id);
+            if(editingCourseId===id) cancelEdit();
+            pruneEmptyGroups();
+            render();
+          }
+        }else if(act==="dup"){
+          duplicateCourse(id);
+        }else{
+          startEdit(id);
+        }
+      });
+    });
+  }
+
+  // 같은 강좌의 다른 시간 선택지를 복사해서 추가한다. 원본과 사본을 같은 groupId로 묶어
+  // "이 중 하나만 고르면 되는 대안"으로 표시하고, 우선순위(order)는 맨 뒤로 보낸다.
+  function duplicateCourse(id){
+    const src = state.courses.find(c=>c.id===id);
+    if(!src) return;
+    if(!src.groupId) src.groupId = uid("grp");
+    const maxOrder = state.courses.reduce((m,c)=>Math.max(m,c.order), -1);
+    const copy = Object.assign({}, src, { id: uid("crs"), order: maxOrder+1 });
+    state.courses.push(copy);
+    render();
+    startEdit(copy.id);
+  }
+
+  // 그룹의 구성원이 하나만 남으면(다른 대안이 다 지워지면) 더 이상 "대안"이 아니므로
+  // groupId를 지워서 원래처럼 한 칸을 꽉 채우게 되돌린다.
+  function pruneEmptyGroups(){
+    const counts = new Map();
+    state.courses.forEach(c=>{
+      if(!c.groupId) return;
+      counts.set(c.groupId, (counts.get(c.groupId)||0)+1);
+    });
+    state.courses.forEach(c=>{
+      if(c.groupId && counts.get(c.groupId)===1) c.groupId = null;
+    });
+  }
+
+  function startEdit(id){
+    const c = state.courses.find(x=>x.id===id);
+    if(!c) return;
+    editingCourseId = id;
+    document.getElementById("fDay").value = c.day;
+    document.getElementById("fColor").value = c.color;
+    if(c.day!=="online"){
+      document.getElementById("fStartPeriod").value = c.startPeriod + c.startHalf;
+      document.getElementById("fEndPeriod").value = c.endPeriod + c.endHalf;
+    }
+    document.getElementById("fName").value = c.name;
+    document.getElementById("fProfessor").value = c.professor || "";
+    updateDayDependentFields();
+    renderCourseForm();
+    document.getElementById("fName").focus();
+    document.getElementById("courseForm").scrollIntoView({ behavior:"smooth", block:"nearest" });
+  }
+
+  function cancelEdit(){
+    editingCourseId = null;
+    document.getElementById("courseForm").reset();
+    document.getElementById("fColor").value = nextAvailableColor();
+    document.getElementById("fStartPeriod").value = "1A";
+    document.getElementById("fEndPeriod").value = "1B";
+    updateDayDependentFields();
+    renderCourseForm();
+  }
+
+  function renderSettings(){
+    document.getElementById("sBaseHour").value = state.settings.baseStartHour;
+    document.getElementById("sPeriodLen").value = state.settings.periodLengthMin;
+    document.getElementById("sBreakMin").value = state.settings.breakMin;
+    document.getElementById("sMaxPeriod").value = state.settings.maxPeriod;
+    document.getElementById("sShowSat").checked = state.settings.showSat;
+    document.getElementById("sShowSun").checked = state.settings.showSun;
+  }
+
+  // 현재 강좌 중 아무도 안 쓰는 팔레트 색을 우선 고른다. 팔레트를 다 쓰고 있으면
+  // 가장 적게 쓰인 색으로 대체해, 새 강좌가 기존 강좌와 최대한 다른 색으로 시작하게 한다.
+  function nextAvailableColor(){
+    const used = new Set(state.courses.map(c=>c.color));
+    const free = COURSE_PALETTE.find(c=>!used.has(c));
+    if(free) return free;
+    const counts = COURSE_PALETTE.map(c=> state.courses.filter(x=>x.color===c).length);
+    return COURSE_PALETTE[counts.indexOf(Math.min(...counts))];
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, ch=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]));
+  }
+
+  function swapCourseOrder(idA, idB){
+    if(idA===idB) return;
+    const a = state.courses.find(c=>c.id===idA);
+    const b = state.courses.find(c=>c.id===idB);
+    if(!a || !b) return;
+    const tmp = a.order; a.order = b.order; b.order = tmp;
+    render();
+  }
+
+  // 블록을 그냥 누르면(움직임이 거의 없으면) 수정 폼을 열고, 일정 거리 이상 끌면
+  // (겹치는 블록에 한해) 놓은 자리의 강좌와 우선순위(order)를 맞바꾼다.
+  const CLICK_MOVE_THRESHOLD = 6;
+  function attachBlockInteraction(block, ev, dayColEl){
+    let pressed = false, moved = false, startX = 0, colWidthPx = 0;
+
+    block.addEventListener("pointerdown", (e)=>{
+      pressed = true;
+      moved = false;
+      startX = e.clientX;
+      colWidthPx = dayColEl.getBoundingClientRect().width / ev.numCols;
+      block.setPointerCapture(e.pointerId);
+    });
+    block.addEventListener("pointermove", (e)=>{
+      if(!pressed) return;
+      const dx = e.clientX - startX;
+      if(Math.abs(dx) > CLICK_MOVE_THRESHOLD){
+        moved = true;
+        if(ev.numCols>1){
+          block.classList.add("dragging");
+          block.style.transform = `translateX(${dx}px)`;
+        }
+      }
+    });
+    function endInteraction(e){
+      if(!pressed) return;
+      pressed = false;
+      block.classList.remove("dragging");
+      block.style.transform = "";
+
+      if(!moved){
+        startEdit(ev.course.id);
+        return;
+      }
+      if(ev.numCols>1){
+        const delta = Math.round((e.clientX - startX) / colWidthPx);
+        if(delta !== 0){
+          const targetCol = Math.max(0, Math.min(ev.numCols-1, ev.colIndex+delta));
+          if(targetCol !== ev.colIndex){
+            const targetCourse = ev.columnCourses[targetCol];
+            if(targetCourse) swapCourseOrder(ev.course.id, targetCourse.id);
+          }
+        }
+      }
+    }
+    block.addEventListener("pointerup", endInteraction);
+    block.addEventListener("pointercancel", endInteraction);
+  }
+
+  function renderGrid(){
+    const days = visibleDays();
+    const startMin = state.settings.baseStartHour*60;
+    const endMin = startMin + state.settings.maxPeriod*state.settings.periodLengthMin;
+    const totalMin = Math.max(60, endMin-startMin);
+    const pxPerMin = 0.75; // 그리드 세로 길이를 절반으로 줄임(기존 1.5)
+    const bodyHeight = totalMin*pxPerMin;
+
+    const header = document.getElementById("gridHeader");
+    header.style.gridTemplateColumns = `var(--time-col-width,64px) repeat(${days.length}, minmax(var(--day-col-min,150px),1fr))`;
+    header.innerHTML = "";
+    const corner = document.createElement("div"); corner.className="corner"; header.appendChild(corner);
+    days.forEach(d=>{
+      const cell = document.createElement("div");
+      cell.className = "daycol";
+      cell.textContent = DAY_LABELS[d];
+      header.appendChild(cell);
+    });
+
+    const body = document.getElementById("gridBody");
+    body.style.gridTemplateColumns = `var(--time-col-width,64px) repeat(${days.length}, minmax(var(--day-col-min,150px),1fr))`;
+    body.style.height = bodyHeight + "px";
+    body.innerHTML = "";
+
+    const timeCol = document.createElement("div");
+    timeCol.className = "time-col";
+    const startHour = Math.floor(startMin/60);
+    const endHourCeil = Math.ceil(endMin/60);
+    for(let h=startHour; h<=endHourCeil; h++){
+      const tick = document.createElement("div");
+      tick.className = "tick";
+      tick.style.top = ((h*60-startMin)*pxPerMin) + "px";
+      tick.textContent = formatHourLabel12(h*60);
+      timeCol.appendChild(tick);
+    }
+    body.appendChild(timeCol);
+
+    days.forEach(d=>{
+      const col = document.createElement("div");
+      col.className = "day-col";
+
+      for(let m=0; m<=totalMin; m+=30){
+        const line = document.createElement("div");
+        line.className = "hline" + (m%60===0 ? "" : " half");
+        line.style.top = (m*pxPerMin) + "px";
+        col.appendChild(line);
+      }
+
+      const events = state.courses.filter(c=>c.day===d).map(c=>{
+        const r = courseRange(c);
+        return { id: c.id, start:r.start, end:r.end, course:c };
+      });
+
+      const positioned = layoutEvents(events);
+      positioned.forEach(ev=>{
+        const block = document.createElement("div");
+        block.className = "event-block";
+        const top = (ev.start-startMin)*pxPerMin;
+        const height = Math.max(18, (ev.end-ev.start)*pxPerMin);
+        const gap = 3;
+        const colWidthPct = 100/ev.numCols;
+        block.style.top = top+"px";
+        block.style.height = height+"px";
+        block.style.left = `calc(${colWidthPct*ev.colIndex}% + ${ev.colIndex===0?2:gap/2}px)`;
+        block.style.width = `calc(${colWidthPct}% - ${gap+2}px)`;
+        block.style.background = ev.course.color;
+        block.title = `${ev.course.name} (${DAY_LABELS[d]} ${formatClock12(ev.start)}~${formatClock12(ev.end)})`;
+        block.innerHTML = `<div class="name">${escapeHtml(ev.course.name)}</div>` +
+          (ev.course.professor ? `<div class="prof">${escapeHtml(ev.course.professor)}</div>` : "");
+        block.dataset.courseId = ev.course.id;
+        block.dataset.colIndex = ev.colIndex;
+        block.dataset.clusterIdx = ev.clusterIdx;
+
+        if(ev.numCols>1) block.classList.add("draggable");
+        if(ev.course.groupId) block.classList.add("grouped");
+        attachBlockInteraction(block, ev, col);
+
+        col.appendChild(block);
+      });
+
+      body.appendChild(col);
+    });
+  }
+
+  // ---------- 이벤트 바인딩 ----------
+
+  function parsePeriodValue(v){
+    return { period: Number(v.slice(0,-1)), half: v.slice(-1) };
+  }
+
+  document.getElementById("courseForm").addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const dayRaw = document.getElementById("fDay").value;
+    const isOnline = dayRaw === "online";
+    const day = isOnline ? "online" : Number(dayRaw);
+    const name = document.getElementById("fName").value.trim();
+    const professor = document.getElementById("fProfessor").value.trim();
+    const color = document.getElementById("fColor").value;
+
+    if(!name){ alert("과목명을 입력하세요."); return; }
+
+    let fields;
+    if(isOnline){
+      fields = { day, name, professor, color };
+    }else{
+      const startSel = parsePeriodValue(document.getElementById("fStartPeriod").value);
+      const endSel = parsePeriodValue(document.getElementById("fEndPeriod").value);
+      const startMin = slotStartMinutes(startSel.period, startSel.half);
+      const endMin = slotEndMinutes(endSel.period, endSel.half);
+      if(endMin<=startMin){ alert("종료 교시는 시작 교시보다 늦어야 합니다."); return; }
+      fields = { day, startPeriod:startSel.period, startHalf:startSel.half, endPeriod:endSel.period, endHalf:endSel.half, name, professor, color };
+    }
+
+    if(editingCourseId){
+      const c = state.courses.find(x=>x.id===editingCourseId);
+      if(isOnline){
+        delete c.startPeriod; delete c.startHalf; delete c.endPeriod; delete c.endHalf;
+      }
+      Object.assign(c, fields);
+      editingCourseId = null;
+    }else{
+      const maxOrder = state.courses.reduce((m,c)=>Math.max(m,c.order), -1);
+      state.courses.push({ id: uid("crs"), ...fields, order: maxOrder+1 });
+    }
+    document.getElementById("courseForm").reset();
+    document.getElementById("fColor").value = nextAvailableColor();
+    render();
+    document.getElementById("fStartPeriod").value = "1A";
+    document.getElementById("fEndPeriod").value = "1B";
+    updateDayDependentFields();
+  });
+
+  document.getElementById("fDay").addEventListener("change", updateDayDependentFields);
+  document.getElementById("fCancelEdit").addEventListener("click", cancelEdit);
+  document.getElementById("fDeleteCourse").addEventListener("click", ()=>{
+    if(!editingCourseId) return;
+    if(!confirm("이 강좌를 삭제할까요?")) return;
+    state.courses = state.courses.filter(c=>c.id!==editingCourseId);
+    pruneEmptyGroups();
+    cancelEdit();
+    render();
+  });
+
+  document.getElementById("sBaseHour").addEventListener("change", (e)=>{
+    const v = Number(e.target.value);
+    if(Number.isNaN(v)) return;
+    state.settings.baseStartHour = Math.max(0, Math.min(23, v));
+    render();
+  });
+  document.getElementById("sPeriodLen").addEventListener("change", (e)=>{
+    const v = Number(e.target.value);
+    if(Number.isNaN(v) || v<=0) return;
+    state.settings.periodLengthMin = v;
+    render();
+  });
+  document.getElementById("sBreakMin").addEventListener("change", (e)=>{
+    const v = Number(e.target.value);
+    if(Number.isNaN(v) || v<0) return;
+    state.settings.breakMin = v;
+    render();
+  });
+  document.getElementById("sMaxPeriod").addEventListener("change", (e)=>{
+    const v = Number(e.target.value);
+    if(Number.isNaN(v) || v<=0) return;
+    state.settings.maxPeriod = Math.max(1, Math.round(v));
+    render();
+  });
+  document.getElementById("sShowSat").addEventListener("change", (e)=>{ state.settings.showSat = e.target.checked; render(); });
+  document.getElementById("sShowSun").addEventListener("change", (e)=>{ state.settings.showSun = e.target.checked; render(); });
+
+  document.getElementById("btnExport").addEventListener("click", ()=>{
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "course-plan-timetable-backup.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("btnImport").addEventListener("click", ()=>{
+    document.getElementById("fileImport").click();
+  });
+  document.getElementById("fileImport").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!parsed || (!Array.isArray(parsed.courses) && !Array.isArray(parsed.plans))) throw new Error("형식이 올바르지 않습니다.");
+        if(!confirm("현재 데이터를 불러온 파일 내용으로 덮어씁니다. 계속할까요?")) return;
+        state = migrateState(parsed);
+        editingCourseId = null;
+        render();
+      }catch(err){
+        alert("파일을 읽을 수 없습니다: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  document.getElementById("btnReset").addEventListener("click", ()=>{
+    if(!confirm("모든 강좌를 지우고 초기 상태로 되돌립니다. 계속할까요?")) return;
+    state = defaultState();
+    editingCourseId = null;
+    render();
+  });
+
+  // 초기 폼 색상 기본값 — 이미 쓰이고 있는 색과 겹치지 않는 색으로 시작한다.
+  document.getElementById("fColor").value = nextAvailableColor();
+  updateDayDependentFields();
+
+  render();
+})();
+</script>
+</body>
+</html>
